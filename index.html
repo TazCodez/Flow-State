@@ -146,6 +146,45 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(56,194,232,0.25),transparent);margin:1rem 0}
 .footer{text-align:center;margin-top:2.5rem;font-size:12px;color:var(--text-soft);opacity:.7}
 
+/* ── Schedule grid ── */
+.sched-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px}
+.sched-topbar-title{font-size:13px;font-weight:800;color:var(--text-deep)}
+.week-nav{display:flex;align-items:center;gap:6px}
+.sched-wbtn{padding:5px 10px;font-size:12px;font-weight:700;border:1.5px solid rgba(56,194,232,0.35);border-radius:10px;background:rgba(255,255,255,0.6);color:var(--text-mid);cursor:pointer}
+.sched-wbtn:hover{background:rgba(255,255,255,0.9)}
+.sched-week-label{font-size:11px;font-weight:700;color:var(--text-soft);min-width:110px;text-align:center}
+.sched-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:.75rem}
+.sleg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-soft);font-weight:600}
+.sleg-anchor{width:13px;height:13px;border-radius:50%;background:rgba(56,194,232,0.15);border:1.5px solid rgba(56,194,232,0.7)}
+.sleg-class{width:13px;height:13px;border-radius:3px;background:rgba(255,210,96,0.2);border:1.5px solid rgba(200,150,20,0.45)}
+.sleg-study{width:13px;height:13px;border-radius:3px;background:rgba(26,184,112,0.14);border:1.5px solid rgba(26,184,112,0.5)}
+.sleg-split{width:13px;height:13px;border-radius:3px;background:rgba(214,48,48,0.08);border:1.5px dashed rgba(214,48,48,0.45)}
+.sched-grid{display:grid;grid-template-columns:48px repeat(7,minmax(80px,1fr));border:1.5px solid rgba(56,194,232,0.2);border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.6);min-width:620px}
+.sg-day-hdr{padding:7px 4px;text-align:center;font-size:10px;font-weight:800;color:var(--text-soft);border-bottom:1px solid rgba(56,194,232,0.15);background:rgba(255,255,255,0.5);letter-spacing:.05em}
+.sg-day-hdr.today{color:var(--aqua5);background:rgba(56,194,232,0.1)}
+.sg-time-hdr{padding:7px 4px;font-size:9px;font-weight:700;color:var(--text-soft);border-bottom:1px solid rgba(56,194,232,0.15);background:rgba(255,255,255,0.5);text-align:center}
+.sg-time-cell{font-size:9px;color:rgba(74,157,181,0.7);text-align:right;padding:0 4px 0 0;border-right:1px solid rgba(56,194,232,0.12);display:flex;align-items:flex-start;justify-content:flex-end;padding-top:2px;font-weight:600}
+.sg-day-col{border-right:1px solid rgba(56,194,232,0.1);position:relative}
+.sg-day-col:last-child{border-right:none}
+.sg-hour-cell{border-bottom:1px solid rgba(56,194,232,0.1);height:26px;position:relative}
+.sg-hour-cell.half-hr{border-bottom:1px dashed rgba(56,194,232,0.06)}
+.sched-block{position:absolute;left:1px;right:1px;border-radius:4px;font-size:8.5px;font-weight:700;padding:2px 4px;overflow:hidden;z-index:2;transition:box-shadow .15s;line-height:1.25;cursor:default}
+.sched-block:hover{z-index:10;box-shadow:0 2px 10px rgba(0,0,0,0.12)}
+.sb-anchor{background:linear-gradient(135deg,rgba(56,194,232,0.18),rgba(180,240,255,0.3));border:1.5px solid rgba(180,240,255,0.88);color:#0880a8}
+.sb-anchor::before{content:'';position:absolute;top:2px;left:3px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.82)}
+.sb-class{background:rgba(255,210,96,0.18);border:1.5px solid rgba(200,150,20,0.45);color:#633806}
+.sb-study{background:rgba(26,184,112,0.14);border:1.5px solid rgba(26,184,112,0.5);color:#0F6E56;cursor:grab}
+.sb-study:active{cursor:grabbing;transform:scale(1.02);z-index:20}
+.sb-study.dragging{opacity:.4}
+.sb-split{background:rgba(214,48,48,0.08);border:1.5px dashed rgba(214,48,48,0.45);color:#791F1F;cursor:grab}
+.sb-label{font-size:8.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-sub{font-size:7.5px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sched-add-panel{margin-top:12px;background:rgba(255,255,255,0.58);border:1.5px solid var(--glass-border);border-radius:18px;padding:1.25rem 1.5rem;backdrop-filter:blur(10px)}
+.sched-info{margin-top:8px;font-size:11px;color:var(--aqua5);background:rgba(56,194,232,0.08);border:1px solid rgba(56,194,232,0.25);border-radius:8px;padding:6px 10px;display:none}
+.sched-info.show{display:block}
+.sched-ripple{margin-top:6px;font-size:11px;color:var(--amber3);background:var(--amber1);border:1px solid rgba(224,154,0,0.3);border-radius:8px;padding:6px 10px;display:none}
+.sched-ripple.show{display:block}
+.sched-tooltip{position:fixed;background:rgba(255,255,255,0.96);border:1.5px solid rgba(56,194,232,0.3);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--text-deep);box-shadow:0 4px 14px rgba(56,194,232,0.15);pointer-events:none;z-index:9998;display:none;max-width:180px;line-height:1.5;backdrop-filter:blur(6px)}
 /* toast */
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;z-index:9999;opacity:0;transition:all .4s;pointer-events:none;box-shadow:0 6px 20px rgba(15,163,204,0.4);white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -337,45 +376,68 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 
 <!-- SCHEDULE -->
 <div id="panel-schedule" class="panel">
-  <div class="tip"><i class="ti ti-bolt"></i> Set your energy level and study blocks reorder automatically — deep calculus in high-energy slots, light review in low-energy ones.</div>
-  <div class="gc">
-    <div class="gc-title"><i class="ti ti-sun"></i> Today's energy &amp; schedule</div>
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.25rem;flex-wrap:wrap">
-      <span style="font-size:13px;color:var(--text-mid);font-weight:700">How are you feeling?</span>
-      <div class="energy-sel">
-        <button class="esb" id="eb-high" onclick="setEnergy('high')"><i class="ti ti-bolt"></i> High</button>
-        <button class="esb" id="eb-medium" onclick="setEnergy('medium')"><i class="ti ti-wave-sine"></i> Medium</button>
-        <button class="esb" id="eb-low" onclick="setEnergy('low')"><i class="ti ti-moon"></i> Low</button>
-      </div>
+  <div class="sched-topbar">
+    <div class="sched-topbar-title"><i class="ti ti-calendar" aria-hidden="true"></i> Taz's week — Dar es Salaam</div>
+    <div class="week-nav">
+      <button class="sched-wbtn" onclick="schedPrevWeek()"><i class="ti ti-chevron-left" aria-hidden="true"></i></button>
+      <span class="sched-week-label" id="sched-week-label"></span>
+      <button class="sched-wbtn" onclick="schedNextWeek()"><i class="ti ti-chevron-right" aria-hidden="true"></i></button>
     </div>
-    <div id="energy-slots"></div>
   </div>
-  <div class="gc">
-    <div class="gc-title"><i class="ti ti-refresh"></i> Sudden change?</div>
-    <div class="fr">
+  <div class="sched-legend">
+    <div class="sleg"><div class="sleg-anchor"></div> Barakah anchor (prayer)</div>
+    <div class="sleg"><div class="sleg-class"></div> Class (fixed)</div>
+    <div class="sleg"><div class="sleg-study"></div> Study block (drag to move)</div>
+    <div class="sleg"><div class="sleg-split"></div> Auto-split around prayer</div>
+  </div>
+  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+    <div class="sched-grid" id="sched-grid"></div>
+  </div>
+  <div class="sched-add-panel">
+    <div class="gc-title" style="margin-bottom:.75rem"><i class="ti ti-plus" aria-hidden="true"></i> Add a fluid task</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
       <div>
-        <div class="fl">What happened?</div>
-        <select class="fi" id="adj-reason">
-          <option value="sick">Feeling sick / unwell</option>
-          <option value="extra">Extra class added</option>
-          <option value="cancelled">Class cancelled — bonus time!</option>
-          <option value="assignment">Urgent assignment due</option>
-          <option value="social">Social / family event</option>
-          <option value="tired">Exhausted / overloaded</option>
+        <div class="fl">Task / topic</div>
+        <input type="text" class="fi" id="sched-new-label" placeholder="e.g. Organic mechanisms">
+      </div>
+      <div>
+        <div class="fl">Course</div>
+        <select class="fi" id="sched-new-course">
+          <option value="PH127/133">PH127/133 — Vibrations</option>
+          <option value="CH117">CH117 — Organic Chem 1</option>
+          <option value="CH173">CH173 — Spectroscopy</option>
+          <option value="CH174">CH174 — Sci Methods</option>
+          <option value="PH126">PH126 — Analogue Elec</option>
+          <option value="DS115">DS115 — Dev Perspectives</option>
+          <option value="PH116">PH116 — Lab report / pre-lab</option>
         </select>
       </div>
       <div>
-        <div class="fl">Hours lost or gained</div>
-        <input type="number" class="fi" id="adj-hours" placeholder="e.g. 2" min="0.5" max="8" step="0.5">
+        <div class="fl">Day</div>
+        <select class="fi" id="sched-new-day">
+          <option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option>
+          <option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div>
+          <div class="fl">Start time</div>
+          <input type="time" class="fi" id="sched-new-time" value="09:00">
+        </div>
+        <div>
+          <div class="fl">Duration (min)</div>
+          <input type="number" class="fi" id="sched-new-dur" value="60" min="15" max="240" step="15">
+        </div>
       </div>
     </div>
-    <button class="fb primary" onclick="adjustSchedule()"><i class="ti ti-refresh"></i> Recalculate my day</button>
-    <div id="adj-result" style="margin-top:14px"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button class="fb primary" onclick="schedAddTask()"><i class="ti ti-plus"></i> Add to schedule</button>
+      <button class="fb" onclick="schedClearFluid()"><i class="ti ti-refresh"></i> Reset to defaults</button>
+    </div>
+    <div class="sched-info" id="sched-info"></div>
+    <div class="sched-ripple" id="sched-ripple"></div>
   </div>
-  <div class="gc">
-    <div class="gc-title"><i class="ti ti-calendar"></i> Full weekly timetable</div>
-    <div id="weekly-timetable"></div>
-  </div>
+  <div class="sched-tooltip" id="sched-tooltip"></div>
 </div>
 
 <!-- SPACED REVIEW -->
@@ -706,30 +768,270 @@ function renderAnalytics(){
   rec.innerHTML=[...S.attempts].reverse().slice(0,10).map(a=>`<div class="row"><span class="chip ${CHIP[a.course]||''}">${a.course}</span><span style="flex:1;font-size:12px;color:var(--text-deep)">${a.text}</span><span class="badge ${a.correct?'b-green':'b-red'}">${a.correct?'✓':'✗'}</span><span style="font-size:11px;color:var(--text-soft)">${a.date}</span></div>`).join('');
 }
 
-/* SCHEDULE */
-function setEnergy(e){S.energy=e;save();['high','medium','low'].forEach(l=>{const b=document.getElementById('eb-'+l);if(b)b.className='esb'+(l===e?' sel-'+l:'');});renderEnergySlots();}
-function renderSchedule(){setEnergy(S.energy||'medium');renderWeeklyTable();}
-function renderEnergySlots(){
-  const day=dayN(),dd=TT[day],energy=S.energy||'medium',el=document.getElementById('energy-slots');
-  if(!dd||!dd.study.length){el.innerHTML='<div class="empty">No study blocks today.</div>';return;}
-  const ord=E_ORD[energy],sorted=[...dd.study].sort((a,b)=>ord.indexOf(a.energy)-ord.indexOf(b.energy));
-  const lbl={high:'⚡ Deep work',medium:'〰 Active study',low:'🌙 Light review'};
-  el.innerHTML=sorted.map((s,i)=>{const ec=s.energy==='high'?'b-green':s.energy==='medium'?'b-amber':'b-blue';
-    return`<div class="sched-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-deep)">${s.t}&nbsp;<span class="chip ${CHIP[s.course]||''}">${s.course}</span>${i===0?'<span class="badge b-green" style="margin-left:4px">Do first</span>':''}</div><div style="font-size:12px;color:var(--text-mid);margin-top:3px">${s.label}</div><div style="font-size:11px;color:var(--text-soft);margin-top:2px">${lbl[s.energy]} · ~${s.cost} min</div></div><span class="badge ${ec}">${s.energy}</span></div>`;
-  }).join('');
+/* ════════════════════════════════════
+   SCHEDULE — BARAKAH ANCHOR SYSTEM
+════════════════════════════════════ */
+const SG={
+  H_START:5, H_END:23,
+  PX_PER_MIN:26/60,
+  weekOffset:0,
+  dragBlock:null,
+  rippleNotes:[],
+};
+function sgToMin(h,m){return h*60+m;}
+function sgMinStr(min){return`${Math.floor(min/60).toString().padStart(2,'0')}:${(min%60).toString().padStart(2,'0')}`;}
+function sgTopPx(min){return(min-SG.H_START*60)*SG.PX_PER_MIN;}
+function sgHPx(dur){return dur*SG.PX_PER_MIN;}
+function sgStrToMin(s){const[h,m]=s.split(':').map(Number);return h*60+m;}
+
+const PRAYERS=[
+  {name:'Fajr',   start:sgToMin(5,10), dur:20,icon:'ti-moon'},
+  {name:'Dhuhr',  start:sgToMin(12,30),dur:20,icon:'ti-sun'},
+  {name:'Asr',    start:sgToMin(15,45),dur:20,icon:'ti-sun-high'},
+  {name:'Maghrib',start:sgToMin(18,10),dur:20,icon:'ti-sunset'},
+  {name:'Isha',   start:sgToMin(19,30),dur:20,icon:'ti-stars'},
+];
+
+const SCHED_CLASSES=[
+  {day:0,label:'CH173 lecture',course:'CH173',start:sgToMin(8,0),dur:115},
+  {day:0,label:'PH126 lecture',course:'PH126',start:sgToMin(10,0),dur:120},
+  {day:1,label:'PH127/133 lecture',course:'PH127/133',start:sgToMin(8,0),dur:55},
+  {day:2,label:'DS115 lecture',course:'DS115',start:sgToMin(7,0),dur:55},
+  {day:2,label:'DS115 seminar',course:'DS115',start:sgToMin(8,0),dur:55},
+  {day:2,label:'CH117 lecture',course:'CH117',start:sgToMin(10,0),dur:55},
+  {day:2,label:'CH117 tutorial',course:'CH117',start:sgToMin(12,0),dur:55},
+  {day:2,label:'PH116 practical',course:'PH116',start:sgToMin(13,0),dur:175},
+  {day:2,label:'CH174 tutorial',course:'CH174',start:sgToMin(15,0),dur:115},
+  {day:2,label:'PH126 lecturial',course:'PH126',start:sgToMin(17,0),dur:115},
+  {day:3,label:'CH174 lecture',course:'CH174',start:sgToMin(7,0),dur:115},
+  {day:3,label:'CH173 lecture',course:'CH173',start:sgToMin(9,0),dur:115},
+  {day:3,label:'PH127/133 tutorial',course:'PH127/133',start:sgToMin(15,0),dur:55},
+  {day:3,label:'DS115 lecture',course:'DS115',start:sgToMin(19,0),dur:55},
+  {day:4,label:'CH117 lecture',course:'CH117',start:sgToMin(9,0),dur:115},
+  {day:4,label:'PH116 practical',course:'PH116',start:sgToMin(13,0),dur:175},
+  {day:4,label:'PH127/133 lecture',course:'PH127/133',start:sgToMin(16,0),dur:115},
+];
+
+const COURSE_LEFT={'PH127/133':'#ffd260','CH117':'#b8a8f8','CH173':'#7adaf5','CH174':'#ff9090','PH126':'#7adfa8','DS115':'#7adfa8','PH116':'#aaddee'};
+
+const DEFAULT_FLUID_SG=[
+  {day:0,label:'PH127 derivatives',course:'PH127/133',start:sgToMin(7,0),dur:60},
+  {day:0,label:'CH173 post-lecture review',course:'CH173',start:sgToMin(12,40),dur:60},
+  {day:0,label:'PH126 recap',course:'PH126',start:sgToMin(16,0),dur:90},
+  {day:0,label:'Spaced review',course:'PH127/133',start:sgToMin(18,30),dur:60},
+  {day:1,label:'PH127 tutorial prep',course:'PH127/133',start:sgToMin(7,0),dur:60},
+  {day:1,label:'PH127 deep study',course:'PH127/133',start:sgToMin(9,30),dur:90},
+  {day:1,label:'Assignments',course:'CH173',start:sgToMin(14,0),dur:120},
+  {day:1,label:'Light revision',course:'PH127/133',start:sgToMin(18,0),dur:60},
+  {day:2,label:'DS115 recap',course:'DS115',start:sgToMin(9,0),dur:45},
+  {day:2,label:'Light review',course:'PH127/133',start:sgToMin(19,0),dur:45},
+  {day:3,label:'PH127 deep study',course:'PH127/133',start:sgToMin(11,0),dur:120},
+  {day:3,label:'Assignments',course:'CH173',start:sgToMin(13,30),dur:60},
+  {day:3,label:'CH174 + CH173 review',course:'CH174',start:sgToMin(16,30),dur:90},
+  {day:4,label:'Preview lectures',course:'PH127/133',start:sgToMin(7,30),dur:60},
+  {day:4,label:'Lab report / pre-lab',course:'PH116',start:sgToMin(11,0),dur:60},
+  {day:4,label:'Weekly recap',course:'PH127/133',start:sgToMin(18,30),dur:60},
+  {day:5,label:'PH127 Q6–Q8',course:'PH127/133',start:sgToMin(9,0),dur:60},
+  {day:5,label:'Spaced review',course:'PH127/133',start:sgToMin(10,0),dur:60},
+  {day:5,label:'Assignments catchup',course:'CH173',start:sgToMin(14,0),dur:120},
+  {day:6,label:'Plan next week',course:'PH127/133',start:sgToMin(15,0),dur:60},
+  {day:6,label:'Review wrong answers',course:'PH127/133',start:sgToMin(16,0),dur:60},
+];
+
+let sgFluid=JSON.parse(localStorage.getItem('fs_sg_v1')||'null')||DEFAULT_FLUID_SG.map((b,i)=>({...b,id:'sg'+i}));
+function sgSave(){localStorage.setItem('fs_sg_v1',JSON.stringify(sgFluid));}
+
+function sgPrayerOverlaps(day,start,dur){
+  const end=start+dur;
+  return PRAYERS.filter(p=>p.start<end&&(p.start+p.dur)>start);
 }
-function adjustSchedule(){
-  const r=document.getElementById('adj-reason').value,h=parseFloat(document.getElementById('adj-hours').value)||1.5;
-  const msgs={sick:{icon:'ti-heart',title:'Feeling unwell — recovery mode',txt:`Drop all high-energy tasks. ${Math.round(h*25)} min light spaced review max. Rest IS studying.`},extra:{icon:'ti-alert-circle',title:'Extra class — time tight',txt:`${h}h less free. Cut lowest-priority slot. PH127/133 spaced review (30 min minimum) today only.`},cancelled:{icon:'ti-gift',title:'Bonus time!',txt:`Extra ${h}h! Use ${Math.round(h*.65*60)} min on PH127/133 deep work + ${Math.round(h*.35*60)} min in the Question Bank.`},assignment:{icon:'ti-file-alert',title:'Assignment priority',txt:`Block ${h}h for the assignment. 25 min spaced review only. Log 2–3 questions to keep streak alive.`},social:{icon:'ti-users',title:'Social event — plan around it',txt:`One 30 min PH127/133 session before you go. Spaced review in ${Math.round(h*20)} min while commuting.`},tired:{icon:'ti-moon',title:'Exhausted — minimum effective dose',txt:`20 min light review only. Skip all high-energy tasks. Sleep debt cuts memory consolidation by ~40%.`}};
-  const m=msgs[r];document.getElementById('adj-result').innerHTML=`<div class="tip"><i class="ti ${m.icon}"></i> <strong>${m.title}</strong><br>${m.txt}</div>`;
+
+function sgSplitAroundPrayers(b){
+  const overlaps=sgPrayerOverlaps(b.day,b.start,b.dur);
+  if(!overlaps.length)return[b];
+  const blockEnd=b.start+b.dur;
+  const pieces=[];let cursor=b.start;
+  overlaps.forEach(p=>{
+    if(cursor<p.start)pieces.push({...b,id:b.id+'_a',start:cursor,dur:p.start-cursor,split:true,partN:pieces.length+1});
+    cursor=p.start+p.dur;
+  });
+  if(cursor<blockEnd)pieces.push({...b,id:b.id+'_b',start:cursor,dur:blockEnd-cursor,split:true,partN:pieces.length+1});
+  return pieces.filter(p=>p.dur>=5);
 }
-function renderWeeklyTable(){
-  const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],el=document.getElementById('weekly-timetable');
-  const ud={Tuesday:'b-red',Thursday:'b-red',Monday:'b-amber',Friday:'b-amber'};
-  el.innerHTML=days.map(day=>{const d=TT[day],badge=ud[day]?`<span class="badge ${ud[day]}" style="margin-left:8px">${ud[day]==='b-red'?'Priority':'Good'}</span>`:'';
-    return`<div style="margin-bottom:1.25rem"><div style="font-size:13px;font-weight:800;color:var(--text-mid);margin-bottom:8px">${day}${badge}</div>${d.study.map(s=>`<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px"><span style="font-size:11px;color:var(--text-soft);min-width:100px;font-weight:600;padding-top:1px">${s.t}</span><span style="font-size:12px;color:var(--text-deep);flex:1"><span class="chip ${CHIP[s.course]||''}">${s.course}</span>${s.label}</span><span style="font-size:11px;color:var(--text-soft)">~${s.cost}m</span></div>`).join('')}</div>`;
-  }).join('<div class="divider"></div>');
+
+function sgApplyRipple(dayIdx){
+  const dayB=sgFluid.filter(b=>b.day===dayIdx).sort((a,b)=>a.start-b.start);
+  let changed=false;
+  for(let i=1;i<dayB.length;i++){
+    const prev=dayB[i-1],cur=dayB[i],prevEnd=prev.start+prev.dur;
+    if(cur.start<prevEnd){
+      const shift=prevEnd-cur.start;
+      const orig=sgFluid.find(x=>x.id===cur.id);
+      if(orig){orig.start+=shift;changed=true;}
+      dayB[i]={...cur,start:cur.start+shift};
+    }
+  }
+  return changed;
 }
+
+function sgGetToday(){const d=new Date();return d.getDay()===0?6:d.getDay()-1;}
+
+function sgGetWeekStart(){
+  const now=new Date(),dow=now.getDay()===0?6:now.getDay()-1;
+  const s=new Date(now);s.setDate(now.getDate()-dow+SG.weekOffset*7);s.setHours(0,0,0,0);return s;
+}
+
+function schedPrevWeek(){SG.weekOffset--;renderSchedule();}
+function schedNextWeek(){SG.weekOffset++;renderSchedule();}
+
+function renderSchedule(){
+  const grid=document.getElementById('sched-grid');
+  const ws=sgGetWeekStart(),we=new Date(ws);we.setDate(ws.getDate()+6);
+  document.getElementById('sched-week-label').textContent=
+    ws.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' – '+
+    we.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  const today=SG.weekOffset===0?sgGetToday():-1;
+  const DAY_SHORT=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  const SLOTS=(SG.H_END-SG.H_START)*2;
+
+  let html='<div class="sg-time-hdr"></div>';
+  for(let d=0;d<7;d++){
+    const dt=new Date(ws);dt.setDate(ws.getDate()+d);
+    html+=`<div class="sg-day-hdr${d===today?' today':''}">${DAY_SHORT[d]}<br>${dt.getDate()}</div>`;
+  }
+  for(let s=0;s<SLOTS;s++){
+    const h=SG.H_START+Math.floor(s/2),m=s%2===0?0:30;
+    const lbl=m===0?`${h.toString().padStart(2,'0')}:00`:'';
+    html+=`<div class="sg-time-cell">${lbl}</div>`;
+    for(let d=0;d<7;d++){
+      html+=`<div class="sg-hour-cell${m===30?' half-hr':''}" data-day="${d}" data-min="${sgToMin(h,m)}"></div>`;
+    }
+  }
+  grid.innerHTML=html;
+
+  const dayWrappers=[];
+  for(let d=0;d<7;d++){
+    const w=document.createElement('div');
+    w.style.cssText=`position:relative;grid-column:${d+2};grid-row:2/${SLOTS+2};pointer-events:none;`;
+    grid.appendChild(w);dayWrappers[d]=w;
+  }
+
+  const totalH=(SG.H_END-SG.H_START)*60;
+
+  /* prayers — every day */
+  for(let d=0;d<7;d++){
+    PRAYERS.forEach(p=>{
+      const el=document.createElement('div');
+      el.className='sched-block sb-anchor';
+      el.style.cssText=`top:${sgTopPx(p.start)}px;height:${Math.max(sgHPx(p.dur),16)}px;pointer-events:all`;
+      el.innerHTML=`<div class="sb-label"><i class="ti ${p.icon}" style="font-size:7px" aria-hidden="true"></i> ${p.name}</div><div class="sb-sub">${sgMinStr(p.start)}</div>`;
+      el.addEventListener('mouseenter',ev=>sgShowTip(ev,p.name,'Barakah anchor — fixed prayer time',`${sgMinStr(p.start)} – ${sgMinStr(p.start+p.dur)}`));
+      el.addEventListener('mouseleave',sgHideTip);
+      dayWrappers[d].appendChild(el);
+    });
+  }
+
+  /* fixed classes */
+  SCHED_CLASSES.forEach(c=>{
+    const el=document.createElement('div');
+    el.className='sched-block sb-class';
+    el.style.cssText=`top:${sgTopPx(c.start)}px;height:${Math.max(sgHPx(c.dur),14)}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[c.course]||'#ffd260'}`;
+    el.innerHTML=`<div class="sb-label">${c.label}</div><div class="sb-sub">${sgMinStr(c.start)}</div>`;
+    el.addEventListener('mouseenter',ev=>sgShowTip(ev,c.label,c.course+' — fixed class',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min`));
+    el.addEventListener('mouseleave',sgHideTip);
+    dayWrappers[c.day].appendChild(el);
+  });
+
+  /* fluid blocks */
+  sgFluid.forEach(b=>{
+    if(b.day<0||b.day>6)return;
+    const pieces=sgSplitAroundPrayers(b);
+    pieces.forEach(piece=>{
+      const top=sgTopPx(piece.start);
+      if(top<0||top>totalH*SG.PX_PER_MIN)return;
+      const ht=Math.max(sgHPx(piece.dur),14);
+      const el=document.createElement('div');
+      el.className='sched-block '+(piece.split?'sb-split':'sb-study');
+      el.style.cssText=`top:${top}px;height:${ht}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[b.course]||'#7adfa8'}`;
+      el.draggable=true;
+      el.dataset.id=b.id;
+      const lbl=piece.split?`${b.label} (${piece.partN===1?'before':'after'} ${PRAYERS.find(p=>p.start>=piece.start-piece.dur&&p.start<=piece.start+piece.dur)||PRAYERS[0]}.name})`:b.label;
+      const displayLbl=piece.split?`${b.label} pt.${piece.partN}`:b.label;
+      el.innerHTML=`<div class="sb-label">${displayLbl}</div><div class="sb-sub">${b.course} · ${sgMinStr(piece.start)}</div>`;
+      el.addEventListener('dragstart',ev=>{SG.dragBlock=b;el.classList.add('dragging');ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',b.id);});
+      el.addEventListener('dragend',()=>{el.classList.remove('dragging');SG.dragBlock=null;});
+      el.addEventListener('mouseenter',ev=>sgShowTip(ev,b.label,b.course+(piece.split?' — auto-split around prayer':' — drag to move'),`${sgMinStr(piece.start)} – ${sgMinStr(piece.start+piece.dur)}, ${piece.dur} min`));
+      el.addEventListener('mouseleave',sgHideTip);
+      el.addEventListener('dblclick',()=>{if(confirm(`Remove "${b.label}"?`)){sgFluid=sgFluid.filter(x=>x.id!==b.id);sgSave();renderSchedule();}});
+      dayWrappers[b.day].appendChild(el);
+    });
+  });
+
+  /* drop zones */
+  for(let d=0;d<7;d++){
+    const wrap=dayWrappers[d];const dayIdx=d;
+    wrap.style.pointerEvents='all';
+    wrap.addEventListener('dragover',ev=>{ev.preventDefault();ev.dataTransfer.dropEffect='move';});
+    wrap.addEventListener('drop',ev=>{
+      ev.preventDefault();if(!SG.dragBlock)return;
+      const rect=wrap.getBoundingClientRect();
+      const yOff=ev.clientY-rect.top;
+      let newStart=Math.round((SG.H_START*60+(yOff/SG.PX_PER_MIN))/15)*15;
+      newStart=Math.max(SG.H_START*60,Math.min(newStart,(SG.H_END*60)-SG.dragBlock.dur));
+      const b=sgFluid.find(x=>x.id===SG.dragBlock.id);
+      if(b){
+        b.day=dayIdx;b.start=newStart;
+        const didRipple=sgApplyRipple(dayIdx);
+        const overlaps=sgPrayerOverlaps(dayIdx,newStart,b.dur);
+        SG.rippleNotes=[];
+        if(overlaps.length)SG.rippleNotes.push(`"${b.label}" overlaps ${overlaps.map(p=>p.name).join(' & ')} — auto-split around prayer.`);
+        if(didRipple)SG.rippleNotes.push('Ripple: overlapping blocks nudged forward.');
+        sgShowRipple();sgSave();renderSchedule();
+      }
+    });
+  }
+}
+
+function schedAddTask(){
+  const label=document.getElementById('sched-new-label').value.trim();
+  const course=document.getElementById('sched-new-course').value;
+  const day=parseInt(document.getElementById('sched-new-day').value);
+  const startMin=sgStrToMin(document.getElementById('sched-new-time').value);
+  const dur=parseInt(document.getElementById('sched-new-dur').value)||60;
+  if(!label){sgShowInfo('Please enter a task name.');return;}
+  const id='sg'+Date.now();
+  sgFluid.push({id,day,label,course,start:startMin,dur});
+  const didRipple=sgApplyRipple(day);
+  const overlaps=sgPrayerOverlaps(day,startMin,dur);
+  SG.rippleNotes=[];
+  if(overlaps.length)SG.rippleNotes.push(`"${label}" overlaps ${overlaps.map(p=>p.name).join(' & ')} — auto-split around prayer.`);
+  if(didRipple)SG.rippleNotes.push('Ripple: overlapping blocks nudged forward.');
+  sgShowRipple();sgSave();renderSchedule();
+  document.getElementById('sched-new-label').value='';
+  toast('Block added to schedule!');
+}
+
+function schedClearFluid(){
+  if(!confirm('Reset all fluid study blocks to defaults?'))return;
+  sgFluid=DEFAULT_FLUID_SG.map((b,i)=>({...b,id:'sg'+i}));sgSave();renderSchedule();
+  toast('Schedule reset to defaults.');
+}
+
+function sgShowInfo(msg){const el=document.getElementById('sched-info');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
+function sgShowRipple(){
+  const el=document.getElementById('sched-ripple');
+  if(!SG.rippleNotes.length){el.classList.remove('show');return;}
+  el.innerHTML='<i class="ti ti-wave-sine" aria-hidden="true"></i> '+SG.rippleNotes.join(' ');
+  el.classList.add('show');setTimeout(()=>el.classList.remove('show'),5500);
+}
+function sgShowTip(ev,title,sub,time){
+  const t=document.getElementById('sched-tooltip');
+  t.innerHTML=`<div style="font-weight:800;font-size:12px;margin-bottom:2px">${title}</div><div style="color:var(--text-soft);font-size:10px;margin-bottom:1px">${sub}</div><div style="color:var(--text-soft);font-size:10px">${time}</div>`;
+  t.style.display='block';sgMoveTip(ev);
+}
+function sgMoveTip(ev){const t=document.getElementById('sched-tooltip');t.style.left=(ev.clientX+12)+'px';t.style.top=(ev.clientY-10)+'px';}
+function sgHideTip(){document.getElementById('sched-tooltip').style.display='none';}
+document.addEventListener('mousemove',ev=>{const t=document.getElementById('sched-tooltip');if(t&&t.style.display!=='none')sgMoveTip(ev);});
 
 /* REVIEW */
 function renderReview(){
