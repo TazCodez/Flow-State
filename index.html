@@ -3,1102 +3,756 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flow State — Study Planner</title>
+<title>Flow State — Taz</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" rel="stylesheet">
 <style>
-  /* ── Reset & Base ── */
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --aqua0: #e0f7ff; --aqua1: #b3edff; --aqua2: #7adaf5;
-    --aqua3: #38c2e8; --aqua4: #0fa3cc; --aqua5: #0880a8;
-    --glass: rgba(255,255,255,0.55);
-    --glass2: rgba(255,255,255,0.35);
-    --glass-border: rgba(255,255,255,0.78);
-    --glass-shadow: rgba(56,194,232,0.18);
-    --text-deep: #0a3a4a; --text-mid: #1a6a82; --text-soft: #4a9db5;
-    --green1: #d6f5e3; --green2: #7adfa8; --green3: #1ab870;
-    --amber1: #fff3cc; --amber2: #ffd260; --amber3: #e09a00;
-    --red1: #ffe0e0; --red2: #ff9090; --red3: #d63030;
-    --purple1: #ede8ff; --purple2: #b8a8f8; --purple3: #6c52e8;
-  }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --aqua0:#e0f7ff;--aqua1:#b3edff;--aqua2:#7adaf5;--aqua3:#38c2e8;--aqua4:#0fa3cc;--aqua5:#0880a8;
+  --glass:rgba(255,255,255,0.55);--glass-border:rgba(255,255,255,0.78);--glass-shadow:rgba(56,194,232,0.18);
+  --text-deep:#0a3a4a;--text-mid:#1a6a82;--text-soft:#4a9db5;
+  --green1:#d6f5e3;--green2:#7adfa8;--green3:#1ab870;
+  --amber1:#fff3cc;--amber2:#ffd260;--amber3:#e09a00;
+  --red1:#ffe0e0;--red2:#ff9090;--red3:#d63030;
+  --purple1:#ede8ff;--purple2:#b8a8f8;--purple3:#6c52e8;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#c8f0ff 0%,#e8fbff 30%,#d4f8f0 60%,#b8ecff 100%);min-height:100vh;color:var(--text-deep);overflow-x:hidden}
 
-  html { scroll-behavior: smooth; }
+/* floating bubbles */
+#bubble-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.fbbl{position:absolute;border-radius:50%;border:1.5px solid rgba(255,255,255,0.72);background:radial-gradient(circle at 33% 28%,rgba(255,255,255,0.75),rgba(180,240,255,0.12) 60%,transparent);animation:floatUp linear infinite;bottom:-140px}
+@keyframes floatUp{0%{transform:translateY(0) translateX(0);opacity:0}6%{opacity:1}88%{opacity:0.5}100%{transform:translateY(-115vh) translateX(var(--drift));opacity:0}}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 15% 20%,rgba(255,255,255,0.45) 0%,transparent 35%),radial-gradient(circle at 85% 10%,rgba(180,240,255,0.35) 0%,transparent 30%),radial-gradient(circle at 70% 80%,rgba(200,255,240,0.3) 0%,transparent 40%);pointer-events:none;z-index:0}
 
-  body {
-    font-family: 'Nunito', sans-serif;
-    background: linear-gradient(160deg, #c8f0ff 0%, #e8fbff 30%, #d4f8f0 60%, #b8ecff 100%);
-    min-height: 100vh;
-    color: var(--text-deep);
-  }
+.wrapper{max-width:780px;margin:0 auto;padding:1.5rem 1rem 5rem;position:relative;z-index:1}
 
-  /* Animated background bubbles */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background:
-      radial-gradient(circle at 15% 20%, rgba(255,255,255,0.5) 0%, transparent 35%),
-      radial-gradient(circle at 85% 10%, rgba(180,240,255,0.4) 0%, transparent 30%),
-      radial-gradient(circle at 70% 80%, rgba(200,255,240,0.35) 0%, transparent 40%),
-      radial-gradient(circle at 5% 75%, rgba(160,230,255,0.3) 0%, transparent 35%);
-    pointer-events: none;
-    z-index: 0;
-  }
+/* hero */
+.hero{background:linear-gradient(135deg,#b0e8ff 0%,#d8f8ff 40%,#a8f0df 70%,#c0f0ff 100%);border:2px solid var(--glass-border);border-radius:24px;padding:2rem 2.5rem 1.5rem;margin-bottom:1.25rem;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(56,194,232,0.2),inset 0 1px 0 rgba(255,255,255,0.8)}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;background:radial-gradient(circle,rgba(255,255,255,0.65) 0%,rgba(120,220,255,0.2) 55%,transparent 100%);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-25px;left:80px;width:110px;height:110px;background:radial-gradient(circle,rgba(255,255,255,0.5) 0%,rgba(100,200,240,0.15) 60%,transparent 100%);border-radius:50%}
+.bdeco{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,0.75);background:radial-gradient(circle at 35% 35%,rgba(255,255,255,0.65),rgba(180,240,255,0.2))}
+.hero h1{font-family:'Quicksand',sans-serif;font-size:32px;font-weight:700;color:var(--aqua5);letter-spacing:-.5px;position:relative;z-index:1}
+.hero p{font-size:13px;color:var(--text-mid);margin-top:4px;position:relative;z-index:1}
+.hero-badge{position:absolute;top:1.5rem;right:2rem;background:rgba(255,255,255,0.72);border:1.5px solid var(--glass-border);border-radius:50px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--aqua5);z-index:1}
 
-  .wrapper {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 1.5rem 1rem 4rem;
-    position: relative;
-    z-index: 1;
-  }
+/* nav */
+.nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem}
+.nav-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;border-radius:50px;border:1.5px solid rgba(255,255,255,0.82);cursor:pointer;background:rgba(255,255,255,0.55);color:var(--text-mid);transition:all .2s;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(56,194,232,0.08)}
+.nav-btn:hover{background:rgba(255,255,255,0.82);color:var(--aqua5);transform:translateY(-1px)}
+.nav-btn.active{background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;border-color:rgba(255,255,255,0.5);box-shadow:0 4px 16px rgba(15,163,204,0.4)}
 
-  /* ── Hero ── */
-  .hero {
-    background: linear-gradient(135deg, #b0e8ff 0%, #d8f8ff 40%, #a8f0df 70%, #c0f0ff 100%);
-    border: 2px solid var(--glass-border);
-    border-radius: 24px;
-    padding: 2rem 2.5rem 1.5rem;
-    margin-bottom: 1.25rem;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 32px rgba(56,194,232,0.2), inset 0 1px 0 rgba(255,255,255,0.8);
-  }
-  .hero::before {
-    content: '';
-    position: absolute; top: -40px; right: -40px;
-    width: 180px; height: 180px;
-    background: radial-gradient(circle, rgba(255,255,255,0.65) 0%, rgba(120,220,255,0.2) 55%, transparent 100%);
-    border-radius: 50%;
-  }
-  .hero::after {
-    content: '';
-    position: absolute; bottom: -25px; left: 80px;
-    width: 110px; height: 110px;
-    background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, rgba(100,200,240,0.15) 60%, transparent 100%);
-    border-radius: 50%;
-  }
-  .bubble-deco {
-    position: absolute; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.75);
-    background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.65), rgba(180,240,255,0.2));
-  }
-  .hero h1 {
-    font-family: 'Quicksand', sans-serif;
-    font-size: 32px; font-weight: 700;
-    color: var(--aqua5);
-    letter-spacing: -0.5px;
-    position: relative; z-index: 1;
-  }
-  .hero p {
-    font-size: 13px; color: var(--text-mid);
-    margin-top: 4px; position: relative; z-index: 1;
-  }
-  .hero-streak {
-    position: absolute; top: 1.5rem; right: 2rem;
-    background: rgba(255,255,255,0.7);
-    border: 1.5px solid var(--glass-border);
-    border-radius: 50px; padding: 6px 14px;
-    font-size: 13px; font-weight: 700; color: var(--aqua5);
-    z-index: 1;
-  }
+/* panels */
+.panel{display:none;animation:fadeIn .25s ease}.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-  /* ── Navigation ── */
-  .nav {
-    display: flex; gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 1.25rem;
-  }
-  .nav-btn {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 16px; font-size: 12px; font-weight: 700;
-    font-family: 'Nunito', sans-serif;
-    border-radius: 50px;
-    border: 1.5px solid rgba(255,255,255,0.82);
-    cursor: pointer;
-    background: rgba(255,255,255,0.55);
-    color: var(--text-mid);
-    transition: all 0.2s;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 2px 8px rgba(56,194,232,0.08);
-  }
-  .nav-btn:hover {
-    background: rgba(255,255,255,0.8);
-    color: var(--aqua5);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(56,194,232,0.15);
-  }
-  .nav-btn.active {
-    background: linear-gradient(135deg, #38c2e8, #0fa3cc);
-    color: #fff;
-    border-color: rgba(255,255,255,0.5);
-    box-shadow: 0 4px 16px rgba(15,163,204,0.4);
-  }
+/* glass card */
+.gc{background:rgba(255,255,255,0.58);border:1.5px solid var(--glass-border);border-radius:18px;padding:1.25rem 1.5rem;margin-bottom:14px;backdrop-filter:blur(10px);box-shadow:0 4px 24px var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,0.9)}
+.gc-title{font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--text-soft);margin-bottom:.9rem}
 
-  /* ── Panels ── */
-  .panel { display: none; animation: fadeIn 0.25s ease; }
-  .panel.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+/* metrics */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.metric{background:linear-gradient(145deg,rgba(255,255,255,0.75),rgba(200,248,255,0.55));border:1.5px solid var(--glass-border);border-radius:16px;padding:.9rem 1rem;box-shadow:0 3px 12px var(--glass-shadow),inset 0 1px 0 rgba(255,255,255,0.9)}
+.metric .val{font-size:24px;font-weight:800;color:var(--aqua5);font-family:'Quicksand',sans-serif}
+.metric .lbl{font-size:11px;color:var(--text-soft);margin-top:2px}
 
-  /* ── Glass Card ── */
-  .gc {
-    background: rgba(255,255,255,0.58);
-    border: 1.5px solid var(--glass-border);
-    border-radius: 18px;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 14px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 24px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.9);
-  }
-  .gc-title {
-    font-size: 11px; font-weight: 800;
-    letter-spacing: .09em; text-transform: uppercase;
-    color: var(--text-soft); margin-bottom: .9rem;
-  }
+/* badges & chips */
+.badge{font-size:11px;padding:3px 10px;border-radius:50px;font-weight:700;flex-shrink:0}
+.b-red{background:var(--red1);color:var(--red3)}.b-amber{background:var(--amber1);color:var(--amber3)}.b-green{background:var(--green1);color:var(--green3)}.b-blue{background:var(--aqua0);color:var(--aqua5)}.b-purple{background:var(--purple1);color:var(--purple3)}
+.chip{display:inline-block;font-size:10px;padding:2px 8px;border-radius:50px;font-weight:800;margin-right:5px}
+.c-ph127{background:#fff3cc;color:#a07000}.c-ch173{background:var(--purple1);color:var(--purple3)}.c-ch17a{background:var(--aqua0);color:var(--aqua5)}.c-ph116{background:var(--green1);color:var(--green3)}.c-ds115{background:#e8fff3;color:#008855}.c-ch174{background:var(--red1);color:var(--red3)}.c-ph136{background:#f0f0f8;color:#445}
 
-  /* ── Metrics ── */
-  .metrics {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px; margin-bottom: 16px;
-  }
-  .metric {
-    background: linear-gradient(145deg, rgba(255,255,255,0.75), rgba(200,248,255,0.55));
-    border: 1.5px solid var(--glass-border);
-    border-radius: 16px; padding: .9rem 1rem;
-    box-shadow: 0 3px 12px var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.9);
-  }
-  .metric .val {
-    font-size: 24px; font-weight: 800;
-    color: var(--aqua5);
-    font-family: 'Quicksand', sans-serif;
-  }
-  .metric .lbl { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+/* forms */
+.fl{font-size:11px;color:var(--text-soft);margin-bottom:5px;font-weight:700}
+.fi{width:100%;padding:9px 13px;font-size:13px;font-family:'Nunito',sans-serif;border:1.5px solid rgba(56,194,232,0.35);border-radius:12px;background:rgba(255,255,255,0.75);color:var(--text-deep);outline:none;transition:border-color .2s,background .2s}
+.fi:focus{border-color:var(--aqua3);background:rgba(255,255,255,0.95)}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 
-  /* ── Badges ── */
-  .badge {
-    font-size: 11px; padding: 3px 10px;
-    border-radius: 50px; font-weight: 700; flex-shrink: 0;
-  }
-  .b-red { background: var(--red1); color: var(--red3); }
-  .b-amber { background: var(--amber1); color: var(--amber3); }
-  .b-green { background: var(--green1); color: var(--green3); }
-  .b-blue { background: var(--aqua0); color: var(--aqua5); }
-  .b-purple { background: var(--purple1); color: var(--purple3); }
+/* buttons */
+.fb{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;cursor:pointer;border-radius:50px;border:1.5px solid rgba(255,255,255,0.8);background:linear-gradient(135deg,rgba(255,255,255,0.85),rgba(200,248,255,0.65));color:var(--text-mid);transition:all .18s;box-shadow:0 2px 8px rgba(56,194,232,0.1)}
+.fb:hover{background:linear-gradient(135deg,rgba(255,255,255,0.98),rgba(180,242,255,0.85));color:var(--aqua5);transform:translateY(-1px)}
+.fb.primary{background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;border-color:rgba(255,255,255,0.5);box-shadow:0 4px 14px rgba(15,163,204,0.35)}
+.fb.correct{background:linear-gradient(135deg,#d6f5e3,#b8f0d0);color:var(--green3);border-color:rgba(26,184,112,0.4)}
+.fb.wrong{background:linear-gradient(135deg,#ffe0e0,#ffcccc);color:var(--red3);border-color:rgba(214,48,48,0.3)}
+.fb.danger{background:var(--red1);color:var(--red3);border-color:rgba(214,48,48,0.2);padding:6px 12px}
 
-  /* ── Course Chips ── */
-  .chip {
-    display: inline-block; font-size: 10px;
-    padding: 2px 8px; border-radius: 50px;
-    font-weight: 800; margin-right: 5px;
-  }
-  .c-ph127 { background: #fff3cc; color: #a07000; }
-  .c-ch173 { background: var(--purple1); color: var(--purple3); }
-  .c-ch17a { background: var(--aqua0); color: var(--aqua5); }
-  .c-ph116 { background: var(--green1); color: var(--green3); }
-  .c-ds115 { background: #e8fff3; color: #008855; }
-  .c-ch174 { background: var(--red1); color: var(--red3); }
-  .c-ph136 { background: #f0f0f8; color: #445; }
+/* check circle */
+.cc{width:24px;height:24px;border-radius:50%;border:2px solid rgba(56,194,232,0.4);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s;background:rgba(255,255,255,0.6)}
+.cc.done{background:linear-gradient(135deg,#38c2e8,#0fa3cc);border-color:#38c2e8;box-shadow:0 2px 8px rgba(15,163,204,0.4)}
 
-  /* ── Form Elements ── */
-  .fl { font-size: 11px; color: var(--text-soft); margin-bottom: 5px; font-weight: 700; }
-  .fi {
-    width: 100%; padding: 9px 13px; font-size: 13px;
-    font-family: 'Nunito', sans-serif;
-    border: 1.5px solid rgba(56,194,232,0.35);
-    border-radius: 12px;
-    background: rgba(255,255,255,0.75);
-    color: var(--text-deep); outline: none;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .fi:focus { border-color: var(--aqua3); background: rgba(255,255,255,0.95); }
-  .fr { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+/* progress */
+.pb{height:8px;background:rgba(56,194,232,0.15);border-radius:50px;overflow:hidden;flex:1}
+.pf{height:100%;border-radius:50px;background:linear-gradient(90deg,#38c2e8,#0fa3cc);transition:width .5s ease}
+.pf-amber{background:linear-gradient(90deg,#ffd260,#e09a00)}.pf-red{background:linear-gradient(90deg,#ff9090,#d63030)}.pf-green{background:linear-gradient(90deg,#7adfa8,#1ab870)}
 
-  /* ── Buttons ── */
-  .fb {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 18px; font-size: 12px; font-weight: 700;
-    font-family: 'Nunito', sans-serif;
-    cursor: pointer; border-radius: 50px;
-    border: 1.5px solid rgba(255,255,255,0.8);
-    background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(200,248,255,0.65));
-    color: var(--text-mid);
-    transition: all 0.18s;
-    box-shadow: 0 2px 8px rgba(56,194,232,0.1);
-  }
-  .fb:hover {
-    background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(180,242,255,0.85));
-    color: var(--aqua5); transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(56,194,232,0.2);
-  }
-  .fb.primary {
-    background: linear-gradient(135deg, #38c2e8, #0fa3cc);
-    color: #fff; border-color: rgba(255,255,255,0.5);
-    box-shadow: 0 4px 14px rgba(15,163,204,0.35);
-  }
-  .fb.primary:hover { box-shadow: 0 6px 20px rgba(15,163,204,0.5); }
-  .fb.correct { background: linear-gradient(135deg,#d6f5e3,#b8f0d0); color: var(--green3); border-color: rgba(26,184,112,0.4); }
-  .fb.wrong { background: linear-gradient(135deg,#ffe0e0,#ffcccc); color: var(--red3); border-color: rgba(214,48,48,0.3); }
-  .fb.danger { background: var(--red1); color: var(--red3); border-color: rgba(214,48,48,0.2); padding: 6px 12px; }
+/* rows & tasks */
+.row{display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:1px solid rgba(56,194,232,0.12)}.row:last-child{border-bottom:none}
+.tt{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid rgba(56,194,232,0.1)}.tt:last-child{border-bottom:none}
+.tt-text{flex:1;font-size:13px;color:var(--text-deep);line-height:1.5}.tt-text.done{text-decoration:line-through;color:var(--text-soft)}
+.time-chip{font-size:11px;color:var(--text-soft);background:rgba(56,194,232,0.12);border-radius:50px;padding:3px 10px;flex-shrink:0;margin-top:2px;font-weight:700}
+.energy-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.e-high{background:var(--green3);box-shadow:0 0 5px rgba(26,184,112,0.5)}
+.e-med{background:var(--amber2);box-shadow:0 0 5px rgba(255,210,96,0.5)}
+.e-low{background:#aaddee}
 
-  /* ── Check Circle ── */
-  .cc {
-    width: 24px; height: 24px; border-radius: 50%;
-    border: 2px solid rgba(56,194,232,0.4);
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; margin-top: 1px;
-    transition: all 0.2s;
-    background: rgba(255,255,255,0.6);
-  }
-  .cc.done {
-    background: linear-gradient(135deg, #38c2e8, #0fa3cc);
-    border-color: #38c2e8;
-    box-shadow: 0 2px 8px rgba(15,163,204,0.4);
-  }
+/* question bank */
+.qcard{background:linear-gradient(135deg,rgba(255,255,255,0.8),rgba(220,250,255,0.6));border:1.5px solid var(--glass-border);border-radius:16px;padding:1.1rem 1.35rem;margin-bottom:12px;box-shadow:0 3px 14px var(--glass-shadow);transition:box-shadow .2s}
+.qcard:hover{box-shadow:0 6px 24px rgba(56,194,232,0.22)}
+.qcard-meta{font-size:11px;color:var(--text-soft);margin-bottom:7px;font-weight:700}
+.qcard-q{font-size:14px;color:var(--text-deep);margin-bottom:10px;line-height:1.6;font-weight:500}
+.qcard-img{max-width:100%;border-radius:10px;margin-bottom:10px;border:1px solid rgba(56,194,232,0.2)}
+.qcard-answer{font-size:12.5px;color:var(--text-mid);background:rgba(56,194,232,0.1);border-radius:10px;padding:10px 14px;display:none;line-height:1.7;border-left:3px solid var(--aqua3);margin-bottom:12px}
+.qcard-answer.show{display:block}
 
-  /* ── Progress Bar ── */
-  .pb { height: 8px; background: rgba(56,194,232,0.15); border-radius: 50px; overflow: hidden; flex: 1; }
-  .pf { height: 100%; border-radius: 50px; background: linear-gradient(90deg, #38c2e8, #0fa3cc); transition: width 0.5s ease; }
-  .pf-amber { background: linear-gradient(90deg, #ffd260, #e09a00); }
-  .pf-red { background: linear-gradient(90deg, #ff9090, #d63030); }
-  .pf-green { background: linear-gradient(90deg, #7adfa8, #1ab870); }
+/* dropzone */
+.dropzone{border:2px dashed rgba(56,194,232,0.45);border-radius:14px;padding:1.5rem;text-align:center;cursor:pointer;background:rgba(255,255,255,0.4);transition:all .2s;color:var(--text-soft);font-size:13px}
+.dropzone:hover,.dropzone.drag{border-color:var(--aqua3);background:rgba(56,194,232,0.07);color:var(--aqua5)}
+.dropzone i{font-size:28px;display:block;margin-bottom:6px;opacity:.6}
+.preview-img{max-width:100%;border-radius:10px;margin-top:10px;display:none;border:1.5px solid var(--glass-border)}
+.extract-bar{background:rgba(56,194,232,0.12);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--text-mid);display:none;line-height:1.6;border-left:3px solid var(--aqua3)}
 
-  /* ── Row ── */
-  .row {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 11px 0;
-    border-bottom: 1px solid rgba(56,194,232,0.12);
-  }
-  .row:last-child { border-bottom: none; }
+/* pomodoro */
+.pomo-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem 0}
+.pomo-ring{position:relative;width:180px;height:180px;margin-bottom:1.25rem}
+.pomo-svg{transform:rotate(-90deg)}
+.pomo-bg{fill:none;stroke:rgba(56,194,232,0.15);stroke-width:10}
+.pomo-arc{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .9s linear,stroke .5s}
+.pomo-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.pomo-time{font-family:'Quicksand',sans-serif;font-size:34px;font-weight:700;color:var(--aqua5);letter-spacing:-1px}
+.pomo-mode-lbl{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--text-soft);margin-top:2px}
+.pomo-dots{display:flex;gap:6px;margin-bottom:1rem}
+.pomo-dot{width:10px;height:10px;border-radius:50%;background:rgba(56,194,232,0.2);transition:background .3s}
+.pomo-dot.done{background:var(--aqua3)}
+.pomo-dot.current{background:var(--green3);box-shadow:0 0 6px rgba(26,184,112,0.5)}
+.pomo-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:1.25rem}
 
-  /* ── Today Tasks ── */
-  .tt {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(56,194,232,0.1);
-  }
-  .tt:last-child { border-bottom: none; }
-  .tt-text { flex: 1; font-size: 13px; color: var(--text-deep); line-height: 1.5; }
-  .tt-text.done { text-decoration: line-through; color: var(--text-soft); }
-  .time-chip {
-    font-size: 11px; color: var(--text-soft);
-    background: rgba(56,194,232,0.12);
-    border-radius: 50px; padding: 3px 10px;
-    flex-shrink: 0; margin-top: 2px; font-weight: 700;
-  }
-  .energy-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
-  .e-high { background: var(--green3); box-shadow: 0 0 5px rgba(26,184,112,0.5); }
-  .e-med  { background: var(--amber2); box-shadow: 0 0 5px rgba(255,210,96,0.5); }
-  .e-low  { background: #aaddee; }
+/* analytics */
+.ana-bar{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.ana-label{font-size:12px;color:var(--text-mid);min-width:130px;font-weight:600}
+.ana-pct{font-size:11px;color:var(--text-soft);min-width:34px;text-align:right}
 
-  /* ── Question Bank Cards ── */
-  .qcard {
-    background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(220,250,255,0.6));
-    border: 1.5px solid var(--glass-border);
-    border-radius: 16px; padding: 1.1rem 1.35rem;
-    margin-bottom: 12px;
-    box-shadow: 0 3px 14px var(--glass-shadow);
-    transition: box-shadow 0.2s;
-  }
-  .qcard:hover { box-shadow: 0 6px 24px rgba(56,194,232,0.22); }
-  .qcard-meta { font-size: 11px; color: var(--text-soft); margin-bottom: 7px; font-weight: 700; }
-  .qcard-q { font-size: 14px; color: var(--text-deep); margin-bottom: 12px; line-height: 1.6; font-weight: 500; }
-  .qcard-answer {
-    font-size: 12.5px; color: var(--text-mid);
-    background: rgba(56,194,232,0.1);
-    border-radius: 10px; padding: 10px 14px;
-    display: none; line-height: 1.7;
-    border-left: 3px solid var(--aqua3);
-    margin-bottom: 12px;
-  }
-  .qcard-answer.show { display: block; }
+/* schedule */
+.sched-row{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid rgba(56,194,232,0.1)}.sched-row:last-child{border-bottom:none}
+.energy-sel{display:flex;gap:6px;flex-wrap:wrap}
+.esb{padding:6px 14px;font-size:12px;font-weight:700;border-radius:50px;cursor:pointer;border:1.5px solid rgba(56,194,232,0.25);background:rgba(255,255,255,0.6);color:var(--text-soft);font-family:'Nunito',sans-serif;transition:all .15s}
+.esb:hover{background:rgba(255,255,255,0.85)}
+.esb.sel-high{background:var(--green1);color:var(--green3);border-color:rgba(26,184,112,0.4)}
+.esb.sel-medium{background:var(--amber1);color:var(--amber3);border-color:rgba(224,154,0,0.35)}
+.esb.sel-low{background:var(--aqua0);color:var(--aqua5);border-color:rgba(56,194,232,0.35)}
 
-  /* ── Analytics ── */
-  .ana-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
-  .ana-label { font-size: 12px; color: var(--text-mid); min-width: 130px; font-weight: 600; }
-  .ana-pct { font-size: 11px; color: var(--text-soft); min-width: 34px; text-align: right; }
+.tip{background:linear-gradient(135deg,rgba(183,240,255,0.55),rgba(210,255,245,0.45));border:1.5px solid rgba(56,194,232,0.3);border-radius:14px;padding:.85rem 1.1rem;margin-bottom:14px;font-size:13px;color:var(--text-mid);line-height:1.65}
+.empty{text-align:center;padding:2rem;color:var(--text-soft);font-size:13px}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(56,194,232,0.25),transparent);margin:1rem 0}
+.footer{text-align:center;margin-top:2.5rem;font-size:12px;color:var(--text-soft);opacity:.7}
 
-  /* ── Schedule ── */
-  .sched-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(56,194,232,0.1);
-  }
-  .sched-row:last-child { border-bottom: none; }
-  .energy-sel { display: flex; gap: 6px; flex-wrap: wrap; }
-  .esb {
-    padding: 6px 14px; font-size: 12px; font-weight: 700;
-    border-radius: 50px; cursor: pointer;
-    border: 1.5px solid rgba(56,194,232,0.25);
-    background: rgba(255,255,255,0.6);
-    color: var(--text-soft);
-    font-family: 'Nunito', sans-serif;
-    transition: all 0.15s;
-  }
-  .esb:hover { background: rgba(255,255,255,0.85); }
-  .esb.sel-high { background: var(--green1); color: var(--green3); border-color: rgba(26,184,112,0.4); }
-  .esb.sel-medium { background: var(--amber1); color: var(--amber3); border-color: rgba(224,154,0,0.35); }
-  .esb.sel-low { background: var(--aqua0); color: var(--aqua5); border-color: rgba(56,194,232,0.35); }
+/* toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;z-index:9999;opacity:0;transition:all .4s;pointer-events:none;box-shadow:0 6px 20px rgba(15,163,204,0.4);white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  /* ── Tip Box ── */
-  .tip {
-    background: linear-gradient(135deg, rgba(183,240,255,0.55), rgba(210,255,245,0.45));
-    border: 1.5px solid rgba(56,194,232,0.3);
-    border-radius: 14px; padding: .85rem 1.1rem;
-    margin-bottom: 14px; font-size: 13px;
-    color: var(--text-mid); line-height: 1.65;
-  }
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-  /* ── Empty State ── */
-  .empty { text-align: center; padding: 2rem; color: var(--text-soft); font-size: 13px; }
-
-  /* ── Divider ── */
-  .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(56,194,232,0.25), transparent); margin: 1rem 0; }
-
-  /* ── Footer ── */
-  .footer {
-    text-align: center; margin-top: 2.5rem;
-    font-size: 12px; color: var(--text-soft);
-    opacity: 0.75;
-  }
-
-  /* ── Responsive ── */
-  @media (max-width: 540px) {
-    .metrics { grid-template-columns: repeat(2, 1fr); }
-    .fr { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 24px; }
-    .hero-streak { display: none; }
-    .wrapper { padding: 1rem .75rem 3rem; }
-  }
+@media(max-width:540px){.metrics{grid-template-columns:repeat(2,1fr)}.fr{grid-template-columns:1fr}.hero h1{font-size:24px}.hero-badge{display:none}.wrapper{padding:1rem .75rem 4rem}}
 </style>
 </head>
 <body>
+
+<div id="bubble-layer"></div>
+
 <div class="wrapper">
 
-  <!-- Hero -->
-  <div class="hero">
-    <div class="bubble-deco" style="width:65px;height:65px;top:12px;right:90px;"></div>
-    <div class="bubble-deco" style="width:38px;height:38px;top:28px;right:168px;opacity:.6;"></div>
-    <div class="bubble-deco" style="width:28px;height:28px;bottom:18px;right:50px;opacity:.5;"></div>
-    <div class="bubble-deco" style="width:20px;height:20px;bottom:30px;left:180px;opacity:.4;"></div>
-    <div class="hero-streak" id="hero-streak">🔥 0 day streak</div>
-    <h1>Flow State</h1>
-    <p>University of Dar es Salaam &nbsp;·&nbsp; PH127/133 + 6 courses &nbsp;·&nbsp; Your personal study ocean</p>
-  </div>
-
-  <!-- Nav -->
-  <div class="nav">
-    <button class="nav-btn active" onclick="showTab('today')"><i class="ti ti-sun"></i> Today</button>
-    <button class="nav-btn" onclick="showTab('qbank')"><i class="ti ti-help-circle"></i> Question Bank</button>
-    <button class="nav-btn" onclick="showTab('analytics')"><i class="ti ti-chart-bar"></i> Analytics</button>
-    <button class="nav-btn" onclick="showTab('schedule')"><i class="ti ti-adjustments"></i> Schedule</button>
-    <button class="nav-btn" onclick="showTab('review')"><i class="ti ti-brain"></i> Spaced Review</button>
-    <button class="nav-btn" onclick="showTab('logq')"><i class="ti ti-edit"></i> Log Question</button>
-  </div>
-
-  <!-- ═══ TODAY ═══ -->
-  <div id="panel-today" class="panel active">
-    <div class="metrics" id="today-metrics"></div>
-    <div class="gc" id="today-card"></div>
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-refresh"></i> Spaced review due today</div>
-      <div id="today-review-list"></div>
-    </div>
-  </div>
-
-  <!-- ═══ QUESTION BANK ═══ -->
-  <div id="panel-qbank" class="panel">
-    <div class="tip"><i class="ti ti-bulb"></i> <strong>How to use:</strong> Read the question, try to answer in your head, then reveal the answer. Log right or wrong — wrong answers automatically enter your spaced review queue.</div>
-    <div class="gc">
-      <div class="gc-title">Filter questions</div>
-      <div class="fr">
-        <div>
-          <div class="fl">Course</div>
-          <select class="fi" id="qb-filter-course" onchange="renderQBank()">
-            <option value="all">All courses</option>
-            <option value="PH127/133">PH127/133 — Vibrations &amp; Waves</option>
-            <option value="CH173">CH173</option>
-            <option value="CH17A">CH17A</option>
-            <option value="PH116">PH116</option>
-            <option value="DS115">DS115</option>
-            <option value="CH174">CH174</option>
-            <option value="PH136">PH136</option>
-          </select>
-        </div>
-        <div>
-          <div class="fl">Difficulty</div>
-          <select class="fi" id="qb-filter-diff" onchange="renderQBank()">
-            <option value="all">All difficulties</option>
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="fb" onclick="filterWrong()"><i class="ti ti-x"></i> Wrong answers only</button>
-        <button class="fb primary" onclick="openAddQ()"><i class="ti ti-plus"></i> Add question</button>
-      </div>
-    </div>
-
-    <!-- Add Question Form -->
-    <div id="add-q-modal" style="display:none;" class="gc">
-      <div class="gc-title"><i class="ti ti-plus"></i> Add a new question</div>
-      <div class="fr">
-        <div>
-          <div class="fl">Course</div>
-          <select class="fi" id="aq-course">
-            <option value="PH127/133">PH127/133</option>
-            <option value="CH173">CH173</option>
-            <option value="CH17A">CH17A</option>
-            <option value="PH116">PH116</option>
-            <option value="DS115">DS115</option>
-            <option value="CH174">CH174</option>
-            <option value="PH136">PH136</option>
-          </select>
-        </div>
-        <div>
-          <div class="fl">Difficulty</div>
-          <select class="fi" id="aq-diff">
-            <option value="easy">Easy</option>
-            <option value="medium">Medium</option>
-            <option value="hard">Hard</option>
-          </select>
-        </div>
-      </div>
-      <div style="margin-bottom:10px;">
-        <div class="fl">Topic</div>
-        <input type="text" class="fi" id="aq-topic" placeholder="e.g. SHM energy, derivatives">
-      </div>
-      <div style="margin-bottom:10px;">
-        <div class="fl">Question</div>
-        <input type="text" class="fi" id="aq-q" placeholder="Write the question here...">
-      </div>
-      <div style="margin-bottom:16px;">
-        <div class="fl">Answer / key steps</div>
-        <input type="text" class="fi" id="aq-a" placeholder="Model answer or key formula...">
-      </div>
-      <div style="display:flex;gap:8px;">
-        <button class="fb primary" onclick="saveNewQ()"><i class="ti ti-check"></i> Save question</button>
-        <button class="fb" onclick="closeAddQ()">Cancel</button>
-      </div>
-    </div>
-
-    <div id="qbank-list"></div>
-  </div>
-
-  <!-- ═══ ANALYTICS ═══ -->
-  <div id="panel-analytics" class="panel">
-    <div class="metrics" id="ana-metrics"></div>
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-chart-bar"></i> Accuracy by course</div>
-      <div id="ana-course-bars"></div>
-    </div>
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-flame"></i> Most frequently wrong topics</div>
-      <div id="ana-wrong-topics"></div>
-    </div>
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-clock"></i> Recent attempts</div>
-      <div id="ana-recent"></div>
-    </div>
-  </div>
-
-  <!-- ═══ SCHEDULE ═══ -->
-  <div id="panel-schedule" class="panel">
-    <div class="tip"><i class="ti ti-bolt"></i> Set your energy level and your study blocks will reorder automatically — deep calculus work goes in high-energy slots, light review in low-energy ones.</div>
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-sun"></i> Today's energy level</div>
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.25rem;flex-wrap:wrap;">
-        <span style="font-size:13px;color:var(--text-mid);font-weight:700;">How are you feeling?</span>
-        <div class="energy-sel">
-          <button class="esb" id="eb-high" onclick="setEnergy('high')"><i class="ti ti-bolt"></i> High</button>
-          <button class="esb" id="eb-medium" onclick="setEnergy('medium')"><i class="ti ti-wave-sine"></i> Medium</button>
-          <button class="esb" id="eb-low" onclick="setEnergy('low')"><i class="ti ti-moon"></i> Low</button>
-        </div>
-      </div>
-      <div id="energy-slots"></div>
-    </div>
-
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-refresh"></i> Schedule adjustment — sudden change?</div>
-      <div class="fr">
-        <div>
-          <div class="fl">What happened?</div>
-          <select class="fi" id="adj-reason">
-            <option value="sick">Feeling sick / unwell</option>
-            <option value="extra">Extra class added</option>
-            <option value="cancelled">Class cancelled — bonus time!</option>
-            <option value="assignment">Urgent assignment due</option>
-            <option value="social">Social / family event</option>
-            <option value="tired">Exhausted / overloaded</option>
-          </select>
-        </div>
-        <div>
-          <div class="fl">Hours lost or gained</div>
-          <input type="number" class="fi" id="adj-hours" placeholder="e.g. 2" min="0.5" max="8" step="0.5">
-        </div>
-      </div>
-      <button class="fb primary" onclick="adjustSchedule()"><i class="ti ti-refresh"></i> Recalculate my day</button>
-      <div id="adj-result" style="margin-top:14px;"></div>
-    </div>
-
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-calendar"></i> Full weekly timetable</div>
-      <div id="weekly-timetable"></div>
-    </div>
-  </div>
-
-  <!-- ═══ SPACED REVIEW ═══ -->
-  <div id="panel-review" class="panel">
-    <div class="tip"><i class="ti ti-brain"></i> <strong>Spaced repetition:</strong> Wrong answers return in 1 day → 3 days → 7 days. Right answers repeat every 7 days. Log attempts in the Question Bank or Log Question tab to fill this queue.</div>
-    <div class="gc">
-      <div class="gc-title">Review queue</div>
-      <div id="review-full-list"></div>
-    </div>
-  </div>
-
-  <!-- ═══ LOG QUESTION ═══ -->
-  <div id="panel-logq" class="panel">
-    <div class="gc">
-      <div class="gc-title"><i class="ti ti-edit"></i> Quick log — any question attempt</div>
-      <div class="fr">
-        <div>
-          <div class="fl">Course</div>
-          <select class="fi" id="lq-course">
-            <option value="PH127/133">PH127/133</option>
-            <option value="CH173">CH173</option>
-            <option value="CH17A">CH17A</option>
-            <option value="PH116">PH116</option>
-            <option value="DS115">DS115</option>
-            <option value="CH174">CH174</option>
-            <option value="PH136">PH136</option>
-          </select>
-        </div>
-        <div>
-          <div class="fl">Topic</div>
-          <input type="text" class="fi" id="lq-topic" placeholder="e.g. SHM energy">
-        </div>
-      </div>
-      <div style="margin-bottom:16px;">
-        <div class="fl">Question description</div>
-        <input type="text" class="fi" id="lq-text" placeholder="e.g. Q2b — total energy of oscillator">
-      </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="fb correct" onclick="quickLog(true)"><i class="ti ti-check"></i> Got it right</button>
-        <button class="fb wrong" onclick="quickLog(false)"><i class="ti ti-x"></i> Got it wrong</button>
-      </div>
-    </div>
-    <div class="gc">
-      <div class="gc-title">Recent log</div>
-      <div id="lq-recent"></div>
-    </div>
-  </div>
-
-  <div class="footer">Flow State &nbsp;·&nbsp; Built for University of Dar es Salaam &nbsp;·&nbsp; Stay in the flow 🌊</div>
+<!-- Hero -->
+<div class="hero">
+  <div class="bdeco" style="width:65px;height:65px;top:12px;right:90px"></div>
+  <div class="bdeco" style="width:38px;height:38px;top:28px;right:168px;opacity:.6"></div>
+  <div class="bdeco" style="width:28px;height:28px;bottom:18px;right:50px;opacity:.5"></div>
+  <div class="bdeco" style="width:20px;height:20px;bottom:30px;left:180px;opacity:.4"></div>
+  <div class="hero-badge" id="hero-streak">🌊 0 day streak</div>
+  <h1>Flow State</h1>
+  <p>Welcome back, Taz &nbsp;·&nbsp; PH127/133 + 6 courses &nbsp;·&nbsp; Stay in the flow</p>
 </div>
 
+<!-- Nav -->
+<div class="nav">
+  <button class="nav-btn active" onclick="showTab('today')"><i class="ti ti-sun"></i> Today</button>
+  <button class="nav-btn" onclick="showTab('timer')"><i class="ti ti-clock"></i> Flow Timer</button>
+  <button class="nav-btn" onclick="showTab('qbank')"><i class="ti ti-help-circle"></i> Question Bank</button>
+  <button class="nav-btn" onclick="showTab('analytics')"><i class="ti ti-chart-bar"></i> Analytics</button>
+  <button class="nav-btn" onclick="showTab('schedule')"><i class="ti ti-adjustments"></i> Schedule</button>
+  <button class="nav-btn" onclick="showTab('review')"><i class="ti ti-brain"></i> Spaced Review</button>
+  <button class="nav-btn" onclick="showTab('logq')"><i class="ti ti-edit"></i> Log Question</button>
+</div>
+
+<!-- TODAY -->
+<div id="panel-today" class="panel active">
+  <div class="metrics" id="today-metrics"></div>
+  <div class="gc" id="today-card"></div>
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-refresh"></i> Spaced review due today</div>
+    <div id="today-review-list"></div>
+  </div>
+</div>
+
+<!-- FLOW TIMER -->
+<div id="panel-timer" class="panel">
+  <div class="tip"><i class="ti ti-clock"></i> <strong>Pomodoro flow sessions:</strong> Work in focused bursts — 25 min on, 5 min off. After 4 sessions, take a 20 min deep break. Every completed session is logged to your analytics so you can track total focus time per course.</div>
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-clock"></i> Flow session timer</div>
+    <div class="pomo-wrap">
+      <div style="width:100%;max-width:320px;margin-bottom:1rem">
+        <div class="fl">Studying which course?</div>
+        <select class="fi" id="pomo-course" style="margin-bottom:8px">
+          <option value="PH127/133">PH127/133 — Vibrations &amp; Waves</option>
+          <option value="CH173">CH173</option>
+          <option value="CH17A">CH17A</option>
+          <option value="PH116">PH116</option>
+          <option value="DS115">DS115</option>
+          <option value="CH174">CH174</option>
+          <option value="PH136">PH136</option>
+        </select>
+        <div class="fl">Session label (optional)</div>
+        <input type="text" class="fi" id="pomo-label" placeholder="e.g. Derivatives practice, Q2 attempt…">
+      </div>
+      <div class="pomo-dots" id="pomo-dots"></div>
+      <div class="pomo-ring">
+        <svg class="pomo-svg" width="180" height="180" viewBox="0 0 180 180">
+          <circle class="pomo-bg" cx="90" cy="90" r="80"/>
+          <circle class="pomo-arc" id="pomo-arc" cx="90" cy="90" r="80" stroke="#38c2e8" stroke-dasharray="502.65" stroke-dashoffset="0"/>
+        </svg>
+        <div class="pomo-inner">
+          <div class="pomo-time" id="pomo-display">25:00</div>
+          <div class="pomo-mode-lbl" id="pomo-mode-label">Focus</div>
+        </div>
+      </div>
+      <div class="pomo-controls">
+        <button class="fb primary" id="pomo-start-btn" onclick="pomoToggle()"><i class="ti ti-player-play"></i> Start</button>
+        <button class="fb" onclick="pomoReset()"><i class="ti ti-refresh"></i> Reset</button>
+        <button class="fb" onclick="pomoSkip()"><i class="ti ti-player-skip-forward"></i> Skip</button>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;margin-bottom:1rem">
+        <span style="font-size:12px;color:var(--text-soft);font-weight:700">Work:</span>
+        <select class="fi" id="pomo-work-dur" style="width:auto;padding:5px 10px;font-size:12px" onchange="pomoReset()">
+          <option value="25">25 min</option><option value="30">30 min</option><option value="45">45 min</option><option value="50">50 min</option>
+        </select>
+        <span style="font-size:12px;color:var(--text-soft);font-weight:700">Break:</span>
+        <select class="fi" id="pomo-break-dur" style="width:auto;padding:5px 10px;font-size:12px" onchange="pomoReset()">
+          <option value="5">5 min</option><option value="10">10 min</option><option value="15">15 min</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-list"></i> Today's session log</div>
+    <div id="pomo-log-today"></div>
+  </div>
+</div>
+
+<!-- QUESTION BANK -->
+<div id="panel-qbank" class="panel">
+  <div class="tip"><i class="ti ti-bulb"></i> Try to answer in your head, then reveal the answer. You can also <strong>upload an image</strong> of a question — handwritten, printed, a spectrum or diagram — and the AI will extract the text for you automatically.</div>
+  <div class="gc">
+    <div class="gc-title">Filter</div>
+    <div class="fr">
+      <div>
+        <div class="fl">Course</div>
+        <select class="fi" id="qb-filter-course" onchange="renderQBank()">
+          <option value="all">All courses</option>
+          <option value="PH127/133">PH127/133 — Vibrations &amp; Waves</option>
+          <option value="CH173">CH173</option><option value="CH17A">CH17A</option>
+          <option value="PH116">PH116</option><option value="DS115">DS115</option>
+          <option value="CH174">CH174</option><option value="PH136">PH136</option>
+        </select>
+      </div>
+      <div>
+        <div class="fl">Difficulty</div>
+        <select class="fi" id="qb-filter-diff" onchange="renderQBank()">
+          <option value="all">All difficulties</option>
+          <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="fb" onclick="filterWrong()"><i class="ti ti-x"></i> Wrong only</button>
+      <button class="fb primary" onclick="openAddQ()"><i class="ti ti-plus"></i> Add question</button>
+    </div>
+  </div>
+
+  <!-- Add Question -->
+  <div id="add-q-modal" style="display:none" class="gc">
+    <div class="gc-title"><i class="ti ti-plus"></i> Add a new question</div>
+    <div class="fr">
+      <div>
+        <div class="fl">Course</div>
+        <select class="fi" id="aq-course">
+          <option value="PH127/133">PH127/133</option><option value="CH173">CH173</option>
+          <option value="CH17A">CH17A</option><option value="PH116">PH116</option>
+          <option value="DS115">DS115</option><option value="CH174">CH174</option><option value="PH136">PH136</option>
+        </select>
+      </div>
+      <div>
+        <div class="fl">Difficulty</div>
+        <select class="fi" id="aq-diff"><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select>
+      </div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div class="fl">Topic</div>
+      <input type="text" class="fi" id="aq-topic" placeholder="e.g. SHM energy, spectroscopy, redox">
+    </div>
+    <div style="margin-bottom:12px">
+      <div class="fl">Upload question image <span style="font-weight:400;opacity:.7">(photo, diagram, spectrum — AI reads it)</span></div>
+      <div class="dropzone" id="dropzone" onclick="document.getElementById('img-input').click()" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event)">
+        <i class="ti ti-photo"></i>
+        <span>Click to upload or drag &amp; drop an image here</span>
+        <div style="font-size:11px;margin-top:4px;opacity:.7">PNG, JPG, WEBP — handwritten, printed, spectra all work</div>
+      </div>
+      <input type="file" id="img-input" accept="image/*" style="display:none" onchange="handleImgFile(this.files[0])">
+      <img id="img-preview" class="preview-img" alt="Question preview">
+      <div id="extract-bar" class="extract-bar"></div>
+    </div>
+    <div style="margin-bottom:10px">
+      <div class="fl">Question text <span style="font-weight:400;opacity:.7">(auto-filled from image, or type here)</span></div>
+      <textarea class="fi" id="aq-q" rows="3" placeholder="Question text — extracted from image above, or type manually…" style="resize:vertical"></textarea>
+    </div>
+    <div style="margin-bottom:16px">
+      <div class="fl">Answer / key steps</div>
+      <textarea class="fi" id="aq-a" rows="3" placeholder="Model answer or key steps…" style="resize:vertical"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="fb primary" onclick="saveNewQ()"><i class="ti ti-check"></i> Save question</button>
+      <button class="fb" onclick="closeAddQ()">Cancel</button>
+    </div>
+  </div>
+
+  <div id="qbank-list"></div>
+</div>
+
+<!-- ANALYTICS -->
+<div id="panel-analytics" class="panel">
+  <div class="metrics" id="ana-metrics"></div>
+  <div class="gc"><div class="gc-title"><i class="ti ti-chart-bar"></i> Accuracy by course</div><div id="ana-course-bars"></div></div>
+  <div class="gc"><div class="gc-title"><i class="ti ti-clock"></i> Flow time by course</div><div id="ana-pomo-stats"></div></div>
+  <div class="gc"><div class="gc-title"><i class="ti ti-flame"></i> Most frequently wrong topics</div><div id="ana-wrong-topics"></div></div>
+  <div class="gc"><div class="gc-title"><i class="ti ti-history"></i> Recent attempts</div><div id="ana-recent"></div></div>
+</div>
+
+<!-- SCHEDULE -->
+<div id="panel-schedule" class="panel">
+  <div class="tip"><i class="ti ti-bolt"></i> Set your energy level and study blocks reorder automatically — deep calculus in high-energy slots, light review in low-energy ones.</div>
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-sun"></i> Today's energy &amp; schedule</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.25rem;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--text-mid);font-weight:700">How are you feeling?</span>
+      <div class="energy-sel">
+        <button class="esb" id="eb-high" onclick="setEnergy('high')"><i class="ti ti-bolt"></i> High</button>
+        <button class="esb" id="eb-medium" onclick="setEnergy('medium')"><i class="ti ti-wave-sine"></i> Medium</button>
+        <button class="esb" id="eb-low" onclick="setEnergy('low')"><i class="ti ti-moon"></i> Low</button>
+      </div>
+    </div>
+    <div id="energy-slots"></div>
+  </div>
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-refresh"></i> Sudden change?</div>
+    <div class="fr">
+      <div>
+        <div class="fl">What happened?</div>
+        <select class="fi" id="adj-reason">
+          <option value="sick">Feeling sick / unwell</option>
+          <option value="extra">Extra class added</option>
+          <option value="cancelled">Class cancelled — bonus time!</option>
+          <option value="assignment">Urgent assignment due</option>
+          <option value="social">Social / family event</option>
+          <option value="tired">Exhausted / overloaded</option>
+        </select>
+      </div>
+      <div>
+        <div class="fl">Hours lost or gained</div>
+        <input type="number" class="fi" id="adj-hours" placeholder="e.g. 2" min="0.5" max="8" step="0.5">
+      </div>
+    </div>
+    <button class="fb primary" onclick="adjustSchedule()"><i class="ti ti-refresh"></i> Recalculate my day</button>
+    <div id="adj-result" style="margin-top:14px"></div>
+  </div>
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-calendar"></i> Full weekly timetable</div>
+    <div id="weekly-timetable"></div>
+  </div>
+</div>
+
+<!-- SPACED REVIEW -->
+<div id="panel-review" class="panel">
+  <div class="tip"><i class="ti ti-brain"></i> Wrong answers return in 1 day → 3 days → 7 days. Right answers repeat every 7 days.</div>
+  <div class="gc"><div class="gc-title">Review queue</div><div id="review-full-list"></div></div>
+</div>
+
+<!-- LOG QUESTION -->
+<div id="panel-logq" class="panel">
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-edit"></i> Quick log — any attempt</div>
+    <div class="fr">
+      <div>
+        <div class="fl">Course</div>
+        <select class="fi" id="lq-course">
+          <option value="PH127/133">PH127/133</option><option value="CH173">CH173</option>
+          <option value="CH17A">CH17A</option><option value="PH116">PH116</option>
+          <option value="DS115">DS115</option><option value="CH174">CH174</option><option value="PH136">PH136</option>
+        </select>
+      </div>
+      <div><div class="fl">Topic</div><input type="text" class="fi" id="lq-topic" placeholder="e.g. SHM energy"></div>
+    </div>
+    <div style="margin-bottom:14px"><div class="fl">Question description</div><input type="text" class="fi" id="lq-text" placeholder="e.g. Q2b — total energy of oscillator"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="fb correct" onclick="quickLog(true)"><i class="ti ti-check"></i> Got it right</button>
+      <button class="fb wrong" onclick="quickLog(false)"><i class="ti ti-x"></i> Got it wrong</button>
+    </div>
+  </div>
+  <div class="gc"><div class="gc-title">Recent log</div><div id="lq-recent"></div></div>
+</div>
+
+<div class="footer">Flow State &nbsp;·&nbsp; Taz &nbsp;·&nbsp; 🌊</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <script>
-/* ═══════════════════════════════════════════════
-   CONSTANTS & STATE
-═══════════════════════════════════════════════ */
-const DAY = 86400000;
-const COURSES = ['PH127/133','CH173','CH17A','PH116','DS115','CH174','PH136'];
-const CHIP = {
-  'PH127/133':'c-ph127','CH173':'c-ch173','CH17A':'c-ch17a',
-  'PH116':'c-ph116','DS115':'c-ds115','CH174':'c-ch174','PH136':'c-ph136'
-};
-const DIFF_COLOR = { easy:'b-green', medium:'b-amber', hard:'b-red' };
-const ENERGY_ORDER = {
-  high:   ['high','medium','low'],
-  medium: ['medium','high','low'],
-  low:    ['low','medium','high']
-};
+const DAY=86400000;
+const COURSES=['PH127/133','CH173','CH17A','PH116','DS115','CH174','PH136'];
+const CHIP={'PH127/133':'c-ph127','CH173':'c-ch173','CH17A':'c-ch17a','PH116':'c-ph116','DS115':'c-ds115','CH174':'c-ch174','PH136':'c-ph136'};
+const DIFF_C={easy:'b-green',medium:'b-amber',hard:'b-red'};
+const E_ORD={high:['high','medium','low'],medium:['medium','high','low'],low:['low','medium','high']};
 
-let state = { attempts:[], qbank:[], tasks:[], energy:'medium', streak:0, lastDate:null };
+let S={attempts:[],qbank:[],tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0};
 
-function save() { try { localStorage.setItem('flowstate_v1', JSON.stringify(state)); } catch(e){} }
-function load() { try { const d = localStorage.getItem('flowstate_v1'); if(d) state = JSON.parse(d); } catch(e){} }
-function tod() { return new Date().toDateString(); }
-function daysTo(a, b) { return Math.round((new Date(b) - new Date(a)) / DAY); }
-function getDayName() { return ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()]; }
+function save(){try{localStorage.setItem('flowstate_v2',JSON.stringify(S));}catch(e){}}
+function load(){try{const d=localStorage.getItem('flowstate_v2');if(d)S=Object.assign({attempts:[],qbank:[],tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0},JSON.parse(d));}catch(e){}}
+function tod(){return new Date().toDateString();}
+function dTo(a,b){return Math.round((new Date(b)-new Date(a))/DAY);}
+function dayN(){return['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];}
 
-/* ═══════════════════════════════════════════════
-   DEFAULT QUESTION BANK — Tutorial 1
-═══════════════════════════════════════════════ */
-const QBANK_DEFAULT = [
-  { id:'q1', course:'PH127/133', topic:'SHM concepts', diff:'easy',
-    q:'True or False: The amplitude of SHM increases as the frequency of the oscillator is increased.',
-    a:'FALSE. Amplitude and frequency are completely independent in SHM. Amplitude is set by initial conditions (how far you pull/push). Frequency is determined by the system: ω = √(k/m). You can change one without affecting the other.', attempts:0, wrong:0 },
-  { id:'q2', course:'PH127/133', topic:'SHM concepts', diff:'easy',
-    q:'True or False: The restoring component carries kinetic energy and the inertial component carries potential energy.',
-    a:'FALSE — it is the other way around. The RESTORING component (spring/gravity) stores POTENTIAL energy (½kx²). The INERTIAL component (mass) carries KINETIC energy (½mv²). They continuously exchange energy during oscillation.', attempts:0, wrong:0 },
-  { id:'q3', course:'PH127/133', topic:'Spring-mass: find ω and f', diff:'medium',
-    q:'Spring-mass system: m = 0.5 kg, k = 12 N/m, A = 5 cm, x = 0 at t = 0. Find ω, f, and write x(t) in the form A·cos(ωt + α).',
-    a:'ω = √(k/m) = √(12/0.5) = √24 ≈ 4.90 rad/s.  f = ω/2π ≈ 0.78 Hz.  Since x(0) = 0: A·cos(α) = 0 → α = ±π/2.  Two valid answers: x = 0.05·cos(4.90t + π/2) = −0.05·sin(4.90t)  OR  x = 0.05·cos(4.90t − π/2) = 0.05·sin(4.90t).', attempts:0, wrong:0 },
-  { id:'q4', course:'PH127/133', topic:'SHM energy', diff:'medium',
-    q:'For m = 0.5 kg, k = 12 N/m, A = 5 cm — what is the total mechanical energy of the oscillator?',
-    a:'E = ½kA² = ½ × 12 × (0.05)² = ½ × 12 × 0.0025 = 0.015 J = 15 mJ. Total energy is constant and always equal to ½kA² regardless of position. At x = 0 it is all kinetic; at x = ±A it is all potential.', attempts:0, wrong:0 },
-  { id:'q5', course:'PH127/133', topic:'Two-spring system', diff:'medium',
-    q:'Mass m = 100 g between two springs (k = 0.1 N/m each, horizontal, frictionless). x = 0 and v = 0.2 m/s at t = 0. Find A, ω, φ in x(t) = A·sin(ωt + φ).',
-    a:'Both springs pull the mass back → k_eff = 2k = 0.2 N/m.  ω = √(k_eff/m) = √(0.2/0.1) = √2 ≈ 1.414 rad/s.  Initial conditions: x(0) = 0 → φ = 0.  v(0) = Aω → A = v₀/ω = 0.2/1.414 ≈ 0.141 m.  Answer: x(t) = 0.141·sin(1.414t).  f = ω/2π ≈ 0.225 Hz.', attempts:0, wrong:0 },
-  { id:'q6', course:'PH127/133', topic:'Calculus: derivatives in SHM', diff:'medium',
-    q:'Starting from x = A·cos(ωt + α), derive expressions for velocity dx/dt and acceleration d²x/dt². What do you notice about d²x/dt²?',
-    a:'dx/dt = −Aω·sin(ωt + α)  [this is velocity v].  d²x/dt² = −Aω²·cos(ωt + α) = −ω²·x  [acceleration].  KEY INSIGHT: d²x/dt² = −ω²x. This is the defining equation of SHM! Whenever you see a second derivative equal to (−constant × displacement), it IS simple harmonic motion.', attempts:0, wrong:0 },
-  { id:'q7', course:'PH127/133', topic:'SHM at specific time', diff:'hard',
-    q:'Mass on spring: A = 5 cm, f = 1 Hz, x = 0 at t = 0 (moving in +ve direction). Find x, dx/dt, and d²x/dt² at t = 8/3 s.',
-    a:'ω = 2πf = 2π rad/s.  x = 0.05·sin(2πt) [positive velocity at t=0].  At t = 8/3: ωt = 2π × 8/3 = 16π/3 = 5π + π/3.  sin(16π/3) = sin(π/3) = √3/2 ≈ 0.866.  x = 0.05 × 0.866 ≈ 0.0433 m ≈ 4.33 cm.  dx/dt = 0.05 × 2π × cos(16π/3) = 0.1π × cos(π/3) = 0.1π × 0.5 ≈ 0.157 m/s.  d²x/dt² = −ω²x = −4π² × 0.0433 ≈ −1.71 m/s².', attempts:0, wrong:0 },
-  { id:'q8', course:'PH127/133', topic:'Half-length spring', diff:'medium',
-    q:'A body of mass m hangs from a spring of constant k. The same mass is then hung from a spring of HALF the length. What is the new frequency of oscillation?',
-    a:'Cutting a spring in half doubles its spring constant: k_half = 2k. (Shorter spring = stiffer.)  Original: f₁ = (1/2π)√(k/m).  New: f₂ = (1/2π)√(2k/m) = √2 × f₁.  The frequency increases by a factor of √2 ≈ 1.41. Period decreases by the same factor.', attempts:0, wrong:0 },
-  { id:'q9', course:'PH127/133', topic:'Simple pendulum', diff:'easy',
-    q:'A visitor hangs a pendulum down a lighthouse staircase. Period T = 9.40 s. (a) What is the height of the tower? (b) How would results differ on the Moon where g = 1.67 m/s²?',
-    a:'(a) T = 2π√(L/g) → L = g(T/2π)² = 9.81 × (9.40/6.283)² = 9.81 × (1.4963)² = 9.81 × 2.239 ≈ 21.97 m ≈ 22 m.  (b) On Moon: same L → T_moon = 2π√(22/1.67) = 2π × 3.63 ≈ 22.8 s. The period would be much longer because gravity is weaker. The measured height would also be wrongly calculated if Earth\'s g is assumed.', attempts:0, wrong:0 },
-  { id:'q10', course:'PH127/133', topic:'Torsional oscillator', diff:'hard',
-    q:'Torsional SHM: ½I(dθ/dt)² + ½cθ² = E_T. (i) Identify the inertial and restoring terms. (ii) Find the period of oscillation.',
-    a:'(i) INERTIAL term: ½I(dθ/dt)² — analogous to ½mv² in linear SHM. I is moment of inertia (rotational "mass"). RESTORING term: ½cθ² — analogous to ½kx². c is the torsional constant (rotational "spring constant").  (ii) By analogy with linear SHM (replace m→I, k→c): ω = √(c/I), so T = 2π√(I/c).', attempts:0, wrong:0 },
+/* BUBBLES */
+(function spawnBubbles(){
+  const layer=document.getElementById('bubble-layer');
+  const sizes=[16,22,30,40,50,20,28,14,36,24,18,44];
+  for(let i=0;i<20;i++){
+    const b=document.createElement('div');b.className='fbbl';
+    const sz=sizes[i%sizes.length]+(Math.random()*12|0);
+    const dur=10+Math.random()*14;
+    const delay=Math.random()*dur;
+    const drift=(Math.random()-0.5)*130;
+    b.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${dur}s;animation-delay:-${delay}s;--drift:${drift}px;opacity:0;`;
+    layer.appendChild(b);
+  }
+})();
+
+/* DEFAULT QB */
+const QB_DEFAULT=[
+  {id:'q1',course:'PH127/133',topic:'SHM concepts',diff:'easy',q:'True or False: The amplitude of SHM increases as the frequency of the oscillator is increased.',a:'FALSE. Amplitude and frequency are independent in SHM. Amplitude depends only on initial conditions. Frequency is set by the system: ω = √(k/m).',attempts:0,wrong:0,img:null},
+  {id:'q2',course:'PH127/133',topic:'SHM concepts',diff:'easy',q:'True or False: The restoring component carries kinetic energy and the inertial component carries potential energy.',a:'FALSE — reversed! The RESTORING component (spring/gravity) stores POTENTIAL energy (½kx²). The INERTIAL component (mass) carries KINETIC energy (½mv²).',attempts:0,wrong:0,img:null},
+  {id:'q3',course:'PH127/133',topic:'Spring-mass: find ω and f',diff:'medium',q:'Spring-mass: m=0.5 kg, k=12 N/m, A=5 cm, x=0 at t=0. Find ω, f, and write x(t) = A·cos(ωt+α).',a:'ω=√(k/m)=√24≈4.90 rad/s. f=ω/2π≈0.78 Hz. x(0)=0 → α=±π/2. Two solutions: x=0.05·sin(4.90t) or x=−0.05·sin(4.90t).',attempts:0,wrong:0,img:null},
+  {id:'q4',course:'PH127/133',topic:'SHM energy',diff:'medium',q:'m=0.5 kg, k=12 N/m, A=5 cm. What is the total mechanical energy?',a:'E=½kA²=½×12×(0.05)²=0.015 J=15 mJ. Constant throughout motion — all KE at x=0, all PE at x=±A.',attempts:0,wrong:0,img:null},
+  {id:'q5',course:'PH127/133',topic:'Two-spring system',diff:'medium',q:'m=100 g between two springs (k=0.1 N/m each). x=0, v=0.2 m/s at t=0. Find A, ω, φ in x(t)=A·sin(ωt+φ).',a:'k_eff=2k=0.2 N/m. ω=√(0.2/0.1)=√2≈1.414 rad/s. A=v₀/ω=0.2/1.414≈0.141 m. φ=0. x(t)=0.141·sin(1.414t). f≈0.225 Hz.',attempts:0,wrong:0,img:null},
+  {id:'q6',course:'PH127/133',topic:'Calculus: derivatives in SHM',diff:'medium',q:'From x=A·cos(ωt+α), derive velocity and acceleration. What is special about d²x/dt²?',a:'dx/dt=−Aω·sin(ωt+α). d²x/dt²=−Aω²·cos(ωt+α)=−ω²x. KEY: d²x/dt²=−ω²x IS the SHM equation. Any system where acceleration ∝ −displacement is SHM.',attempts:0,wrong:0,img:null},
+  {id:'q7',course:'PH127/133',topic:'SHM at specific time',diff:'hard',q:'A=5 cm, f=1 Hz, x=0 moving +ve at t=0. Find x, dx/dt, d²x/dt² at t=8/3 s.',a:'ω=2π. x=0.05·sin(2πt). At t=8/3: ωt=16π/3, sin(16π/3)=sin(π/3)=√3/2. x≈4.33 cm. dx/dt=0.1π·cos(π/3)≈0.157 m/s. d²x/dt²=−ω²x≈−1.71 m/s².',attempts:0,wrong:0,img:null},
+  {id:'q8',course:'PH127/133',topic:'Half-length spring',diff:'medium',q:'Same mass on a spring of HALF the length. What happens to frequency?',a:'Half-length → k doubles: k_half=2k. f_new=(1/2π)√(2k/m)=√2·f_original. Frequency increases by √2≈1.41; period decreases by same factor.',attempts:0,wrong:0,img:null},
+  {id:'q9',course:'PH127/133',topic:'Simple pendulum',diff:'easy',q:'Pendulum period T=9.40 s. (a) Find tower height. (b) Effect if on the Moon where g=1.67 m/s².',a:'(a) L=g(T/2π)²=9.81×(9.4/6.283)²≈22 m. (b) T_moon=2π√(22/1.67)≈22.8 s — much longer. Any height calculated assuming Earth g would be wrong.',attempts:0,wrong:0,img:null},
+  {id:'q10',course:'PH127/133',topic:'Torsional oscillator',diff:'hard',q:'½I(dθ/dt)²+½cθ²=E_T. Identify inertial and restoring terms. Find the period.',a:'INERTIAL: ½I(dθ/dt)² — I=moment of inertia, analogous to ½mv². RESTORING: ½cθ² — c=torsional constant, analogous to ½kx². ω=√(c/I), T=2π√(I/c).',attempts:0,wrong:0,img:null},
 ];
 
-/* ═══════════════════════════════════════════════
-   TIMETABLE (from uploaded schedule)
-═══════════════════════════════════════════════ */
-const TIMETABLE = {
-  Monday: { study: [
-    { t:'7:00–8:00',   label:'PH127/133 — derivatives practice (d/dt sin, cos)',  course:'PH127/133', cost:55, energy:'medium' },
-    { t:'12:30–14:00', label:'CH173 post-lecture review',                           course:'CH173',     cost:60, energy:'medium' },
-    { t:'16:00–17:30', label:'PH136 recap / assignments',                           course:'PH136',     cost:55, energy:'medium' },
-    { t:'18:30–19:30', label:'Spaced review — all flagged wrong questions',         course:'PH127/133', cost:30, energy:'low'    },
+const TT={
+  Monday:{study:[
+    {t:'7:00–8:00',label:'PH127/133 — derivatives practice',course:'PH127/133',cost:55,energy:'medium'},
+    {t:'12:30–14:00',label:'CH173 post-lecture review',course:'CH173',cost:60,energy:'medium'},
+    {t:'16:00–17:30',label:'PH136 recap / assignments',course:'PH136',cost:55,energy:'medium'},
+    {t:'18:30–19:30',label:'Spaced review — flagged wrong questions',course:'PH127/133',cost:30,energy:'low'},
   ]},
-  Tuesday: { study: [
-    { t:'7:00–8:00',   label:'PH127/133 — tutorial prep: attempt Q1 + Q4',        course:'PH127/133', cost:40, energy:'medium' },
-    { t:'9:30–11:00',  label:'PH127/133 DEEP STUDY — best window of the week!',   course:'PH127/133', cost:90, energy:'high'   },
-    { t:'14:00–16:00', label:'Assignments / other course catch-up',                 course:'CH173',     cost:65, energy:'medium' },
-    { t:'18:00–19:00', label:'Light revision + spaced review',                      course:'PH127/133', cost:30, energy:'low'    },
+  Tuesday:{study:[
+    {t:'7:00–8:00',label:'PH127/133 — tutorial prep: Q1 + Q4',course:'PH127/133',cost:40,energy:'medium'},
+    {t:'9:30–11:00',label:'PH127/133 DEEP STUDY — best window of the week!',course:'PH127/133',cost:90,energy:'high'},
+    {t:'14:00–16:00',label:'Assignments / other course catch-up',course:'CH173',cost:65,energy:'medium'},
+    {t:'18:00–19:00',label:'Light revision + spaced review',course:'PH127/133',cost:30,energy:'low'},
   ]},
-  Wednesday: { study: [
-    { t:'9:00–9:45',   label:'DS115 quick recap (post-lecture)',                    course:'DS115',     cost:25, energy:'low'    },
-    { t:'11:00–11:45', label:'CH17A tutorial prep',                                 course:'CH17A',     cost:35, energy:'medium' },
-    { t:'19:00–19:45', label:'Light review only — you\'ve earned rest today',       course:'PH127/133', cost:20, energy:'low'    },
+  Wednesday:{study:[
+    {t:'9:00–9:45',label:'DS115 quick recap',course:'DS115',cost:25,energy:'low'},
+    {t:'11:00–11:45',label:'CH17A tutorial prep',course:'CH17A',cost:35,energy:'medium'},
+    {t:'19:00–19:45',label:'Light review only — you earned rest',course:'PH127/133',cost:20,energy:'low'},
   ]},
-  Thursday: { study: [
-    { t:'11:00–13:00', label:'PH127/133 DEEP STUDY — tackle Q2, Q3, Q5, Q9',      course:'PH127/133', cost:90, energy:'high'   },
-    { t:'13:30–14:30', label:'Assignments + written work',                          course:'CH173',     cost:45, energy:'medium' },
-    { t:'16:30–18:00', label:'Revise CH174 + CH173 (post-lectures)',                course:'CH174',     cost:55, energy:'medium' },
+  Thursday:{study:[
+    {t:'11:00–13:00',label:'PH127/133 DEEP STUDY — Q2, Q3, Q5, Q9',course:'PH127/133',cost:90,energy:'high'},
+    {t:'13:30–14:30',label:'Assignments + written work',course:'CH173',cost:45,energy:'medium'},
+    {t:'16:30–18:00',label:'Revise CH174 + CH173',course:'CH174',cost:55,energy:'medium'},
   ]},
-  Friday: { study: [
-    { t:'7:30–8:30',   label:'Preview today\'s lectures — read ahead 20 min each', course:'PH127/133', cost:30, energy:'low'    },
-    { t:'11:00–12:00', label:'PH116 practical prep',                                course:'PH116',     cost:40, energy:'medium' },
-    { t:'18:30–19:30', label:'Weekly recap — what topics did I struggle with?',     course:'PH127/133', cost:35, energy:'medium' },
+  Friday:{study:[
+    {t:'7:30–8:30',label:'Preview today\'s lectures',course:'PH127/133',cost:30,energy:'low'},
+    {t:'11:00–12:00',label:'PH116 practical prep',course:'PH116',cost:40,energy:'medium'},
+    {t:'18:30–19:30',label:'Weekly recap — what did I struggle with?',course:'PH127/133',cost:35,energy:'medium'},
   ]},
-  Saturday: { study: [
-    { t:'9:00–10:00',  label:'PH127/133 — attempt Q6, Q7, Q8',                    course:'PH127/133', cost:60, energy:'high'   },
-    { t:'10:00–11:00', label:'Full spaced review session',                          course:'PH127/133', cost:50, energy:'medium' },
-    { t:'14:00–16:00', label:'Assignments catch-up (any course)',                   course:'CH173',     cost:70, energy:'medium' },
+  Saturday:{study:[
+    {t:'9:00–10:00',label:'PH127/133 — attempt Q6, Q7, Q8',course:'PH127/133',cost:60,energy:'high'},
+    {t:'10:00–11:00',label:'Full spaced review session',course:'PH127/133',cost:50,energy:'medium'},
+    {t:'14:00–16:00',label:'Assignments catch-up',course:'CH173',cost:70,energy:'medium'},
   ]},
-  Sunday: { study: [
-    { t:'15:00–16:00', label:'Plan next week — fill timetable slots',              course:'PH127/133', cost:25, energy:'low'    },
-    { t:'16:00–17:00', label:'Review all wrong answers from the past week',         course:'PH127/133', cost:35, energy:'low'    },
+  Sunday:{study:[
+    {t:'15:00–16:00',label:'Plan next week',course:'PH127/133',cost:25,energy:'low'},
+    {t:'16:00–17:00',label:'Review all wrong answers from the week',course:'PH127/133',cost:35,energy:'low'},
   ]},
 };
 
-/* ═══════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════ */
+/* INIT */
 load();
-if (!state.qbank || !state.qbank.length) state.qbank = QBANK_DEFAULT.map(q => ({...q}));
-if (!state.lastDate) state.lastDate = tod();
-if (state.lastDate !== tod()) {
-  state.streak = daysTo(state.lastDate, tod()) === 1 ? (state.streak || 0) + 1 : 0;
-  state.lastDate = tod();
-  save();
-}
-document.getElementById('hero-streak').textContent = (state.streak > 0 ? '🔥 ' : '✨ ') + state.streak + ' day streak';
+if(!S.qbank||!S.qbank.length)S.qbank=QB_DEFAULT.map(q=>({...q}));
+if(!S.lastDate)S.lastDate=tod();
+if(S.lastDate!==tod()){S.streak=dTo(S.lastDate,tod())===1?(S.streak||0)+1:0;S.lastDate=tod();save();}
+document.getElementById('hero-streak').textContent=(S.streak>2?'🔥 ':'🌊 ')+S.streak+' day streak';
 
-/* ═══════════════════════════════════════════════
-   TAB ROUTING
-═══════════════════════════════════════════════ */
-function showTab(t) {
-  const tabs = ['today','qbank','analytics','schedule','review','logq'];
-  document.querySelectorAll('.nav-btn').forEach((b, i) => b.classList.toggle('active', tabs[i] === t));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('panel-' + t).classList.add('active');
-  if (t === 'today')     renderToday();
-  if (t === 'qbank')     renderQBank();
-  if (t === 'analytics') renderAnalytics();
-  if (t === 'schedule')  renderSchedule();
-  if (t === 'review')    renderReview();
-  if (t === 'logq')      renderLogQ();
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+function showTab(t){
+  const tabs=['today','timer','qbank','analytics','schedule','review','logq'];
+  document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+t).classList.add('active');
+  if(t==='today')renderToday();if(t==='timer')renderPomoLog();if(t==='qbank')renderQBank();
+  if(t==='analytics')renderAnalytics();if(t==='schedule')renderSchedule();if(t==='review')renderReview();if(t==='logq')renderLogQ();
 }
 
-/* ═══════════════════════════════════════════════
-   TODAY
-═══════════════════════════════════════════════ */
-function renderToday() {
-  const total   = state.attempts.length;
-  const correct = state.attempts.filter(a => a.correct).length;
-  const pct     = total ? Math.round(correct / total * 100) : 0;
-  const due     = state.attempts.filter(a => daysTo(tod(), a.nextReview) <= 0).length;
-
-  document.getElementById('today-metrics').innerHTML = `
-    <div class="metric"><div class="val">${state.streak}</div><div class="lbl">Day streak ${state.streak > 2 ? '🔥' : '🌊'}</div></div>
-    <div class="metric"><div class="val">${total}</div><div class="lbl">Questions logged</div></div>
+/* TODAY */
+function renderToday(){
+  const total=S.attempts.length,correct=S.attempts.filter(a=>a.correct).length;
+  const pct=total?Math.round(correct/total*100):0,due=S.attempts.filter(a=>dTo(tod(),a.nextReview)<=0).length;
+  const focusMins=(S.pomoLog||[]).filter(p=>p.type==='work'&&p.date===tod()).reduce((s,p)=>s+p.mins,0);
+  document.getElementById('today-metrics').innerHTML=`
+    <div class="metric"><div class="val">${S.streak}</div><div class="lbl">Day streak ${S.streak>2?'🔥':'🌊'}</div></div>
+    <div class="metric"><div class="val">${focusMins}m</div><div class="lbl">Focus time today</div></div>
     <div class="metric"><div class="val">${pct}%</div><div class="lbl">Correct rate</div></div>
     <div class="metric"><div class="val">${due}</div><div class="lbl">Reviews due</div></div>`;
-
-  const day     = getDayName();
-  const dayData = TIMETABLE[day];
-  let html = `<div class="gc-title"><i class="ti ti-calendar"></i> ${day}'s study blocks</div>`;
-
-  if (dayData && dayData.study.length) {
-    const energy = state.energy || 'medium';
-    const order  = ENERGY_ORDER[energy];
-    const sorted = [...dayData.study].sort((a, b) => order.indexOf(a.energy) - order.indexOf(b.energy));
-    html += sorted.map(s => {
-      const tid  = 'task-' + day + '-' + s.t.replace(/\W/g,'');
-      const done = state.tasks.includes(tid);
-      const ecls = s.energy === 'high' ? 'e-high' : s.energy === 'medium' ? 'e-med' : 'e-low';
-      return `<div class="tt">
-        <div class="energy-dot ${ecls}" title="${s.energy} energy cost"></div>
-        <div class="cc ${done ? 'done' : ''}" onclick="toggleTask('${tid}',this)">
-          ${done ? '<i class="ti ti-check" style="font-size:12px;color:#fff;"></i>' : ''}
-        </div>
-        <div class="tt-text ${done ? 'done' : ''}">
-          <span class="chip ${CHIP[s.course] || ''}">${s.course}</span>${s.label}
-          <span style="font-size:11px;color:var(--text-soft);"> · ~${s.cost} min</span>
-        </div>
-        <span class="time-chip">${s.t}</span>
-      </div>`;
+  const day=dayN(),dd=TT[day];
+  let html=`<div class="gc-title"><i class="ti ti-calendar"></i> ${day}'s study blocks</div>`;
+  if(dd&&dd.study.length){
+    const ord=E_ORD[S.energy||'medium'];
+    const sorted=[...dd.study].sort((a,b)=>ord.indexOf(a.energy)-ord.indexOf(b.energy));
+    html+=sorted.map(s=>{
+      const tid='task-'+day+'-'+s.t.replace(/\W/g,''),done=S.tasks.includes(tid);
+      const ecls=s.energy==='high'?'e-high':s.energy==='medium'?'e-med':'e-low';
+      return`<div class="tt"><div class="energy-dot ${ecls}"></div>
+        <div class="cc ${done?'done':''}" onclick="toggleTask('${tid}',this)">${done?'<i class="ti ti-check" style="font-size:12px;color:#fff"></i>':''}</div>
+        <div class="tt-text ${done?'done':''}"><span class="chip ${CHIP[s.course]||''}">${s.course}</span>${s.label}<span style="font-size:11px;color:var(--text-soft)"> · ~${s.cost} min</span></div>
+        <span class="time-chip">${s.t}</span></div>`;
     }).join('');
-  } else {
-    html += '<div class="empty">No study blocks scheduled — enjoy your rest!</div>';
-  }
-  document.getElementById('today-card').innerHTML = html;
+  } else html+='<div class="empty">No study blocks today — rest up!</div>';
+  document.getElementById('today-card').innerHTML=html;
+  const due2=S.attempts.filter(a=>dTo(tod(),a.nextReview)<=0),rvEl=document.getElementById('today-review-list');
+  if(!due2.length){rvEl.innerHTML='<div class="empty">Nothing due — keep logging questions.</div>';return;}
+  rvEl.innerHTML=due2.slice(0,6).map(a=>`<div class="tt"><i class="ti ti-refresh" style="font-size:16px;color:var(--text-soft);margin-top:2px"></i><div class="tt-text"><span class="chip ${CHIP[a.course]||''}">${a.course}</span>${a.text}</div><span class="badge b-red">Review</span></div>`).join('');
+}
+function toggleTask(tid,el){if(S.tasks.includes(tid))S.tasks=S.tasks.filter(t=>t!==tid);else S.tasks.push(tid);save();renderToday();}
 
-  const dueItems = state.attempts.filter(a => daysTo(tod(), a.nextReview) <= 0);
-  const rvEl     = document.getElementById('today-review-list');
-  if (!dueItems.length) {
-    rvEl.innerHTML = '<div class="empty">Nothing due today — keep logging questions to build your queue.</div>';
-    return;
-  }
-  rvEl.innerHTML = dueItems.slice(0, 6).map(a => `
-    <div class="tt">
-      <i class="ti ti-refresh" style="font-size:16px;color:var(--text-soft);margin-top:2px;"></i>
-      <div class="tt-text"><span class="chip ${CHIP[a.course] || ''}">${a.course}</span>${a.text}</div>
-      <span class="badge b-red">Review</span>
-    </div>`).join('');
+/* POMODORO */
+let P={running:false,mode:'work',secsLeft:25*60,interval:null,session:0};
+const ARC=2*Math.PI*80;
+function pwMins(){return parseInt(document.getElementById('pomo-work-dur').value)||25;}
+function pbMins(){return parseInt(document.getElementById('pomo-break-dur').value)||5;}
+function updDisp(){
+  const m=Math.floor(P.secsLeft/60).toString().padStart(2,'0'),s=(P.secsLeft%60).toString().padStart(2,'0');
+  document.getElementById('pomo-display').textContent=m+':'+s;
+  const total=(P.mode==='work'?pwMins():pbMins())*60,frac=P.secsLeft/total;
+  const arc=document.getElementById('pomo-arc');
+  arc.style.strokeDashoffset=ARC*(1-frac);arc.style.stroke=P.mode==='work'?'#38c2e8':'#1ab870';
+  document.getElementById('pomo-mode-label').textContent=P.mode==='work'?'Focus':'Break';
+  updDots();
+}
+function updDots(){
+  document.getElementById('pomo-dots').innerHTML=[0,1,2,3].map(i=>{
+    const cls=i<P.session?'done':i===P.session&&P.mode==='work'?'current':'';
+    return`<div class="pomo-dot ${cls}"></div>`;
+  }).join('');
+}
+function pomoToggle(){
+  if(P.running){clearInterval(P.interval);P.running=false;document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Resume';}
+  else{P.running=true;document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-pause"></i> Pause';P.interval=setInterval(()=>{P.secsLeft--;updDisp();if(P.secsLeft<=0)pomoFinish();},1000);}
+}
+function pomoFinish(){
+  clearInterval(P.interval);P.running=false;
+  if(P.mode==='work'){
+    const mins=pwMins(),course=document.getElementById('pomo-course').value,label=document.getElementById('pomo-label').value.trim()||course+' study';
+    S.pomoLog=S.pomoLog||[];
+    S.pomoLog.push({type:'work',mins,course,label,date:tod(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    S.pomoSessions=(S.pomoSessions||0)+1;save();
+    P.session=(P.session+1)%4;P.mode='break';
+    const bk=P.session===0?20:pbMins();P.secsLeft=bk*60;
+    toast('🎯 Session complete! Take a '+(P.session===0?'20':''+pbMins())+' min break.');renderPomoLog();
+  } else {P.mode='work';P.secsLeft=pwMins()*60;toast('⚡ Break over — back to flow, Taz!');}
+  document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Start';updDisp();
+}
+function pomoReset(){clearInterval(P.interval);P.running=false;P.mode='work';P.secsLeft=pwMins()*60;document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Start';updDisp();}
+function pomoSkip(){clearInterval(P.interval);P.running=false;P.mode=P.mode==='work'?'break':'work';P.secsLeft=(P.mode==='work'?pwMins():pbMins())*60;document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Start';updDisp();}
+function renderPomoLog(){
+  const el=document.getElementById('pomo-log-today');
+  const log=(S.pomoLog||[]).filter(p=>p.date===tod()&&p.type==='work');
+  if(!log.length){el.innerHTML='<div class="empty">No sessions yet today — start your first flow session above.</div>';return;}
+  const total=log.reduce((s,p)=>s+p.mins,0);
+  el.innerHTML=`<div style="font-size:13px;font-weight:700;color:var(--aqua5);margin-bottom:10px">Today: ${total} min total focus 🎯</div>`+
+  [...log].reverse().map(p=>`<div class="row"><i class="ti ti-clock" style="font-size:15px;color:var(--text-soft);margin-top:2px"></i><div style="flex:1"><div style="font-size:13px"><span class="chip ${CHIP[p.course]||''}">${p.course}</span>${p.label}</div><div style="font-size:11px;color:var(--text-soft)">${p.time}</div></div><span class="badge b-blue">${p.mins} min</span></div>`).join('');
+}
+updDisp();
+
+/* IMAGE UPLOAD & AI EXTRACTION */
+let curImg=null;
+function dzOver(e){e.preventDefault();document.getElementById('dropzone').classList.add('drag');}
+function dzLeave(){document.getElementById('dropzone').classList.remove('drag');}
+function dzDrop(e){e.preventDefault();document.getElementById('dropzone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))handleImgFile(f);}
+function handleImgFile(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    curImg=ev.target.result;
+    const prev=document.getElementById('img-preview');prev.src=curImg;prev.style.display='block';
+    extractText(curImg);
+  };
+  reader.readAsDataURL(file);
+}
+async function extractText(dataUrl){
+  const bar=document.getElementById('extract-bar');
+  bar.style.display='block';
+  bar.innerHTML='<i class="ti ti-loader" style="animation:spin 1s linear infinite;display:inline-block;margin-right:6px"></i>Reading image with AI…';
+  const b64=dataUrl.split(',')[1],mt=dataUrl.split(';')[0].split(':')[1];
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:mt,data:b64}},
+        {type:'text',text:'Extract all text from this image exactly as written. If it is a physics or chemistry question, return the full question text. If it shows a spectrum, graph or diagram, briefly describe it and extract any labels or numerical values. Return only the extracted content with no preamble.'}
+      ]}]})
+    });
+    const data=await res.json();
+    const text=data.content&&data.content[0]?data.content[0].text:'';
+    if(text){document.getElementById('aq-q').value=text;bar.innerHTML='<i class="ti ti-check" style="color:var(--green3);margin-right:6px"></i>Text extracted — review and edit below if needed.';toast('✨ Image read successfully!');}
+    else bar.innerHTML='<i class="ti ti-alert-circle" style="margin-right:6px"></i>Could not extract text — please type it manually.';
+  }catch(err){bar.innerHTML='<i class="ti ti-alert-circle" style="margin-right:6px"></i>AI extraction needs an API connection. Type the question manually, or use this app via the Claude website to enable image reading.';}
 }
 
-function toggleTask(tid, el) {
-  if (state.tasks.includes(tid)) state.tasks = state.tasks.filter(t => t !== tid);
-  else state.tasks.push(tid);
-  save();
-  renderToday();
-}
-
-/* ═══════════════════════════════════════════════
-   QUESTION BANK
-═══════════════════════════════════════════════ */
-window._showWrongOnly = false;
-
-function renderQBank() {
-  const cf = document.getElementById('qb-filter-course').value;
-  const df = document.getElementById('qb-filter-diff').value;
-  let qs   = [...state.qbank];
-  if (cf !== 'all') qs = qs.filter(q => q.course === cf);
-  if (df !== 'all') qs = qs.filter(q => q.diff   === df);
-  if (window._showWrongOnly) qs = qs.filter(q => q.wrong > 0);
-
-  const el = document.getElementById('qbank-list');
-  if (!qs.length) {
-    el.innerHTML = '<div class="gc"><div class="empty">No questions match this filter.</div></div>';
-    return;
-  }
-  el.innerHTML = qs.map(q => {
-    const acc = q.attempts ? Math.round((q.attempts - q.wrong) / q.attempts * 100) : null;
-    return `<div class="qcard" id="qc-${q.id}">
-      <div class="qcard-meta">
-        <span class="chip ${CHIP[q.course] || ''}">${q.course}</span>
-        <span class="badge ${DIFF_COLOR[q.diff]}" style="margin-right:6px;">${q.diff}</span>
-        <span>${q.topic}</span>
-        ${acc !== null ? `<span style="margin-left:8px;color:var(--text-soft);">· ${q.attempts} attempts, ${acc}% correct</span>` : ''}
-      </div>
-      <div class="qcard-q">${q.q}</div>
+/* QUESTION BANK */
+window._showWrongOnly=false;
+function renderQBank(){
+  const cf=document.getElementById('qb-filter-course').value,df=document.getElementById('qb-filter-diff').value;
+  let qs=[...S.qbank];
+  if(cf!=='all')qs=qs.filter(q=>q.course===cf);if(df!=='all')qs=qs.filter(q=>q.diff===df);
+  if(window._showWrongOnly)qs=qs.filter(q=>q.wrong>0);
+  const el=document.getElementById('qbank-list');
+  if(!qs.length){el.innerHTML='<div class="gc"><div class="empty">No questions match this filter.</div></div>';return;}
+  el.innerHTML=qs.map(q=>{
+    const acc=q.attempts?Math.round((q.attempts-q.wrong)/q.attempts*100):null;
+    const imgH=q.img?`<img src="${q.img}" class="qcard-img" alt="Question image">`:'';
+    return`<div class="qcard" id="qc-${q.id}">
+      <div class="qcard-meta"><span class="chip ${CHIP[q.course]||''}">${q.course}</span><span class="badge ${DIFF_C[q.diff]}" style="margin-right:6px">${q.diff}</span><span>${q.topic}</span>${acc!==null?`<span style="margin-left:8px;color:var(--text-soft)">· ${q.attempts} attempts, ${acc}% correct</span>`:''}</div>
+      ${imgH}
+      <div class="qcard-q">${q.q||'<em style="color:var(--text-soft)">Image question — see above</em>'}</div>
       <div id="ans-${q.id}" class="qcard-answer">${q.a}</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="fb" onclick="toggleAnswer('${q.id}')"><i class="ti ti-eye"></i> Show answer</button>
         <button class="fb correct" onclick="logQBank('${q.id}',true)"><i class="ti ti-check"></i> Got it right</button>
-        <button class="fb wrong"   onclick="logQBank('${q.id}',false)"><i class="ti ti-x"></i> Got it wrong</button>
-        <button class="fb danger"  onclick="deleteQB('${q.id}')"><i class="ti ti-trash"></i></button>
-      </div>
-    </div>`;
+        <button class="fb wrong" onclick="logQBank('${q.id}',false)"><i class="ti ti-x"></i> Got it wrong</button>
+        <button class="fb danger" onclick="deleteQB('${q.id}')"><i class="ti ti-trash"></i></button>
+      </div></div>`;
   }).join('');
 }
-
-function filterWrong() {
-  window._showWrongOnly = !window._showWrongOnly;
-  renderQBank();
+function filterWrong(){window._showWrongOnly=!window._showWrongOnly;renderQBank();}
+function toggleAnswer(id){const a=document.getElementById('ans-'+id);a.classList.toggle('show');const b=a.parentElement.querySelector('button');b.innerHTML=a.classList.contains('show')?'<i class="ti ti-eye-off"></i> Hide answer':'<i class="ti ti-eye"></i> Show answer';}
+function logQBank(qid,correct){
+  const q=S.qbank.find(x=>x.id===qid);if(!q)return;
+  q.attempts=(q.attempts||0)+1;if(!correct)q.wrong=(q.wrong||0)+1;
+  const prev=S.attempts.filter(a=>a.qbankId===qid&&!a.correct).length,interval=correct?(prev>0?3:7):1;
+  S.attempts.push({id:Date.now(),qbankId:qid,course:q.course,topic:q.topic,text:(q.q||q.topic).slice(0,65),correct,date:tod(),nextReview:new Date(Date.now()+interval*DAY).toDateString(),interval});
+  save();renderQBank();toast(correct?'✓ Logged as correct! Review in 7 days.':'✗ Logged as wrong. Review tomorrow.');
+}
+function deleteQB(id){if(!confirm('Delete this question?'))return;S.qbank=S.qbank.filter(q=>q.id!==id);save();renderQBank();}
+function openAddQ(){document.getElementById('add-q-modal').style.display='block';curImg=null;document.getElementById('img-preview').style.display='none';document.getElementById('extract-bar').style.display='none';}
+function closeAddQ(){document.getElementById('add-q-modal').style.display='none';}
+function saveNewQ(){
+  const q=document.getElementById('aq-q').value.trim(),a=document.getElementById('aq-a').value.trim();
+  if(!q&&!curImg){alert('Please add a question (text or image).');return;}
+  if(!a){alert('Please add an answer or key steps.');return;}
+  S.qbank.push({id:'uq'+Date.now(),course:document.getElementById('aq-course').value,diff:document.getElementById('aq-diff').value,topic:document.getElementById('aq-topic').value.trim()||'Custom',q,a,img:curImg||null,attempts:0,wrong:0});
+  ['aq-q','aq-a','aq-topic'].forEach(id=>document.getElementById(id).value='');curImg=null;
+  document.getElementById('img-preview').style.display='none';document.getElementById('extract-bar').style.display='none';
+  save();closeAddQ();renderQBank();toast('Question saved to your bank!');
 }
 
-function toggleAnswer(id) {
-  const ans = document.getElementById('ans-' + id);
-  const btn = ans.previousElementSibling.previousElementSibling.querySelector ? null : null;
-  ans.classList.toggle('show');
-  const showBtn = ans.parentElement.querySelector('button');
-  showBtn.innerHTML = ans.classList.contains('show')
-    ? '<i class="ti ti-eye-off"></i> Hide answer'
-    : '<i class="ti ti-eye"></i> Show answer';
-}
-
-function logQBank(qid, correct) {
-  const q = state.qbank.find(x => x.id === qid);
-  if (!q) return;
-  q.attempts = (q.attempts || 0) + 1;
-  if (!correct) q.wrong = (q.wrong || 0) + 1;
-  const prev     = state.attempts.filter(a => a.qbankId === qid && !a.correct).length;
-  const interval = correct ? (prev > 0 ? 3 : 7) : 1;
-  const nextRev  = new Date(Date.now() + interval * DAY).toDateString();
-  state.attempts.push({
-    id: Date.now(), qbankId: qid,
-    course: q.course, topic: q.topic,
-    text: q.q.slice(0, 65) + (q.q.length > 65 ? '…' : ''),
-    correct, date: tod(), nextReview: nextRev, interval
-  });
-  save();
-  renderQBank();
-}
-
-function deleteQB(id) {
-  if (!confirm('Delete this question?')) return;
-  state.qbank = state.qbank.filter(q => q.id !== id);
-  save(); renderQBank();
-}
-
-function openAddQ()  { document.getElementById('add-q-modal').style.display = 'block'; }
-function closeAddQ() { document.getElementById('add-q-modal').style.display = 'none';  }
-
-function saveNewQ() {
-  const q = document.getElementById('aq-q').value.trim();
-  const a = document.getElementById('aq-a').value.trim();
-  if (!q || !a) { alert('Please fill in at least the question and answer.'); return; }
-  state.qbank.push({
-    id: 'uq' + Date.now(),
-    course: document.getElementById('aq-course').value,
-    diff:   document.getElementById('aq-diff').value,
-    topic:  document.getElementById('aq-topic').value.trim() || 'Custom',
-    q, a, attempts: 0, wrong: 0
-  });
-  ['aq-q','aq-a','aq-topic'].forEach(id => document.getElementById(id).value = '');
-  save(); closeAddQ(); renderQBank();
-}
-
-/* ═══════════════════════════════════════════════
-   ANALYTICS
-═══════════════════════════════════════════════ */
-function renderAnalytics() {
-  const total   = state.attempts.length;
-  const correct = state.attempts.filter(a => a.correct).length;
-  const pct     = total ? Math.round(correct / total * 100) : 0;
-  const due     = state.attempts.filter(a => daysTo(tod(), a.nextReview) <= 0).length;
-
-  document.getElementById('ana-metrics').innerHTML = `
+/* ANALYTICS */
+function renderAnalytics(){
+  const total=S.attempts.length,correct=S.attempts.filter(a=>a.correct).length;
+  const pct=total?Math.round(correct/total*100):0,due=S.attempts.filter(a=>dTo(tod(),a.nextReview)<=0).length;
+  const totF=(S.pomoLog||[]).filter(p=>p.type==='work').reduce((s,p)=>s+p.mins,0);
+  document.getElementById('ana-metrics').innerHTML=`
     <div class="metric"><div class="val">${total}</div><div class="lbl">Total attempts</div></div>
     <div class="metric"><div class="val">${pct}%</div><div class="lbl">Overall accuracy</div></div>
-    <div class="metric"><div class="val">${correct}</div><div class="lbl">Correct</div></div>
+    <div class="metric"><div class="val">${totF}m</div><div class="lbl">Total focus time</div></div>
     <div class="metric"><div class="val">${due}</div><div class="lbl">Due for review</div></div>`;
-
-  // By course
-  const byC = {};
-  COURSES.forEach(c => { byC[c] = { t:0, c:0 }; });
-  state.attempts.forEach(a => { if (byC[a.course]) { byC[a.course].t++; if (a.correct) byC[a.course].c++; } });
-  const cBars = document.getElementById('ana-course-bars');
-  const hasCData = Object.values(byC).some(v => v.t > 0);
-  if (!hasCData) {
-    cBars.innerHTML = '<div class="empty">Log some questions to see your course breakdown.</div>';
-  } else {
-    cBars.innerHTML = COURSES.map(c => {
-      const d = byC[c]; if (!d.t) return '';
-      const p   = Math.round(d.c / d.t * 100);
-      const col = p >= 70 ? 'pf-green' : p >= 40 ? 'pf-amber' : 'pf-red';
-      return `<div class="ana-bar">
-        <span class="ana-label"><span class="chip ${CHIP[c] || ''}">${c}</span></span>
-        <div class="pb"><div class="pf ${col}" style="width:${p}%;"></div></div>
-        <span class="ana-pct">${p}%</span>
-        <span style="font-size:11px;color:var(--text-soft);margin-left:4px;">(${d.t})</span>
-      </div>`;
-    }).join('');
-  }
-
-  // Wrong topics
-  const topicFreq = {};
-  state.attempts.filter(a => !a.correct).forEach(a => {
-    const k = (a.course || '') + ': ' + (a.topic || 'General');
-    topicFreq[k] = (topicFreq[k] || 0) + 1;
-  });
-  const sorted = Object.entries(topicFreq).sort((a,b) => b[1]-a[1]).slice(0,7);
-  const wt = document.getElementById('ana-wrong-topics');
-  if (!sorted.length) {
-    wt.innerHTML = '<div class="empty">No wrong answers logged yet — incredible!</div>';
-  } else {
-    const max = sorted[0][1];
-    wt.innerHTML = sorted.map(([k, n]) => {
-      const p = Math.round(n / max * 100);
-      return `<div class="ana-bar">
-        <span class="ana-label" style="font-size:11px;">${k}</span>
-        <div class="pb"><div class="pf pf-red" style="width:${p}%;"></div></div>
-        <span class="ana-pct">${n}✗</span>
-      </div>`;
-    }).join('');
-  }
-
-  // Recent
-  const rec = document.getElementById('ana-recent');
-  if (!state.attempts.length) { rec.innerHTML = '<div class="empty">No attempts yet.</div>'; return; }
-  rec.innerHTML = [...state.attempts].reverse().slice(0,10).map(a => `
-    <div class="row">
-      <span class="chip ${CHIP[a.course] || ''}">${a.course}</span>
-      <span style="flex:1;font-size:12px;color:var(--text-deep);">${a.text}</span>
-      <span class="badge ${a.correct ? 'b-green' : 'b-red'}">${a.correct ? '✓ Right' : '✗ Wrong'}</span>
-      <span style="font-size:11px;color:var(--text-soft);">${a.date}</span>
-    </div>`).join('');
+  const byC={};COURSES.forEach(c=>{byC[c]={t:0,c:0};});
+  S.attempts.forEach(a=>{if(byC[a.course]){byC[a.course].t++;if(a.correct)byC[a.course].c++;}});
+  const cB=document.getElementById('ana-course-bars');
+  if(!Object.values(byC).some(v=>v.t>0))cB.innerHTML='<div class="empty">Log some questions to see breakdown.</div>';
+  else cB.innerHTML=COURSES.map(c=>{const d=byC[c];if(!d.t)return'';const p=Math.round(d.c/d.t*100),col=p>=70?'pf-green':p>=40?'pf-amber':'pf-red';return`<div class="ana-bar"><span class="ana-label"><span class="chip ${CHIP[c]||''}">${c}</span></span><div class="pb"><div class="pf ${col}" style="width:${p}%"></div></div><span class="ana-pct">${p}%</span><span style="font-size:11px;color:var(--text-soft);margin-left:4px">(${d.t})</span></div>`;}).join('');
+  const pBC={};COURSES.forEach(c=>{pBC[c]=0;});
+  (S.pomoLog||[]).filter(p=>p.type==='work'&&p.course).forEach(p=>{if(pBC[p.course]!==undefined)pBC[p.course]+=p.mins;});
+  const pe=document.getElementById('ana-pomo-stats');
+  if(!totF)pe.innerHTML='<div class="empty">No flow sessions yet — start the timer!</div>';
+  else pe.innerHTML=`<div style="font-size:13px;font-weight:700;color:var(--aqua5);margin-bottom:10px">Total: ${totF} min of focus 🎯</div>`+COURSES.map(c=>{const m=pBC[c];if(!m)return'';const p=Math.round(m/totF*100);return`<div class="ana-bar"><span class="ana-label"><span class="chip ${CHIP[c]||''}">${c}</span></span><div class="pb"><div class="pf" style="width:${p}%"></div></div><span class="ana-pct">${m}m</span></div>`;}).join('');
+  const tf={};S.attempts.filter(a=>!a.correct).forEach(a=>{const k=(a.course||'')+': '+(a.topic||'General');tf[k]=(tf[k]||0)+1;});
+  const ts=Object.entries(tf).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const wt=document.getElementById('ana-wrong-topics');
+  if(!ts.length)wt.innerHTML='<div class="empty">No wrong answers yet — amazing!</div>';
+  else{const mx=ts[0][1];wt.innerHTML=ts.map(([k,n])=>`<div class="ana-bar"><span class="ana-label" style="font-size:11px">${k}</span><div class="pb"><div class="pf pf-red" style="width:${Math.round(n/mx*100)}%"></div></div><span class="ana-pct">${n}✗</span></div>`).join('');}
+  const rec=document.getElementById('ana-recent');
+  if(!S.attempts.length){rec.innerHTML='<div class="empty">No attempts yet.</div>';return;}
+  rec.innerHTML=[...S.attempts].reverse().slice(0,10).map(a=>`<div class="row"><span class="chip ${CHIP[a.course]||''}">${a.course}</span><span style="flex:1;font-size:12px;color:var(--text-deep)">${a.text}</span><span class="badge ${a.correct?'b-green':'b-red'}">${a.correct?'✓':'✗'}</span><span style="font-size:11px;color:var(--text-soft)">${a.date}</span></div>`).join('');
 }
 
-/* ═══════════════════════════════════════════════
-   SCHEDULE & ENERGY
-═══════════════════════════════════════════════ */
-function setEnergy(e) {
-  state.energy = e; save();
-  ['high','medium','low'].forEach(lvl => {
-    const btn = document.getElementById('eb-' + lvl);
-    if (btn) btn.className = 'esb' + (lvl === e ? ' sel-' + lvl : '');
-  });
-  renderEnergySlots();
-}
-
-function renderSchedule() {
-  setEnergy(state.energy || 'medium');
-  renderWeeklyTable();
-}
-
-function renderEnergySlots() {
-  const day     = getDayName();
-  const dayData = TIMETABLE[day];
-  const energy  = state.energy || 'medium';
-  const el      = document.getElementById('energy-slots');
-  if (!dayData || !dayData.study.length) {
-    el.innerHTML = '<div class="empty">No study blocks scheduled today.</div>'; return;
-  }
-  const order  = ENERGY_ORDER[energy];
-  const sorted = [...dayData.study].sort((a,b) => order.indexOf(a.energy) - order.indexOf(b.energy));
-  const label  = { high:'⚡ Deep work — best slot', medium:'〰 Active study', low:'🌙 Light review' };
-  el.innerHTML = sorted.map((s, i) => {
-    const ecls = s.energy === 'high' ? 'b-green' : s.energy === 'medium' ? 'b-amber' : 'b-blue';
-    return `<div class="sched-row">
-      <div style="flex:1;">
-        <div style="font-size:13px;font-weight:700;color:var(--text-deep);">
-          ${s.t} &nbsp;<span class="chip ${CHIP[s.course] || ''}">${s.course}</span>
-          ${i === 0 ? '<span class="badge b-green" style="margin-left:4px;">Do first</span>' : ''}
-        </div>
-        <div style="font-size:12px;color:var(--text-mid);margin-top:3px;">${s.label}</div>
-        <div style="font-size:11px;color:var(--text-soft);margin-top:2px;">${label[s.energy]} · ~${s.cost} min cost</div>
-      </div>
-      <span class="badge ${ecls}">${s.energy}</span>
-    </div>`;
+/* SCHEDULE */
+function setEnergy(e){S.energy=e;save();['high','medium','low'].forEach(l=>{const b=document.getElementById('eb-'+l);if(b)b.className='esb'+(l===e?' sel-'+l:'');});renderEnergySlots();}
+function renderSchedule(){setEnergy(S.energy||'medium');renderWeeklyTable();}
+function renderEnergySlots(){
+  const day=dayN(),dd=TT[day],energy=S.energy||'medium',el=document.getElementById('energy-slots');
+  if(!dd||!dd.study.length){el.innerHTML='<div class="empty">No study blocks today.</div>';return;}
+  const ord=E_ORD[energy],sorted=[...dd.study].sort((a,b)=>ord.indexOf(a.energy)-ord.indexOf(b.energy));
+  const lbl={high:'⚡ Deep work',medium:'〰 Active study',low:'🌙 Light review'};
+  el.innerHTML=sorted.map((s,i)=>{const ec=s.energy==='high'?'b-green':s.energy==='medium'?'b-amber':'b-blue';
+    return`<div class="sched-row"><div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text-deep)">${s.t}&nbsp;<span class="chip ${CHIP[s.course]||''}">${s.course}</span>${i===0?'<span class="badge b-green" style="margin-left:4px">Do first</span>':''}</div><div style="font-size:12px;color:var(--text-mid);margin-top:3px">${s.label}</div><div style="font-size:11px;color:var(--text-soft);margin-top:2px">${lbl[s.energy]} · ~${s.cost} min</div></div><span class="badge ${ec}">${s.energy}</span></div>`;
   }).join('');
 }
-
-function adjustSchedule() {
-  const reason = document.getElementById('adj-reason').value;
-  const hours  = parseFloat(document.getElementById('adj-hours').value) || 1.5;
-  const msgs   = {
-    sick:       { icon:'ti-heart',       title:'Feeling unwell — recovery mode',      txt:`Drop all high-energy tasks. Focus only on passive spaced review (${Math.round(hours * 25)} min maximum). Rest IS studying — a recovered brain retains far more than an exhausted one.` },
-    extra:      { icon:'ti-alert-circle',title:'Extra class — time is tight',          txt:`You have ${hours}h less free time. Cut the lowest-priority slot first (light revision). Today: PH127/133 spaced review only (30 min minimum). Reschedule any deep work to Thursday's 11–13h slot.` },
-    cancelled:  { icon:'ti-gift',        title:'Bonus time — use it wisely!',          txt:`You gained ${hours}h! Use ${Math.round(hours * 0.65 * 60)} min on PH127/133 deep work (attempt Q6, Q7, or Q10) and ${Math.round(hours * 0.35 * 60)} min in the Question Bank practising hard questions.` },
-    assignment: { icon:'ti-file-alert',  title:'Assignment priority',                  txt:`Block ${hours}h for the assignment. Compress study to 25 min spaced review only. Log at least 2–3 questions to maintain your streak and keep the review queue moving.` },
-    social:     { icon:'ti-users',       title:'Social event — plan around it',        txt:`Complete one focused 30–40 min PH127/133 session before you go. Spaced review can be done on your phone in ${Math.round(hours * 20)} min while commuting or waiting.` },
-    tired:      { icon:'ti-moon',        title:'Exhausted — minimum effective dose',   txt:`Do only 20 min of your easiest spaced review questions. Skip everything marked "high energy". Sleep debt reduces memory consolidation by up to 40% — protecting sleep IS a study strategy.` },
-  };
-  const m = msgs[reason];
-  document.getElementById('adj-result').innerHTML = `
-    <div class="tip"><i class="ti ${m.icon}"></i> <strong>${m.title}</strong><br>${m.txt}</div>`;
+function adjustSchedule(){
+  const r=document.getElementById('adj-reason').value,h=parseFloat(document.getElementById('adj-hours').value)||1.5;
+  const msgs={sick:{icon:'ti-heart',title:'Feeling unwell — recovery mode',txt:`Drop all high-energy tasks. ${Math.round(h*25)} min light spaced review max. Rest IS studying.`},extra:{icon:'ti-alert-circle',title:'Extra class — time tight',txt:`${h}h less free. Cut lowest-priority slot. PH127/133 spaced review (30 min minimum) today only.`},cancelled:{icon:'ti-gift',title:'Bonus time!',txt:`Extra ${h}h! Use ${Math.round(h*.65*60)} min on PH127/133 deep work + ${Math.round(h*.35*60)} min in the Question Bank.`},assignment:{icon:'ti-file-alert',title:'Assignment priority',txt:`Block ${h}h for the assignment. 25 min spaced review only. Log 2–3 questions to keep streak alive.`},social:{icon:'ti-users',title:'Social event — plan around it',txt:`One 30 min PH127/133 session before you go. Spaced review in ${Math.round(h*20)} min while commuting.`},tired:{icon:'ti-moon',title:'Exhausted — minimum effective dose',txt:`20 min light review only. Skip all high-energy tasks. Sleep debt cuts memory consolidation by ~40%.`}};
+  const m=msgs[r];document.getElementById('adj-result').innerHTML=`<div class="tip"><i class="ti ${m.icon}"></i> <strong>${m.title}</strong><br>${m.txt}</div>`;
 }
-
-function renderWeeklyTable() {
-  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-  const el   = document.getElementById('weekly-timetable');
-  const urgentDays = { Tuesday:'b-red', Thursday:'b-red', Monday:'b-amber', Friday:'b-amber' };
-  el.innerHTML = days.map(day => {
-    const d     = TIMETABLE[day];
-    const badge = urgentDays[day] ? `<span class="badge ${urgentDays[day]}" style="margin-left:8px;">${urgentDays[day]==='b-red'?'Priority':'Good'}</span>` : '';
-    return `<div style="margin-bottom:1.25rem;">
-      <div style="font-size:13px;font-weight:800;color:var(--text-mid);margin-bottom:8px;">${day}${badge}</div>
-      ${d.study.map(s => `
-        <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;">
-          <span style="font-size:11px;color:var(--text-soft);min-width:100px;font-weight:600;padding-top:1px;">${s.t}</span>
-          <span style="font-size:12px;color:var(--text-deep);flex:1;"><span class="chip ${CHIP[s.course]||''}">${s.course}</span>${s.label}</span>
-          <span style="font-size:11px;color:var(--text-soft);">~${s.cost}m</span>
-        </div>`).join('')}
-    </div>`;
+function renderWeeklyTable(){
+  const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'],el=document.getElementById('weekly-timetable');
+  const ud={Tuesday:'b-red',Thursday:'b-red',Monday:'b-amber',Friday:'b-amber'};
+  el.innerHTML=days.map(day=>{const d=TT[day],badge=ud[day]?`<span class="badge ${ud[day]}" style="margin-left:8px">${ud[day]==='b-red'?'Priority':'Good'}</span>`:'';
+    return`<div style="margin-bottom:1.25rem"><div style="font-size:13px;font-weight:800;color:var(--text-mid);margin-bottom:8px">${day}${badge}</div>${d.study.map(s=>`<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px"><span style="font-size:11px;color:var(--text-soft);min-width:100px;font-weight:600;padding-top:1px">${s.t}</span><span style="font-size:12px;color:var(--text-deep);flex:1"><span class="chip ${CHIP[s.course]||''}">${s.course}</span>${s.label}</span><span style="font-size:11px;color:var(--text-soft)">~${s.cost}m</span></div>`).join('')}</div>`;
   }).join('<div class="divider"></div>');
 }
 
-/* ═══════════════════════════════════════════════
-   SPACED REVIEW
-═══════════════════════════════════════════════ */
-function renderReview() {
-  const el = document.getElementById('review-full-list');
-  if (!state.attempts.length) {
-    el.innerHTML = '<div class="empty">Log questions in the Question Bank or Log Question tab to fill your review queue.</div>';
-    return;
-  }
-  const sorted = [...state.attempts].sort((a,b) => new Date(a.nextReview) - new Date(b.nextReview));
-  el.innerHTML = sorted.map(a => {
-    const d     = daysTo(tod(), a.nextReview);
-    const label = d < 0 ? 'Overdue' : d === 0 ? 'Due today' : 'In ' + d + 'd';
-    const bc    = d <= 0 ? 'b-red' : d <= 3 ? 'b-amber' : 'b-blue';
-    return `<div class="row">
-      <span class="chip ${CHIP[a.course] || ''}">${a.course}</span>
-      <div style="flex:1;">
-        <div style="font-size:12px;color:var(--text-deep);">${a.text}</div>
-        ${a.topic ? `<div style="font-size:11px;color:var(--text-soft);">${a.topic}</div>` : ''}
-      </div>
-      <span class="badge ${bc}">${label}</span>
-      <span class="badge ${a.correct ? 'b-green' : 'b-red'}">${a.correct ? 'Was ✓' : 'Was ✗'}</span>
-    </div>`;
-  }).join('');
+/* REVIEW */
+function renderReview(){
+  const el=document.getElementById('review-full-list');
+  if(!S.attempts.length){el.innerHTML='<div class="empty">Log questions in the Question Bank to fill this queue.</div>';return;}
+  el.innerHTML=[...S.attempts].sort((a,b)=>new Date(a.nextReview)-new Date(b.nextReview)).map(a=>{const d=dTo(tod(),a.nextReview),label=d<0?'Overdue':d===0?'Due today':'In '+d+'d',bc=d<=0?'b-red':d<=3?'b-amber':'b-blue';return`<div class="row"><span class="chip ${CHIP[a.course]||''}">${a.course}</span><div style="flex:1"><div style="font-size:12px">${a.text}</div>${a.topic?`<div style="font-size:11px;color:var(--text-soft)">${a.topic}</div>`:''}</div><span class="badge ${bc}">${label}</span><span class="badge ${a.correct?'b-green':'b-red'}">${a.correct?'Was ✓':'Was ✗'}</span></div>`;}).join('');
 }
 
-/* ═══════════════════════════════════════════════
-   LOG QUESTION
-═══════════════════════════════════════════════ */
-function quickLog(correct) {
-  const course = document.getElementById('lq-course').value;
-  const topic  = document.getElementById('lq-topic').value.trim();
-  const text   = document.getElementById('lq-text').value.trim();
-  if (!text) { alert('Please describe the question first.'); return; }
-  const prev     = state.attempts.filter(a => a.text === text && !a.correct).length;
-  const interval = correct ? (prev > 0 ? 3 : 7) : 1;
-  const nextRev  = new Date(Date.now() + interval * DAY).toDateString();
-  state.attempts.push({ id: Date.now(), course, topic, text, correct, date: tod(), nextReview: nextRev, interval });
-  document.getElementById('lq-topic').value = '';
-  document.getElementById('lq-text').value  = '';
-  save(); renderLogQ();
+/* LOG Q */
+function quickLog(correct){
+  const course=document.getElementById('lq-course').value,topic=document.getElementById('lq-topic').value.trim(),text=document.getElementById('lq-text').value.trim();
+  if(!text){alert('Please describe the question first.');return;}
+  const prev=S.attempts.filter(a=>a.text===text&&!a.correct).length,interval=correct?(prev>0?3:7):1;
+  S.attempts.push({id:Date.now(),course,topic,text,correct,date:tod(),nextReview:new Date(Date.now()+interval*DAY).toDateString(),interval});
+  document.getElementById('lq-topic').value='';document.getElementById('lq-text').value='';
+  save();renderLogQ();toast(correct?'✓ Logged as correct!':'✗ Logged as wrong — review tomorrow.');
+}
+function renderLogQ(){
+  const el=document.getElementById('lq-recent');
+  if(!S.attempts.length){el.innerHTML='<div class="empty">Nothing logged yet.</div>';return;}
+  el.innerHTML=[...S.attempts].reverse().slice(0,10).map(a=>`<div class="row"><span class="chip ${CHIP[a.course]||''}">${a.course}</span><span style="flex:1;font-size:12px">${a.text}</span><span class="badge ${a.correct?'b-green':'b-red'}">${a.correct?'✓ Right':'✗ Wrong'}</span><span class="badge b-blue">+${a.interval}d</span></div>`).join('');
 }
 
-function renderLogQ() {
-  const el = document.getElementById('lq-recent');
-  if (!state.attempts.length) { el.innerHTML = '<div class="empty">Nothing logged yet.</div>'; return; }
-  el.innerHTML = [...state.attempts].reverse().slice(0, 10).map(a => `
-    <div class="row">
-      <span class="chip ${CHIP[a.course] || ''}">${a.course}</span>
-      <span style="flex:1;font-size:12px;color:var(--text-deep);">${a.text}</span>
-      <span class="badge ${a.correct ? 'b-green' : 'b-red'}">${a.correct ? '✓ Right' : '✗ Wrong'}</span>
-      <span class="badge b-blue">+${a.interval}d</span>
-    </div>`).join('');
-}
-
-/* ═══════════════════════════════════════════════
-   BOOT
-═══════════════════════════════════════════════ */
 renderToday();
 </script>
 </body>
