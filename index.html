@@ -153,21 +153,37 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .sched-wbtn{padding:5px 10px;font-size:12px;font-weight:700;border:1.5px solid rgba(56,194,232,0.35);border-radius:10px;background:rgba(255,255,255,0.6);color:var(--text-mid);cursor:pointer}
 .sched-wbtn:hover{background:rgba(255,255,255,0.9)}
 .sched-week-label{font-size:11px;font-weight:700;color:var(--text-soft);min-width:110px;text-align:center}
+
+/* gel view toggle */
+#sg-view-toggle{display:flex;align-items:center;background:linear-gradient(135deg,rgba(255,255,255,0.55),rgba(200,248,255,0.45));border:1.5px solid rgba(255,255,255,0.85);border-radius:50px;padding:3px;box-shadow:0 2px 12px rgba(56,194,232,0.18),inset 0 1px 0 rgba(255,255,255,0.9);backdrop-filter:blur(8px)}
+.sg-view-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;font-size:11px;font-weight:800;font-family:'Nunito',sans-serif;border-radius:50px;border:none;cursor:pointer;background:transparent;color:var(--text-soft);transition:all .25s cubic-bezier(.22,1,.36,1);letter-spacing:.03em}
+.sg-view-btn.active{background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;box-shadow:0 2px 10px rgba(15,163,204,0.45),inset 0 1px 0 rgba(255,255,255,0.35);text-shadow:0 1px 2px rgba(0,0,0,0.12)}
+.sg-view-btn:not(.active):hover{background:rgba(255,255,255,0.5);color:var(--aqua5)}
+
 .sched-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:.75rem}
 .sleg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-soft);font-weight:600}
 .sleg-anchor{width:13px;height:13px;border-radius:50%;background:rgba(56,194,232,0.15);border:1.5px solid rgba(56,194,232,0.7)}
 .sleg-class{width:13px;height:13px;border-radius:3px;background:rgba(255,210,96,0.2);border:1.5px solid rgba(200,150,20,0.45)}
 .sleg-study{width:13px;height:13px;border-radius:3px;background:rgba(26,184,112,0.14);border:1.5px solid rgba(26,184,112,0.5)}
 .sleg-split{width:13px;height:13px;border-radius:3px;background:rgba(214,48,48,0.08);border:1.5px dashed rgba(214,48,48,0.45)}
-.sched-grid{display:grid;grid-template-columns:48px repeat(7,minmax(80px,1fr));border:1.5px solid rgba(56,194,232,0.2);border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.6);min-width:620px}
+
+/* grid */
+.sched-grid{display:grid;border:1.5px solid rgba(56,194,232,0.2);border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.6);min-width:620px}
 .sg-day-hdr{padding:7px 4px;text-align:center;font-size:10px;font-weight:800;color:var(--text-soft);border-bottom:1px solid rgba(56,194,232,0.15);background:rgba(255,255,255,0.5);letter-spacing:.05em}
 .sg-day-hdr.today{color:var(--aqua5);background:rgba(56,194,232,0.1)}
 .sg-time-hdr{padding:7px 4px;font-size:9px;font-weight:700;color:var(--text-soft);border-bottom:1px solid rgba(56,194,232,0.15);background:rgba(255,255,255,0.5);text-align:center}
-.sg-time-cell{font-size:9px;color:rgba(74,157,181,0.7);text-align:right;padding:0 4px 0 0;border-right:1px solid rgba(56,194,232,0.12);display:flex;align-items:flex-start;justify-content:flex-end;padding-top:2px;font-weight:600}
+
+/* time cells — each covers one hour slot (26px) */
+.sg-time-cell{border-right:1px solid rgba(56,194,232,0.12);display:flex;align-items:flex-start;justify-content:flex-end;padding:2px 4px 0 0;font-weight:700}
+.sg-tc-hour{font-size:9px;color:rgba(74,157,181,0.85);height:26px;border-bottom:1px solid rgba(56,194,232,0.1)}
+.sg-tc-half{font-size:9px;color:transparent;height:26px;border-bottom:1px dashed rgba(56,194,232,0.06)}
+
 .sg-day-col{border-right:1px solid rgba(56,194,232,0.1);position:relative}
 .sg-day-col:last-child{border-right:none}
-.sg-hour-cell{border-bottom:1px solid rgba(56,194,232,0.1);height:26px;position:relative}
+.sg-hour-cell{height:26px;position:relative;border-bottom:1px solid rgba(56,194,232,0.1)}
 .sg-hour-cell.half-hr{border-bottom:1px dashed rgba(56,194,232,0.06)}
+
+/* blocks */
 .sched-block{position:absolute;left:1px;right:1px;border-radius:4px;font-size:8.5px;font-weight:700;padding:2px 4px;overflow:hidden;z-index:2;transition:box-shadow .15s;line-height:1.25;cursor:default}
 .sched-block:hover{z-index:10;box-shadow:0 2px 10px rgba(0,0,0,0.12)}
 .sb-anchor{background:linear-gradient(135deg,rgba(56,194,232,0.18),rgba(180,240,255,0.3));border:1.5px solid rgba(180,240,255,0.88);color:#0880a8}
@@ -179,6 +195,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .sb-split{background:rgba(214,48,48,0.08);border:1.5px dashed rgba(214,48,48,0.45);color:#791F1F;cursor:grab}
 .sb-label{font-size:8.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb-sub{font-size:7.5px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* now line */
+.sg-now-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(56,194,232,0),#38c2e8 20%,#38c2e8 80%,rgba(56,194,232,0));box-shadow:0 0 8px rgba(56,194,232,0.8),0 0 16px rgba(56,194,232,0.4);z-index:50;pointer-events:none;border-radius:1px}
+.sg-now-dot{position:absolute;width:9px;height:9px;border-radius:50%;background:#38c2e8;box-shadow:0 0 0 3px rgba(56,194,232,0.3),0 0 10px rgba(56,194,232,0.8);z-index:51;pointer-events:none}
+
+/* day view animation */
+@keyframes sgDayIn{
+  from{opacity:0;transform:scale(0.96);filter:blur(4px)}
+  to{opacity:1;transform:scale(1);filter:blur(0)}
+}
+
 .sched-add-panel{margin-top:12px;background:rgba(255,255,255,0.58);border:1.5px solid var(--glass-border);border-radius:18px;padding:1.25rem 1.5rem;backdrop-filter:blur(10px)}
 .sched-info{margin-top:8px;font-size:11px;color:var(--aqua5);background:rgba(56,194,232,0.08);border:1px solid rgba(56,194,232,0.25);border-radius:8px;padding:6px 10px;display:none}
 .sched-info.show{display:block}
@@ -881,45 +908,77 @@ function sgGetWeekStart(){
   const s=new Date(now);s.setDate(now.getDate()-dow+SG.weekOffset*7);s.setHours(0,0,0,0);return s;
 }
 
-function schedPrevWeek(){SG.weekOffset--;renderSchedule();}
-function schedNextWeek(){SG.weekOffset++;renderSchedule();}
+SG.viewMode='week'; // 'week' | 'day'
+SG.viewDay=sgGetToday();
+SG.nowLineInterval=null;
+
+function schedPrevWeek(){
+  if(SG.viewMode==='day'){SG.viewDay=(SG.viewDay+6)%7;}
+  else{SG.weekOffset--;}
+  renderSchedule();
+}
+function schedNextWeek(){
+  if(SG.viewMode==='day'){SG.viewDay=(SG.viewDay+1)%7;}
+  else{SG.weekOffset++;}
+  renderSchedule();
+}
+
+function sgToggleView(mode){
+  if(SG.viewMode===mode)return;
+  SG.viewMode=mode;
+  if(mode==='day')SG.viewDay=sgGetToday();
+  /* update toggle pill */
+  document.querySelectorAll('.sg-view-btn').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
+  renderSchedule();
+}
+
+/* inject view toggle into topbar when schedule panel first opens */
+function sgEnsureToggle(){
+  if(document.getElementById('sg-view-toggle'))return;
+  const topbar=document.querySelector('.sched-topbar');
+  if(!topbar)return;
+  const tog=document.createElement('div');
+  tog.id='sg-view-toggle';
+  tog.innerHTML=`
+    <button class="sg-view-btn active" data-mode="week" onclick="sgToggleView('week')">
+      <i class="ti ti-layout-columns" aria-hidden="true"></i> Week
+    </button>
+    <button class="sg-view-btn" data-mode="day" onclick="sgToggleView('day')">
+      <i class="ti ti-calendar-event" aria-hidden="true"></i> Day
+    </button>`;
+  topbar.insertBefore(tog,topbar.querySelector('.week-nav'));
+}
 
 function renderSchedule(){
-  const grid=document.getElementById('sched-grid');
-  const ws=sgGetWeekStart(),we=new Date(ws);we.setDate(ws.getDate()+6);
-  document.getElementById('sched-week-label').textContent=
-    ws.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' – '+
-    we.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  sgEnsureToggle();
   const today=SG.weekOffset===0?sgGetToday():-1;
+  const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   const DAY_SHORT=['MON','TUE','WED','THU','FRI','SAT','SUN'];
-  const SLOTS=(SG.H_END-SG.H_START)*2;
 
-  let html='<div class="sg-time-hdr"></div>';
-  for(let d=0;d<7;d++){
-    const dt=new Date(ws);dt.setDate(ws.getDate()+d);
-    html+=`<div class="sg-day-hdr${d===today?' today':''}">${DAY_SHORT[d]}<br>${dt.getDate()}</div>`;
-  }
-  for(let s=0;s<SLOTS;s++){
-    const h=SG.H_START+Math.floor(s/2),m=s%2===0?0:30;
-    const lbl=m===0?`${h.toString().padStart(2,'0')}:00`:'';
-    html+=`<div class="sg-time-cell">${lbl}</div>`;
-    for(let d=0;d<7;d++){
-      html+=`<div class="sg-hour-cell${m===30?' half-hr':''}" data-day="${d}" data-min="${sgToMin(h,m)}"></div>`;
-    }
-  }
-  grid.innerHTML=html;
-
-  const dayWrappers=[];
-  for(let d=0;d<7;d++){
-    const w=document.createElement('div');
-    w.style.cssText=`position:relative;grid-column:${d+2};grid-row:2/${SLOTS+2};pointer-events:none;`;
-    grid.appendChild(w);dayWrappers[d]=w;
+  /* update nav label */
+  if(SG.viewMode==='day'){
+    const ws=sgGetWeekStart();
+    const dt=new Date(ws);dt.setDate(ws.getDate()+SG.viewDay);
+    document.getElementById('sched-week-label').textContent=
+      DAY_NAMES[SG.viewDay]+' '+dt.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+  } else {
+    const ws=sgGetWeekStart(),we=new Date(ws);we.setDate(ws.getDate()+6);
+    document.getElementById('sched-week-label').textContent=
+      ws.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' – '+
+      we.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
   }
 
-  const totalH=(SG.H_END-SG.H_START)*60;
+  if(SG.viewMode==='day') renderDayView(today);
+  else renderWeekView(today,DAY_SHORT);
+}
 
-  /* prayers — every day */
-  for(let d=0;d<7;d++){
+/* ── shared block builder ── */
+function sgBuildDayContent(dayIdx,wrappers,daysToRender){
+  const colMap={};
+  daysToRender.forEach((d,i)=>{colMap[d]=i;});
+
+  /* prayers */
+  daysToRender.forEach(d=>{
     PRAYERS.forEach(p=>{
       const el=document.createElement('div');
       el.className='sched-block sb-anchor';
@@ -927,35 +986,34 @@ function renderSchedule(){
       el.innerHTML=`<div class="sb-label"><i class="ti ${p.icon}" style="font-size:7px" aria-hidden="true"></i> ${p.name}</div><div class="sb-sub">${sgMinStr(p.start)}</div>`;
       el.addEventListener('mouseenter',ev=>sgShowTip(ev,p.name,'Barakah anchor — fixed prayer time',`${sgMinStr(p.start)} – ${sgMinStr(p.start+p.dur)}`));
       el.addEventListener('mouseleave',sgHideTip);
-      dayWrappers[d].appendChild(el);
+      wrappers[colMap[d]].appendChild(el);
     });
-  }
+  });
 
   /* fixed classes */
-  SCHED_CLASSES.forEach(c=>{
+  SCHED_CLASSES.filter(c=>daysToRender.includes(c.day)).forEach(c=>{
+    const col=colMap[c.day];
     const el=document.createElement('div');
     el.className='sched-block sb-class';
     el.style.cssText=`top:${sgTopPx(c.start)}px;height:${Math.max(sgHPx(c.dur),14)}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[c.course]||'#ffd260'}`;
     el.innerHTML=`<div class="sb-label">${c.label}</div><div class="sb-sub">${sgMinStr(c.start)}</div>`;
     el.addEventListener('mouseenter',ev=>sgShowTip(ev,c.label,c.course+' — fixed class',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min`));
     el.addEventListener('mouseleave',sgHideTip);
-    dayWrappers[c.day].appendChild(el);
+    wrappers[col].appendChild(el);
   });
 
-  /* fluid blocks */
-  sgFluid.forEach(b=>{
-    if(b.day<0||b.day>6)return;
+  /* fluid */
+  sgFluid.filter(b=>daysToRender.includes(b.day)).forEach(b=>{
+    const col=colMap[b.day];
     const pieces=sgSplitAroundPrayers(b);
     pieces.forEach(piece=>{
       const top=sgTopPx(piece.start);
-      if(top<0||top>totalH*SG.PX_PER_MIN)return;
+      if(top<0)return;
       const ht=Math.max(sgHPx(piece.dur),14);
       const el=document.createElement('div');
       el.className='sched-block '+(piece.split?'sb-split':'sb-study');
       el.style.cssText=`top:${top}px;height:${ht}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[b.course]||'#7adfa8'}`;
-      el.draggable=true;
-      el.dataset.id=b.id;
-      const lbl=piece.split?`${b.label} (${piece.partN===1?'before':'after'} ${PRAYERS.find(p=>p.start>=piece.start-piece.dur&&p.start<=piece.start+piece.dur)||PRAYERS[0]}.name})`:b.label;
+      el.draggable=true;el.dataset.id=b.id;
       const displayLbl=piece.split?`${b.label} pt.${piece.partN}`:b.label;
       el.innerHTML=`<div class="sb-label">${displayLbl}</div><div class="sb-sub">${b.course} · ${sgMinStr(piece.start)}</div>`;
       el.addEventListener('dragstart',ev=>{SG.dragBlock=b;el.classList.add('dragging');ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',b.id);});
@@ -963,13 +1021,13 @@ function renderSchedule(){
       el.addEventListener('mouseenter',ev=>sgShowTip(ev,b.label,b.course+(piece.split?' — auto-split around prayer':' — drag to move'),`${sgMinStr(piece.start)} – ${sgMinStr(piece.start+piece.dur)}, ${piece.dur} min`));
       el.addEventListener('mouseleave',sgHideTip);
       el.addEventListener('dblclick',()=>{if(confirm(`Remove "${b.label}"?`)){sgFluid=sgFluid.filter(x=>x.id!==b.id);sgSave();renderSchedule();}});
-      dayWrappers[b.day].appendChild(el);
+      wrappers[col].appendChild(el);
     });
   });
 
   /* drop zones */
-  for(let d=0;d<7;d++){
-    const wrap=dayWrappers[d];const dayIdx=d;
+  wrappers.forEach((wrap,i)=>{
+    const dayIdx=daysToRender[i];
     wrap.style.pointerEvents='all';
     wrap.addEventListener('dragover',ev=>{ev.preventDefault();ev.dataTransfer.dropEffect='move';});
     wrap.addEventListener('drop',ev=>{
@@ -989,7 +1047,124 @@ function renderSchedule(){
         sgShowRipple();sgSave();renderSchedule();
       }
     });
+  });
+}
+
+/* ── week view ── */
+function renderWeekView(today,DAY_SHORT){
+  const grid=document.getElementById('sched-grid');
+  const ws=sgGetWeekStart();
+  const SLOTS=(SG.H_END-SG.H_START)*2;
+  const cols=7;
+
+  grid.style.gridTemplateColumns='48px repeat(7,minmax(80px,1fr))';
+  grid.style.animation='none';
+
+  /* header row */
+  let html='<div class="sg-time-hdr"></div>';
+  for(let d=0;d<cols;d++){
+    const dt=new Date(ws);dt.setDate(ws.getDate()+d);
+    html+=`<div class="sg-day-hdr${d===today?' today':''}">${DAY_SHORT[d]}<br>${dt.getDate()}</div>`;
   }
+
+  /* time + cells — each full hour gets one row spanning 2 slots */
+  for(let h=SG.H_START;h<SG.H_END;h++){
+    const lbl=`${h.toString().padStart(2,'0')}:00`;
+    /* full-hour row (label shown, solid border) */
+    html+=`<div class="sg-time-cell sg-tc-hour">${lbl}</div>`;
+    for(let d=0;d<cols;d++) html+=`<div class="sg-hour-cell" data-day="${d}" data-min="${sgToMin(h,0)}"></div>`;
+    /* half-hour row (no label, dashed) */
+    html+=`<div class="sg-time-cell sg-tc-half"></div>`;
+    for(let d=0;d<cols;d++) html+=`<div class="sg-hour-cell half-hr" data-day="${d}" data-min="${sgToMin(h,30)}"></div>`;
+  }
+
+  grid.innerHTML=html;
+
+  /* overlay wrappers — one per day column */
+  const rowSpan=SLOTS*2; // each slot = 2 grid rows (hour + half)
+  const wrappers=[];
+  for(let d=0;d<cols;d++){
+    const w=document.createElement('div');
+    /* grid rows: 2 header rows then SLOTS*2 content rows; wrap all content rows */
+    w.style.cssText=`position:relative;grid-column:${d+2};grid-row:3/${3+SLOTS*2};pointer-events:none;`;
+    grid.appendChild(w);wrappers.push(w);
+  }
+
+  sgBuildDayContent(today,[...wrappers],[0,1,2,3,4,5,6]);
+  sgPlaceNowLine(grid,[...wrappers],today,[0,1,2,3,4,5,6]);
+  sgStartNowClock(grid,[...wrappers],today,[0,1,2,3,4,5,6],'week');
+}
+
+/* ── day view ── */
+function renderDayView(today){
+  const grid=document.getElementById('sched-grid');
+  const SLOTS=(SG.H_END-SG.H_START)*2;
+  const d=SG.viewDay;
+
+  grid.style.gridTemplateColumns='56px 1fr';
+  grid.style.animation='sgDayIn .35s cubic-bezier(.22,1,.36,1) both';
+
+  let html='<div class="sg-time-hdr"></div>';
+  const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  html+=`<div class="sg-day-hdr${d===today?' today':''}" style="font-size:13px;padding:10px">${DAY_NAMES[d]}</div>`;
+
+  for(let h=SG.H_START;h<SG.H_END;h++){
+    const lbl=`${h.toString().padStart(2,'0')}:00`;
+    html+=`<div class="sg-time-cell sg-tc-hour">${lbl}</div>`;
+    html+=`<div class="sg-hour-cell" data-day="${d}" data-min="${sgToMin(h,0)}"></div>`;
+    html+=`<div class="sg-time-cell sg-tc-half"></div>`;
+    html+=`<div class="sg-hour-cell half-hr" data-day="${d}" data-min="${sgToMin(h,30)}"></div>`;
+  }
+  grid.innerHTML=html;
+
+  const w=document.createElement('div');
+  w.style.cssText=`position:relative;grid-column:2;grid-row:3/${3+SLOTS*2};pointer-events:none;`;
+  grid.appendChild(w);
+
+  sgBuildDayContent(d,[w],[d]);
+  sgPlaceNowLine(grid,[w],today,[d]);
+  sgStartNowClock(grid,[w],today,[d],'day');
+}
+
+/* ── now line ── */
+function sgNowTopPx(){
+  const now=new Date();
+  const nowMin=now.getHours()*60+now.getMinutes();
+  return sgTopPx(nowMin);
+}
+
+function sgPlaceNowLine(grid,wrappers,today,days){
+  /* remove old */
+  grid.querySelectorAll('.sg-now-line,.sg-now-dot').forEach(e=>e.remove());
+  if(SG.weekOffset!==0)return;
+  const todayCol=days.indexOf(today);
+  if(todayCol<0)return;
+  const top=sgNowTopPx();
+  if(top<0)return;
+
+  const wrap=wrappers[todayCol];
+
+  /* glowing dot */
+  const dot=document.createElement('div');
+  dot.className='sg-now-dot';
+  dot.style.cssText=`top:${top-4}px;left:-4px`;
+  wrap.appendChild(dot);
+
+  /* line */
+  const line=document.createElement('div');
+  line.className='sg-now-line';
+  line.style.cssText=`top:${top}px;left:0;right:0`;
+  wrap.appendChild(line);
+}
+
+function sgStartNowClock(grid,wrappers,today,days,viewKey){
+  if(SG.nowLineInterval)clearInterval(SG.nowLineInterval);
+  SG.nowLineInterval=setInterval(()=>{
+    /* only update if still on schedule tab in same view */
+    if(document.getElementById('panel-schedule').classList.contains('active')&&SG.viewMode===viewKey){
+      sgPlaceNowLine(grid,wrappers,today,days);
+    }
+  },30000); // update every 30s
 }
 
 function schedAddTask(){
