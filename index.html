@@ -154,7 +154,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(56,194,232,0.25),transparent);margin:1rem 0}
 .footer{text-align:center;margin-top:2.5rem;font-size:12px;color:var(--text-soft);opacity:.7}
 
-/* ── Schedule grid ── */
+/* ── Schedule top controls ── */
 .sched-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:8px}
 .sched-topbar-title{font-size:13px;font-weight:800;color:var(--text-deep)}
 .week-nav{display:flex;align-items:center;gap:6px}
@@ -162,12 +162,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .sched-wbtn:hover{background:rgba(255,255,255,0.9)}
 .sched-week-label{font-size:11px;font-weight:700;color:var(--text-soft);min-width:110px;text-align:center}
 
-/* gel view toggle */
+/* gel toggle */
 #sg-view-toggle{display:flex;align-items:center;background:linear-gradient(135deg,rgba(255,255,255,0.55),rgba(200,248,255,0.45));border:1.5px solid rgba(255,255,255,0.85);border-radius:50px;padding:3px;box-shadow:0 2px 12px rgba(56,194,232,0.18),inset 0 1px 0 rgba(255,255,255,0.9);backdrop-filter:blur(8px)}
 .sg-view-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;font-size:11px;font-weight:800;font-family:'Nunito',sans-serif;border-radius:50px;border:none;cursor:pointer;background:transparent;color:var(--text-soft);transition:all .25s cubic-bezier(.22,1,.36,1);letter-spacing:.03em}
-.sg-view-btn.active{background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;box-shadow:0 2px 10px rgba(15,163,204,0.45),inset 0 1px 0 rgba(255,255,255,0.35);text-shadow:0 1px 2px rgba(0,0,0,0.12)}
+.sg-view-btn.active{background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;box-shadow:0 2px 10px rgba(15,163,204,0.45),inset 0 1px 0 rgba(255,255,255,0.35)}
 .sg-view-btn:not(.active):hover{background:rgba(255,255,255,0.5);color:var(--aqua5)}
 
+/* legend */
 .sched-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:.75rem}
 .sleg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-soft);font-weight:600}
 .sleg-anchor{width:13px;height:13px;border-radius:50%;background:rgba(56,194,232,0.15);border:1.5px solid rgba(56,194,232,0.7)}
@@ -175,51 +176,184 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .sleg-study{width:13px;height:13px;border-radius:3px;background:rgba(26,184,112,0.14);border:1.5px solid rgba(26,184,112,0.5)}
 .sleg-split{width:13px;height:13px;border-radius:3px;background:rgba(214,48,48,0.08);border:1.5px dashed rgba(214,48,48,0.45)}
 
-/* grid */
-.sched-grid{display:grid;border:1.5px solid rgba(56,194,232,0.2);border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.6);min-width:620px}
-.sg-day-hdr{padding:7px 4px;text-align:center;font-size:10px;font-weight:800;color:var(--text-soft);border-bottom:1px solid rgba(56,194,232,0.15);background:rgba(255,255,255,0.5);letter-spacing:.05em}
-.sg-day-hdr.today{color:var(--aqua5);background:rgba(56,194,232,0.1)}
-.sg-time-hdr{padding:7px 4px;font-size:9px;font-weight:700;color:var(--text-soft);border-bottom:1px solid rgba(56,194,232,0.15);background:rgba(255,255,255,0.5);text-align:center}
-
-/* time cells — each covers one hour slot (26px) */
-.sg-time-cell{border-right:1px solid rgba(56,194,232,0.12);display:flex;align-items:flex-start;justify-content:flex-end;padding:2px 4px 0 0;font-weight:700}
-.sg-tc-hour{font-size:9px;color:rgba(74,157,181,0.85);height:26px;border-bottom:1px solid rgba(56,194,232,0.1)}
-.sg-tc-half{font-size:9px;color:transparent;height:26px;border-bottom:1px dashed rgba(56,194,232,0.06)}
-
-.sg-day-col{border-right:1px solid rgba(56,194,232,0.1);position:relative}
-.sg-day-col:last-child{border-right:none}
-.sg-hour-cell{height:26px;position:relative;border-bottom:1px solid rgba(56,194,232,0.1)}
-.sg-hour-cell.half-hr{border-bottom:1px dashed rgba(56,194,232,0.06)}
-
-/* blocks */
-.sched-block{position:absolute;left:1px;right:1px;border-radius:4px;font-size:8.5px;font-weight:700;padding:2px 4px;overflow:hidden;z-index:2;transition:box-shadow .15s;line-height:1.25;cursor:default}
-.sched-block:hover{z-index:10;box-shadow:0 2px 10px rgba(0,0,0,0.12)}
-.sb-anchor{background:linear-gradient(135deg,rgba(56,194,232,0.18),rgba(180,240,255,0.3));border:1.5px solid rgba(180,240,255,0.88);color:#0880a8}
-.sb-anchor::before{content:'';position:absolute;top:2px;left:3px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.82)}
-.sb-class{background:rgba(255,210,96,0.18);border:1.5px solid rgba(200,150,20,0.45);color:#633806}
-.sb-study{background:rgba(26,184,112,0.14);border:1.5px solid rgba(26,184,112,0.5);color:#0F6E56;cursor:grab}
-.sb-study:active{cursor:grabbing;transform:scale(1.02);z-index:20}
-.sb-study.dragging{opacity:.4}
-.sb-split{background:rgba(214,48,48,0.08);border:1.5px dashed rgba(214,48,48,0.45);color:#791F1F;cursor:grab}
-.sb-label{font-size:8.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sb-sub{font-size:7.5px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* now line */
-.sg-now-line{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,rgba(56,194,232,0),#38c2e8 20%,#38c2e8 80%,rgba(56,194,232,0));box-shadow:0 0 8px rgba(56,194,232,0.8),0 0 16px rgba(56,194,232,0.4);z-index:50;pointer-events:none;border-radius:1px}
-.sg-now-dot{position:absolute;width:9px;height:9px;border-radius:50%;background:#38c2e8;box-shadow:0 0 0 3px rgba(56,194,232,0.3),0 0 10px rgba(56,194,232,0.8);z-index:51;pointer-events:none}
-
-/* day view animation */
-@keyframes sgDayIn{
-  from{opacity:0;transform:scale(0.96);filter:blur(4px)}
-  to{opacity:1;transform:scale(1);filter:blur(0)}
+/* ── CALENDAR LAYOUT ─────────────────────────────────────
+   Outer shell: fixed time sidebar (60px) + scrollable day area.
+   Header row:  60px offset spacer + day name columns.
+   Body:        time sidebar (fixed left) + day columns (scroll).
+──────────────────────────────────────────────────────── */
+.sg-cal-outer{
+  border:1.5px solid rgba(56,194,232,0.2);
+  border-radius:14px;
+  overflow:hidden;
+  background:rgba(255,255,255,0.6);
+  backdrop-filter:blur(8px);
+  display:flex;
+  flex-direction:column;
 }
 
+/* header row — 60px spacer then day names */
+.sg-cal-header{
+  display:grid;
+  grid-template-columns:60px repeat(var(--day-cols,7),minmax(72px,1fr));
+  background:rgba(255,255,255,0.55);
+  border-bottom:1.5px solid rgba(56,194,232,0.15);
+  position:sticky;top:0;z-index:20;
+}
+.sg-cal-header-spacer{
+  border-right:1px solid rgba(56,194,232,0.12);
+}
+.sg-day-hdr{
+  padding:7px 4px;text-align:center;
+  font-size:10px;font-weight:800;color:var(--text-soft);
+  border-right:1px solid rgba(56,194,232,0.1);
+  letter-spacing:.05em;line-height:1.4;
+}
+.sg-day-hdr:last-child{border-right:none}
+.sg-day-hdr.today{color:var(--aqua5);background:rgba(56,194,232,0.08)}
+
+/* body row — time sidebar + scrollable day columns */
+.sg-cal-body{
+  display:flex;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  max-height:560px;
+  overflow-y:auto;
+}
+
+/* time sidebar — fixed width, one label per hour */
+.sg-time-sidebar{
+  width:60px;
+  flex-shrink:0;
+  border-right:1px solid rgba(56,194,232,0.15);
+  background:rgba(255,255,255,0.45);
+  position:sticky;left:0;z-index:10;
+}
+.sg-time-slot{
+  height:60px; /* one hour = 60px */
+  display:flex;
+  align-items:flex-start;
+  justify-content:flex-end;
+  padding:3px 6px 0 0;
+  font-size:9.5px;font-weight:700;
+  color:rgba(74,157,181,0.8);
+  border-bottom:1px solid rgba(56,194,232,0.1);
+  box-sizing:border-box;
+}
+/* half-hour tick mark */
+.sg-time-slot::after{
+  content:'';
+  position:absolute;
+  right:0;top:50%;
+  width:4px;height:1px;
+  background:rgba(56,194,232,0.25);
+}
+.sg-time-slot{position:relative}
+
+/* day columns area */
+.sg-day-cols{
+  display:grid;
+  grid-template-columns:repeat(var(--day-cols,7),minmax(72px,1fr));
+  flex:1;
+  min-width:0;
+}
+
+/* individual day column */
+.sg-day-col{
+  position:relative;
+  border-right:1px solid rgba(56,194,232,0.08);
+}
+.sg-day-col:last-child{border-right:none}
+
+/* hour/half-hour background stripes inside day column */
+.sg-col-hour{
+  height:60px;
+  border-bottom:1px solid rgba(56,194,232,0.1);
+  box-sizing:border-box;
+  position:relative;
+}
+.sg-col-hour::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;top:50%;
+  height:1px;
+  background:rgba(56,194,232,0.05);
+  border-top:1px dashed rgba(56,194,232,0.07);
+}
+
+/* blocks */
+.sched-block{position:absolute;left:1px;right:1px;border-radius:4px;font-size:9px;font-weight:700;padding:3px 5px;overflow:hidden;z-index:2;transition:box-shadow .15s;line-height:1.3;cursor:default;box-sizing:border-box}
+.sched-block:hover{z-index:10;box-shadow:0 3px 12px rgba(0,0,0,0.15)}
+.sb-anchor{background:linear-gradient(135deg,rgba(56,194,232,0.2),rgba(180,240,255,0.35));border:1.5px solid rgba(180,240,255,0.88);color:#0880a8}
+.sb-anchor::before{content:'';position:absolute;top:3px;left:4px;width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.85)}
+.sb-class{background:rgba(255,210,96,0.2);border:1.5px solid rgba(200,150,20,0.45);color:#633806}
+.sb-study{background:rgba(26,184,112,0.15);border:1.5px solid rgba(26,184,112,0.55);color:#0F6E56;cursor:grab}
+.sb-study:active{cursor:grabbing;transform:scale(1.01);z-index:20}
+.sb-study.dragging{opacity:.4}
+.sb-split{background:rgba(214,48,48,0.08);border:1.5px dashed rgba(214,48,48,0.45);color:#791F1F;cursor:grab}
+.sb-label{font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-sub{font-size:7.5px;opacity:.7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* now indicator — vertical glowing line inside time sidebar */
+.sg-now-indicator{
+  position:absolute;
+  left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,rgba(56,194,232,0.1),#38c2e8 30%,#38c2e8 70%,rgba(56,194,232,0.1));
+  box-shadow:0 0 6px rgba(56,194,232,0.9),0 0 14px rgba(56,194,232,0.5);
+  z-index:30;pointer-events:none;border-radius:1px;
+}
+.sg-now-label{
+  position:absolute;
+  right:5px;
+  transform:translateY(-50%);
+  font-size:8px;font-weight:800;
+  color:#0fa3cc;
+  background:rgba(255,255,255,0.92);
+  border:1px solid rgba(56,194,232,0.5);
+  border-radius:3px;
+  padding:1px 4px;
+  white-space:nowrap;
+  z-index:31;pointer-events:none;
+  box-shadow:0 0 6px rgba(56,194,232,0.3);
+}
+.sg-now-dot{
+  position:absolute;right:-4px;
+  width:8px;height:8px;border-radius:50%;
+  background:#38c2e8;
+  box-shadow:0 0 0 2px rgba(255,255,255,0.9),0 0 8px rgba(56,194,232,0.9);
+  z-index:32;pointer-events:none;
+  transform:translateY(-50%);
+}
+
+/* day view animation */
+@keyframes sgDayIn{from{opacity:0;transform:scale(0.97);filter:blur(3px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+
+/* add panel / info strips */
 .sched-add-panel{margin-top:12px;background:rgba(255,255,255,0.58);border:1.5px solid var(--glass-border);border-radius:18px;padding:1.25rem 1.5rem;backdrop-filter:blur(10px)}
 .sched-info{margin-top:8px;font-size:11px;color:var(--aqua5);background:rgba(56,194,232,0.08);border:1px solid rgba(56,194,232,0.25);border-radius:8px;padding:6px 10px;display:none}
 .sched-info.show{display:block}
 .sched-ripple{margin-top:6px;font-size:11px;color:var(--amber3);background:var(--amber1);border:1px solid rgba(224,154,0,0.3);border-radius:8px;padding:6px 10px;display:none}
 .sched-ripple.show{display:block}
-.sched-tooltip{position:fixed;background:rgba(255,255,255,0.96);border:1.5px solid rgba(56,194,232,0.3);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--text-deep);box-shadow:0 4px 14px rgba(56,194,232,0.15);pointer-events:none;z-index:9998;display:none;max-width:180px;line-height:1.5;backdrop-filter:blur(6px)}
+.sched-tooltip{position:fixed;background:rgba(255,255,255,0.96);border:1.5px solid rgba(56,194,232,0.3);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--text-deep);box-shadow:0 4px 14px rgba(56,194,232,0.15);pointer-events:none;z-index:9998;display:none;max-width:200px;line-height:1.5;backdrop-filter:blur(6px)}
+/* add-panel tabs */
+.sap-tab{padding:7px 14px;font-size:11px;font-weight:700;font-family:'Nunito',sans-serif;border:none;border-radius:8px 8px 0 0;cursor:pointer;background:transparent;color:var(--text-soft);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
+.sap-tab:hover{color:var(--aqua5);background:rgba(56,194,232,0.06)}
+.sap-tab.active{color:var(--aqua5);border-bottom:2px solid var(--aqua3);font-weight:800;background:rgba(56,194,232,0.06)}
+/* smart result card */
+.smart-slot-card{background:linear-gradient(135deg,rgba(255,255,255,0.8),rgba(200,248,255,0.5));border:1.5px solid var(--glass-border);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:8px}
+.smart-slot-card.best{border-color:rgba(26,184,112,0.5);background:linear-gradient(135deg,rgba(220,255,235,0.8),rgba(200,248,220,0.5))}
+/* test countdown */
+.test-card{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(56,194,232,0.1)}
+.test-card:last-child{border-bottom:none}
+.test-countdown-badge{min-width:52px;height:52px;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Quicksand',sans-serif;font-weight:800;flex-shrink:0}
+.tcb-urgent{background:var(--red1);color:var(--red3)}
+.tcb-soon{background:var(--amber1);color:var(--amber3)}
+.tcb-ok{background:var(--green1);color:var(--green3)}
+.tcb-days{font-size:20px;line-height:1}
+.tcb-lbl{font-size:9px;letter-spacing:.05em;text-transform:uppercase}
+/* test block in calendar */
+.sb-test{background:rgba(214,48,48,0.12);border:2px solid rgba(214,48,48,0.5);color:#8B1A1A;cursor:default}
+.sb-test::before{content:'📝 ';font-size:8px}
 /* course outlines */
 .outline-section{margin-bottom:1rem}
 .outline-course-hdr{display:flex;align-items:center;gap:10px;padding:.6rem 1rem;background:linear-gradient(135deg,rgba(255,255,255,0.7),rgba(200,248,255,0.5));border:1.5px solid var(--glass-border);border-radius:12px 12px 0 0;font-weight:800;font-size:13px;color:var(--text-deep)}
@@ -268,11 +402,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 <div class="nav">
   <button class="nav-btn active" onclick="showTab('today')"><i class="ti ti-sun"></i> Today</button>
   <button class="nav-btn" onclick="showTab('timer')"><i class="ti ti-clock"></i> Flow Timer</button>
-  <button class="nav-btn" onclick="showTab('qbank')"><i class="ti ti-help-circle"></i> Question Bank</button>
   <button class="nav-btn" onclick="showTab('analytics')"><i class="ti ti-chart-bar"></i> Analytics</button>
   <button class="nav-btn" onclick="showTab('schedule')"><i class="ti ti-adjustments"></i> Schedule</button>
   <button class="nav-btn" onclick="showTab('review')"><i class="ti ti-brain"></i> Spaced Review</button>
-  <button class="nav-btn" onclick="showTab('logq')"><i class="ti ti-edit"></i> Log Question</button>
   <button class="nav-btn" onclick="showTab('outlines')"><i class="ti ti-list-check"></i> Course Outlines</button>
 </div>
 
@@ -394,88 +526,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   </div>
 </div>
 
-<!-- QUESTION BANK -->
-<div id="panel-qbank" class="panel">
-  <div class="tip"><i class="ti ti-bulb"></i> Try to answer in your head, then reveal the answer. You can also <strong>upload an image</strong> of a question — handwritten, printed, a spectrum or diagram — and the AI will extract the text for you automatically.</div>
-  <div class="gc">
-    <div class="gc-title">Filter</div>
-    <div class="fr">
-      <div>
-        <div class="fl">Course</div>
-        <select class="fi" id="qb-filter-course" onchange="renderQBank()">
-          <option value="all">All courses</option>
-          <option value="PH127/133">PH127/133 — Vibrations &amp; Waves</option>
-          <option value="CH117">CH117 — Organic Chemistry 1</option>
-          <option value="CH173">CH173 — Electronic Structure &amp; Spectroscopy</option>
-          <option value="CH174">CH174 — Scientific Methods in Chemistry</option>
-          <option value="PH126">PH126 — Analogue Electronics</option>
-          <option value="PH116">PH116 — Physics Practical</option>
-          <option value="DS115">DS115 — Development Perspectives 2</option>
-        </select>
-      </div>
-      <div>
-        <div class="fl">Difficulty</div>
-        <select class="fi" id="qb-filter-diff" onchange="renderQBank()">
-          <option value="all">All difficulties</option>
-          <option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option>
-        </select>
-      </div>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="fb" onclick="filterWrong()"><i class="ti ti-x"></i> Wrong only</button>
-      <button class="fb primary" onclick="openAddQ()"><i class="ti ti-plus"></i> Add question</button>
-    </div>
-  </div>
-
-  <!-- Add Question -->
-  <div id="add-q-modal" style="display:none" class="gc">
-    <div class="gc-title"><i class="ti ti-plus"></i> Add a new question</div>
-    <div class="fr">
-      <div>
-        <div class="fl">Course</div>
-        <select class="fi" id="aq-course">
-          <option value="PH127/133">PH127/133</option><option value="CH173">CH173</option>
-          <option value="CH17A">CH17A</option><option value="PH116">PH116</option>
-          <option value="DS115">DS115</option><option value="CH174">CH174</option><option value="PH136">PH136</option>
-        </select>
-      </div>
-      <div>
-        <div class="fl">Difficulty</div>
-        <select class="fi" id="aq-diff"><option value="easy">Easy</option><option value="medium">Medium</option><option value="hard">Hard</option></select>
-      </div>
-    </div>
-    <div style="margin-bottom:10px">
-      <div class="fl">Topic</div>
-      <input type="text" class="fi" id="aq-topic" placeholder="e.g. SHM energy, spectroscopy, redox">
-    </div>
-    <div style="margin-bottom:12px">
-      <div class="fl">Upload question image <span style="font-weight:400;opacity:.7">(photo, diagram, spectrum — AI reads it)</span></div>
-      <div class="dropzone" id="dropzone" onclick="document.getElementById('img-input').click()" ondragover="dzOver(event)" ondragleave="dzLeave(event)" ondrop="dzDrop(event)">
-        <i class="ti ti-photo"></i>
-        <span>Click to upload or drag &amp; drop an image here</span>
-        <div style="font-size:11px;margin-top:4px;opacity:.7">PNG, JPG, WEBP — handwritten, printed, spectra all work</div>
-      </div>
-      <input type="file" id="img-input" accept="image/*" style="display:none" onchange="handleImgFile(this.files[0])">
-      <img id="img-preview" class="preview-img" alt="Question preview">
-      <div id="extract-bar" class="extract-bar"></div>
-    </div>
-    <div style="margin-bottom:10px">
-      <div class="fl">Question text <span style="font-weight:400;opacity:.7">(auto-filled from image, or type here)</span></div>
-      <textarea class="fi" id="aq-q" rows="3" placeholder="Question text — extracted from image above, or type manually…" style="resize:vertical"></textarea>
-    </div>
-    <div style="margin-bottom:16px">
-      <div class="fl">Answer / key steps</div>
-      <textarea class="fi" id="aq-a" rows="3" placeholder="Model answer or key steps…" style="resize:vertical"></textarea>
-    </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="fb primary" onclick="saveNewQ()"><i class="ti ti-check"></i> Save question</button>
-      <button class="fb" onclick="closeAddQ()">Cancel</button>
-    </div>
-  </div>
-
-  <div id="qbank-list"></div>
-</div>
-
 <!-- ANALYTICS -->
 <div id="panel-analytics" class="panel">
   <div class="metrics" id="ana-metrics"></div>
@@ -500,92 +550,159 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     <div class="sleg"><div class="sleg-class"></div> Class (fixed)</div>
     <div class="sleg"><div class="sleg-study"></div> Study block (drag to move)</div>
     <div class="sleg"><div class="sleg-split"></div> Auto-split around prayer</div>
+    <div class="sleg"><div style="width:13px;height:13px;border-radius:3px;background:rgba(214,48,48,0.12);border:2px solid rgba(214,48,48,0.5)"></div> Test / exam</div>
   </div>
-  <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
-    <div class="sched-grid" id="sched-grid"></div>
+  <!-- New two-panel calendar layout -->
+  <div class="sg-cal-outer" id="sg-cal-outer">
+    <!-- header: spacer + day names -->
+    <div class="sg-cal-header" id="sg-cal-header">
+      <div class="sg-cal-header-spacer"></div>
+      <!-- day headers injected by JS -->
+    </div>
+    <!-- body: time sidebar + day columns -->
+    <div class="sg-cal-body" id="sg-cal-body">
+      <div class="sg-time-sidebar" id="sg-time-sidebar">
+        <!-- hour labels injected by JS -->
+      </div>
+      <div class="sg-day-cols" id="sg-day-cols">
+        <!-- day content injected by JS -->
+      </div>
+    </div>
   </div>
   <div class="sched-add-panel">
-    <div class="gc-title" style="margin-bottom:.75rem"><i class="ti ti-plus" aria-hidden="true"></i> Add a fluid task</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-      <div>
-        <div class="fl">Task / topic</div>
-        <input type="text" class="fi" id="sched-new-label" placeholder="e.g. Organic mechanisms">
-      </div>
-      <div>
-        <div class="fl">Course</div>
-        <select class="fi" id="sched-new-course">
-          <option value="PH127/133">PH127/133 — Vibrations</option>
-          <option value="CH117">CH117 — Organic Chem 1</option>
-          <option value="CH173">CH173 — Spectroscopy</option>
-          <option value="CH174">CH174 — Sci Methods</option>
-          <option value="PH126">PH126 — Analogue Elec</option>
-          <option value="DS115">DS115 — Dev Perspectives</option>
-          <option value="PH116">PH116 — Lab report / pre-lab</option>
-        </select>
-      </div>
-      <div>
-        <div class="fl">Day</div>
-        <select class="fi" id="sched-new-day">
-          <option value="0">Monday</option><option value="1">Tuesday</option><option value="2">Wednesday</option>
-          <option value="3">Thursday</option><option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option>
-        </select>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-        <div>
-          <div class="fl">Start time</div>
-          <input type="time" class="fi" id="sched-new-time" value="09:00">
+    <!-- ── TABS ── -->
+    <div style="display:flex;gap:4px;margin-bottom:1rem;border-bottom:1px solid rgba(56,194,232,0.15);padding-bottom:0">
+      <button class="sap-tab active" id="sap-tab-task" onclick="sapSwitch('task')"><i class="ti ti-plus"></i> Add task</button>
+      <button class="sap-tab" id="sap-tab-smart" onclick="sapSwitch('smart')"><i class="ti ti-brain"></i> Smart suggest</button>
+      <button class="sap-tab" id="sap-tab-test" onclick="sapSwitch('test')"><i class="ti ti-school"></i> Add test</button>
+    </div>
+
+    <!-- ── MANUAL ADD ── -->
+    <div id="sap-panel-task">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><div class="fl">Task / topic</div><input type="text" class="fi" id="sched-new-label" placeholder="e.g. Organic mechanisms"></div>
+        <div><div class="fl">Course</div>
+          <select class="fi" id="sched-new-course">
+            <option value="PH127/133">PH127/133 — Vibrations</option>
+            <option value="CH117">CH117 — Organic Chem 1</option>
+            <option value="CH173">CH173 — Spectroscopy</option>
+            <option value="CH174">CH174 — Sci Methods</option>
+            <option value="PH126">PH126 — Analogue Elec</option>
+            <option value="DS115">DS115 — Dev Perspectives</option>
+            <option value="PH116">PH116 — Lab report / pre-lab</option>
+          </select>
         </div>
-        <div>
-          <div class="fl">Duration (min)</div>
-          <input type="number" class="fi" id="sched-new-dur" value="60" min="15" max="240" step="15">
+        <div><div class="fl">Day</div>
+          <select class="fi" id="sched-new-day">
+            <option value="0">Monday</option><option value="1">Tuesday</option>
+            <option value="2">Wednesday</option><option value="3">Thursday</option>
+            <option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option>
+          </select>
         </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><div class="fl">Start time</div><input type="time" class="fi" id="sched-new-time" value="09:00"></div>
+          <div><div class="fl">Duration (min)</div><input type="number" class="fi" id="sched-new-dur" value="60" min="15" max="240" step="15"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="fb primary" onclick="schedAddTask()"><i class="ti ti-plus"></i> Add to schedule</button>
+        <button class="fb" onclick="schedClearFluid()"><i class="ti ti-refresh"></i> Reset defaults</button>
       </div>
     </div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-      <button class="fb primary" onclick="schedAddTask()"><i class="ti ti-plus"></i> Add to schedule</button>
-      <button class="fb" onclick="schedClearFluid()"><i class="ti ti-refresh"></i> Reset to defaults</button>
+
+    <!-- ── SMART SUGGEST ── -->
+    <div id="sap-panel-smart" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><div class="fl">Task name</div><input type="text" class="fi" id="smart-label" placeholder="e.g. Organic mechanisms revision"></div>
+        <div><div class="fl">Course</div>
+          <select class="fi" id="smart-course">
+            <option value="PH127/133">PH127/133 — Vibrations</option>
+            <option value="CH117">CH117 — Organic Chem 1</option>
+            <option value="CH173">CH173 — Spectroscopy</option>
+            <option value="CH174">CH174 — Sci Methods</option>
+            <option value="PH126">PH126 — Analogue Elec</option>
+            <option value="DS115">DS115 — Dev Perspectives</option>
+            <option value="PH116">PH116 — Lab report / pre-lab</option>
+          </select>
+        </div>
+        <div><div class="fl">Duration needed (min)</div><input type="number" class="fi" id="smart-dur" value="60" min="15" max="240" step="15"></div>
+        <div><div class="fl">Urgency / deadline</div>
+          <select class="fi" id="smart-urgency">
+            <option value="3">🔴 Urgent — within 3 days</option>
+            <option value="7">🟡 Soon — within a week</option>
+            <option value="14">🟢 Relaxed — 2+ weeks away</option>
+          </select>
+        </div>
+        <div><div class="fl">My energy right now</div>
+          <select class="fi" id="smart-energy">
+            <option value="high">⚡ High — ready for deep work</option>
+            <option value="medium">〰 Medium — active study OK</option>
+            <option value="low">🌙 Low — light review only</option>
+          </select>
+        </div>
+      </div>
+      <button class="fb primary" onclick="schedSmartSuggest()"><i class="ti ti-wand"></i> Find best slot</button>
+      <div id="smart-result" style="margin-top:12px"></div>
     </div>
+
+    <!-- ── ADD TEST ── -->
+    <div id="sap-panel-test" style="display:none">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+        <div><div class="fl">Test / exam name</div><input type="text" class="fi" id="test-label" placeholder="e.g. PH127 Midterm"></div>
+        <div><div class="fl">Course</div>
+          <select class="fi" id="test-course">
+            <option value="PH127/133">PH127/133 — Vibrations</option>
+            <option value="CH117">CH117 — Organic Chem 1</option>
+            <option value="CH173">CH173 — Spectroscopy</option>
+            <option value="CH174">CH174 — Sci Methods</option>
+            <option value="PH126">PH126 — Analogue Elec</option>
+            <option value="DS115">DS115 — Dev Perspectives</option>
+            <option value="PH116">PH116 — Physics Practical</option>
+          </select>
+        </div>
+        <div><div class="fl">Date</div><input type="date" class="fi" id="test-date"></div>
+        <div><div class="fl">Time (optional)</div><input type="time" class="fi" id="test-time" value="09:00"></div>
+        <div style="grid-column:span 2"><div class="fl">Venue / notes (optional)</div><input type="text" class="fi" id="test-notes" placeholder="e.g. Main Hall, Room 3"></div>
+      </div>
+      <button class="fb primary" onclick="schedAddTest()"><i class="ti ti-school"></i> Save test</button>
+      <div id="test-add-result" style="margin-top:8px"></div>
+    </div>
+
     <div class="sched-info" id="sched-info"></div>
     <div class="sched-ripple" id="sched-ripple"></div>
+  </div>
+
+  <!-- ── TEST COUNTDOWN LIST ── -->
+  <div class="sched-add-panel" style="margin-top:10px" id="test-countdown-wrap">
+    <div class="gc-title" style="margin-bottom:.75rem"><i class="ti ti-school"></i> Upcoming tests &amp; exams</div>
+    <div id="test-countdown-list"><div class="empty" style="padding:1rem">No tests saved yet — add one above.</div></div>
   </div>
   <div class="sched-tooltip" id="sched-tooltip"></div>
 </div>
 
 <!-- SPACED REVIEW -->
 <div id="panel-review" class="panel">
-  <div class="tip"><i class="ti ti-brain"></i> Wrong answers return in 1 day → 3 days → 7 days. Right answers repeat every 7 days.</div>
-  <div class="gc"><div class="gc-title">Review queue</div><div id="review-full-list"></div></div>
-</div>
+  <div class="tip"><i class="ti ti-brain"></i> After each flow session, rate the topics you covered and how well you understood them. The system schedules when to revisit each topic using spaced repetition — harder sessions come back sooner.</div>
 
-<!-- LOG QUESTION -->
-<div id="panel-logq" class="panel">
+  <!-- Overall confidence by course -->
   <div class="gc">
-    <div class="gc-title"><i class="ti ti-edit"></i> Quick log — any attempt</div>
-    <div class="fr">
-      <div>
-        <div class="fl">Course</div>
-        <select class="fi" id="lq-course">
-          <option value="PH127/133">PH127/133</option><option value="CH173">CH173</option>
-          <option value="CH17A">CH17A</option><option value="PH116">PH116</option>
-          <option value="DS115">DS115</option><option value="CH174">CH174</option><option value="PH136">PH136</option>
-        </select>
-      </div>
-      <div><div class="fl">Topic</div><input type="text" class="fi" id="lq-topic" placeholder="e.g. SHM energy"></div>
-    </div>
-    <div style="margin-bottom:14px"><div class="fl">Question description</div><input type="text" class="fi" id="lq-text" placeholder="e.g. Q2b — total energy of oscillator"></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="fb correct" onclick="quickLog(true)"><i class="ti ti-check"></i> Got it right</button>
-      <button class="fb wrong" onclick="quickLog(false)"><i class="ti ti-x"></i> Got it wrong</button>
-    </div>
+    <div class="gc-title"><i class="ti ti-chart-bar"></i> Confidence by course</div>
+    <div id="sr-course-bars"></div>
   </div>
-  <div class="gc"><div class="gc-title">Recent log</div><div id="lq-recent"></div></div>
+
+  <!-- Due for review today -->
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-calendar-due"></i> Due for review today</div>
+    <div id="sr-due-today"></div>
+  </div>
+
+  <!-- Full review queue -->
+  <div class="gc">
+    <div class="gc-title"><i class="ti ti-list"></i> Full review queue</div>
+    <div id="sr-full-queue"></div>
+  </div>
 </div>
 
-<!-- COURSE OUTLINES -->
-<div id="panel-outlines" class="panel">
-  <div class="tip"><i class="ti ti-traffic-lights"></i> Click the traffic light to cycle your confidence: <span style="color:#d63030;font-weight:700">●</span> Not started &nbsp;→&nbsp; <span style="color:#e09a00;font-weight:700">●</span> In progress &nbsp;→&nbsp; <span style="color:#1ab870;font-weight:700">●</span> Confident. All saved automatically.</div>
-  <div id="outlines-content"></div>
-</div>
 
 <div class="footer">Flow State &nbsp;·&nbsp; Taz &nbsp;·&nbsp; 🌊</div>
 </div>
@@ -599,10 +716,11 @@ const CHIP={'PH127/133':'c-ph127','CH173':'c-ch173','CH17A':'c-ch17a','PH116':'c
 const DIFF_C={easy:'b-green',medium:'b-amber',hard:'b-red'};
 const E_ORD={high:['high','medium','low'],medium:['medium','high','low'],low:['low','medium','high']};
 
-let S={attempts:[],qbank:[],tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0};
+let S={tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0};
+let SR={topics:[]}; // populated after load()
 
 function save(){try{localStorage.setItem('flowstate_v2',JSON.stringify(S));}catch(e){}}
-function load(){try{const d=localStorage.getItem('flowstate_v2');if(d)S=Object.assign({attempts:[],qbank:[],tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0},JSON.parse(d));}catch(e){}}
+function load(){try{const d=localStorage.getItem('flowstate_v2');if(d){const loaded=JSON.parse(d);S=Object.assign({tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0},loaded);}}catch(e){}}
 function tod(){return new Date().toDateString();}
 function dTo(a,b){return Math.round((new Date(b)-new Date(a))/DAY);}
 function dayN(){return['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][new Date().getDay()];}
@@ -623,18 +741,6 @@ function dayN(){return['Sunday','Monday','Tuesday','Wednesday','Thursday','Frida
 })();
 
 /* DEFAULT QB */
-const QB_DEFAULT=[
-  {id:'q1',course:'PH127/133',topic:'SHM concepts',diff:'easy',q:'True or False: The amplitude of SHM increases as the frequency of the oscillator is increased.',a:'FALSE. Amplitude and frequency are independent in SHM. Amplitude depends only on initial conditions. Frequency is set by the system: ω = √(k/m).',attempts:0,wrong:0,img:null},
-  {id:'q2',course:'PH127/133',topic:'SHM concepts',diff:'easy',q:'True or False: The restoring component carries kinetic energy and the inertial component carries potential energy.',a:'FALSE — reversed! The RESTORING component (spring/gravity) stores POTENTIAL energy (½kx²). The INERTIAL component (mass) carries KINETIC energy (½mv²).',attempts:0,wrong:0,img:null},
-  {id:'q3',course:'PH127/133',topic:'Spring-mass: find ω and f',diff:'medium',q:'Spring-mass: m=0.5 kg, k=12 N/m, A=5 cm, x=0 at t=0. Find ω, f, and write x(t) = A·cos(ωt+α).',a:'ω=√(k/m)=√24≈4.90 rad/s. f=ω/2π≈0.78 Hz. x(0)=0 → α=±π/2. Two solutions: x=0.05·sin(4.90t) or x=−0.05·sin(4.90t).',attempts:0,wrong:0,img:null},
-  {id:'q4',course:'PH127/133',topic:'SHM energy',diff:'medium',q:'m=0.5 kg, k=12 N/m, A=5 cm. What is the total mechanical energy?',a:'E=½kA²=½×12×(0.05)²=0.015 J=15 mJ. Constant throughout motion — all KE at x=0, all PE at x=±A.',attempts:0,wrong:0,img:null},
-  {id:'q5',course:'PH127/133',topic:'Two-spring system',diff:'medium',q:'m=100 g between two springs (k=0.1 N/m each). x=0, v=0.2 m/s at t=0. Find A, ω, φ in x(t)=A·sin(ωt+φ).',a:'k_eff=2k=0.2 N/m. ω=√(0.2/0.1)=√2≈1.414 rad/s. A=v₀/ω=0.2/1.414≈0.141 m. φ=0. x(t)=0.141·sin(1.414t). f≈0.225 Hz.',attempts:0,wrong:0,img:null},
-  {id:'q6',course:'PH127/133',topic:'Calculus: derivatives in SHM',diff:'medium',q:'From x=A·cos(ωt+α), derive velocity and acceleration. What is special about d²x/dt²?',a:'dx/dt=−Aω·sin(ωt+α). d²x/dt²=−Aω²·cos(ωt+α)=−ω²x. KEY: d²x/dt²=−ω²x IS the SHM equation. Any system where acceleration ∝ −displacement is SHM.',attempts:0,wrong:0,img:null},
-  {id:'q7',course:'PH127/133',topic:'SHM at specific time',diff:'hard',q:'A=5 cm, f=1 Hz, x=0 moving +ve at t=0. Find x, dx/dt, d²x/dt² at t=8/3 s.',a:'ω=2π. x=0.05·sin(2πt). At t=8/3: ωt=16π/3, sin(16π/3)=sin(π/3)=√3/2. x≈4.33 cm. dx/dt=0.1π·cos(π/3)≈0.157 m/s. d²x/dt²=−ω²x≈−1.71 m/s².',attempts:0,wrong:0,img:null},
-  {id:'q8',course:'PH127/133',topic:'Half-length spring',diff:'medium',q:'Same mass on a spring of HALF the length. What happens to frequency?',a:'Half-length → k doubles: k_half=2k. f_new=(1/2π)√(2k/m)=√2·f_original. Frequency increases by √2≈1.41; period decreases by same factor.',attempts:0,wrong:0,img:null},
-  {id:'q9',course:'PH127/133',topic:'Simple pendulum',diff:'easy',q:'Pendulum period T=9.40 s. (a) Find tower height. (b) Effect if on the Moon where g=1.67 m/s².',a:'(a) L=g(T/2π)²=9.81×(9.4/6.283)²≈22 m. (b) T_moon=2π√(22/1.67)≈22.8 s — much longer. Any height calculated assuming Earth g would be wrong.',attempts:0,wrong:0,img:null},
-  {id:'q10',course:'PH127/133',topic:'Torsional oscillator',diff:'hard',q:'½I(dθ/dt)²+½cθ²=E_T. Identify inertial and restoring terms. Find the period.',a:'INERTIAL: ½I(dθ/dt)² — I=moment of inertia, analogous to ½mv². RESTORING: ½cθ² — c=torsional constant, analogous to ½kx². ω=√(c/I), T=2π√(I/c).',attempts:0,wrong:0,img:null},
-];
 
 const TT={
   Monday:{study:[
@@ -677,7 +783,7 @@ const TT={
 
 /* INIT */
 load();
-if(!S.qbank||!S.qbank.length)S.qbank=QB_DEFAULT.map(q=>({...q}));
+SR={topics:JSON.parse(localStorage.getItem('fs_sr_v1')||'[]')};
 if(!S.lastDate)S.lastDate=tod();
 if(S.lastDate!==tod()){S.streak=dTo(S.lastDate,tod())===1?(S.streak||0)+1:0;S.lastDate=tod();save();}
 document.getElementById('hero-streak').textContent=(S.streak>2?'🔥 ':'🌊 ')+S.streak+' day streak';
@@ -685,24 +791,25 @@ document.getElementById('hero-streak').textContent=(S.streak>2?'🔥 ':'🌊 ')+
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
 function showTab(t){
-  const tabs=['today','timer','qbank','analytics','schedule','review','logq'];
+  const tabs=['today','timer','analytics','schedule','review','outlines'];
   document.querySelectorAll('.nav-btn').forEach((b,i)=>b.classList.toggle('active',tabs[i]===t));
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+t).classList.add('active');
-  if(t==='today')renderToday();if(t==='timer')renderPomoLog();if(t==='qbank')renderQBank();
-  if(t==='analytics')renderAnalytics();if(t==='schedule')renderSchedule();if(t==='review')renderReview();if(t==='logq')renderLogQ();
+  if(t==='today')renderToday();if(t==='timer')renderPomoLog();
+  if(t==='analytics')renderAnalytics();if(t==='schedule')renderSchedule();if(t==='review')renderReview();if(t==='outlines')renderOutlines();
 }
 
 /* TODAY */
 function renderToday(){
-  const total=S.attempts.length,correct=S.attempts.filter(a=>a.correct).length;
-  const pct=total?Math.round(correct/total*100):0,due=S.attempts.filter(a=>dTo(tod(),a.nextReview)<=0).length;
   const focusMins=(S.pomoLog||[]).filter(p=>p.type==='work'&&p.date===tod()).reduce((s,p)=>s+p.mins,0);
+  const srDueToday=(SR.topics||[]).filter(t=>dTo(tod(),t.nextReview)<=0).length;
+  const srTopicCount=(SR.topics||[]).length;
+  const avgConf=srTopicCount?Math.round((SR.topics||[]).reduce((a,t)=>a+(t.confidence||3),0)/srTopicCount/5*100):0;
   document.getElementById('today-metrics').innerHTML=`
     <div class="metric"><div class="val">${S.streak}</div><div class="lbl">Day streak ${S.streak>2?'🔥':'🌊'}</div></div>
     <div class="metric"><div class="val">${focusMins}m</div><div class="lbl">Focus time today</div></div>
-    <div class="metric"><div class="val">${pct}%</div><div class="lbl">Correct rate</div></div>
-    <div class="metric"><div class="val">${due}</div><div class="lbl">Reviews due</div></div>`;
+    <div class="metric"><div class="val">${avgConf}%</div><div class="lbl">Avg confidence</div></div>
+    <div class="metric"><div class="val">${srDueToday}</div><div class="lbl">Reviews due</div></div>`;
   const day=dayN(),dd=TT[day];
   let html=`<div class="gc-title"><i class="ti ti-calendar"></i> ${day}'s study blocks</div>`;
   if(dd&&dd.study.length){
@@ -718,9 +825,10 @@ function renderToday(){
     }).join('');
   } else html+='<div class="empty">No study blocks today — rest up!</div>';
   document.getElementById('today-card').innerHTML=html;
-  const due2=S.attempts.filter(a=>dTo(tod(),a.nextReview)<=0),rvEl=document.getElementById('today-review-list');
-  if(!due2.length){rvEl.innerHTML='<div class="empty">Nothing due — keep logging questions.</div>';return;}
-  rvEl.innerHTML=due2.slice(0,6).map(a=>`<div class="tt"><i class="ti ti-refresh" style="font-size:16px;color:var(--text-soft);margin-top:2px"></i><div class="tt-text"><span class="chip ${CHIP[a.course]||''}">${a.course}</span>${a.text}</div><span class="badge b-red">Review</span></div>`).join('');
+  const rvEl=document.getElementById('today-review-list');
+  const dueTopics=(SR.topics||[]).filter(t=>dTo(tod(),t.nextReview)<=0).sort((a,b)=>(a.confidence||3)-(b.confidence||3));
+  if(!dueTopics.length){rvEl.innerHTML='<div class="empty">Nothing due — keep flowing! 🌊</div>';return;}
+  rvEl.innerHTML=dueTopics.slice(0,5).map(t=>`<div class="tt"><span style="font-size:16px">${['','😵','😰','😐','😊','🌊'][t.confidence||3]}</span><div class="tt-text"><span class="chip ${CHIP[t.course]||''}">${t.course}</span>${t.topic}</div><span class="badge b-red">Review</span></div>`).join('');
 }
 function toggleTask(tid,el){if(S.tasks.includes(tid))S.tasks=S.tasks.filter(t=>t!==tid);else S.tasks.push(tid);save();renderToday();}
 
@@ -913,6 +1021,8 @@ function pomoFinish(){
     S.pomoLog=S.pomoLog||[];
     S.pomoLog.push({type:'work',mins,course,label,date:tod(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
     S.pomoSessions=(S.pomoSessions||0)+1;save();
+    // show SR rating modal after a short delay so pop animation plays first
+    setTimeout(()=>srShowRatingModal(course,label),600);
     P.session=(P.session+1)%4;P.mode='break';
     const bk=P.session===0?20:pbMins();P.secsLeft=bk*60;
     toast('🤲 Session complete! Entering dhikr mode…');renderPomoLog();
@@ -972,80 +1082,42 @@ async function extractText(dataUrl){
 }
 
 /* QUESTION BANK */
-window._showWrongOnly=false;
-function renderQBank(){
-  const cf=document.getElementById('qb-filter-course').value,df=document.getElementById('qb-filter-diff').value;
-  let qs=[...S.qbank];
-  if(cf!=='all')qs=qs.filter(q=>q.course===cf);if(df!=='all')qs=qs.filter(q=>q.diff===df);
-  if(window._showWrongOnly)qs=qs.filter(q=>q.wrong>0);
-  const el=document.getElementById('qbank-list');
-  if(!qs.length){el.innerHTML='<div class="gc"><div class="empty">No questions match this filter.</div></div>';return;}
-  el.innerHTML=qs.map(q=>{
-    const acc=q.attempts?Math.round((q.attempts-q.wrong)/q.attempts*100):null;
-    const imgH=q.img?`<img src="${q.img}" class="qcard-img" alt="Question image">`:'';
-    return`<div class="qcard" id="qc-${q.id}">
-      <div class="qcard-meta"><span class="chip ${CHIP[q.course]||''}">${q.course}</span><span class="badge ${DIFF_C[q.diff]}" style="margin-right:6px">${q.diff}</span><span>${q.topic}</span>${acc!==null?`<span style="margin-left:8px;color:var(--text-soft)">· ${q.attempts} attempts, ${acc}% correct</span>`:''}</div>
-      ${imgH}
-      <div class="qcard-q">${q.q||'<em style="color:var(--text-soft)">Image question — see above</em>'}</div>
-      <div id="ans-${q.id}" class="qcard-answer">${q.a}</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="fb" onclick="toggleAnswer('${q.id}')"><i class="ti ti-eye"></i> Show answer</button>
-        <button class="fb correct" onclick="logQBank('${q.id}',true)"><i class="ti ti-check"></i> Got it right</button>
-        <button class="fb wrong" onclick="logQBank('${q.id}',false)"><i class="ti ti-x"></i> Got it wrong</button>
-        <button class="fb danger" onclick="deleteQB('${q.id}')"><i class="ti ti-trash"></i></button>
-      </div></div>`;
-  }).join('');
-}
-function filterWrong(){window._showWrongOnly=!window._showWrongOnly;renderQBank();}
-function toggleAnswer(id){const a=document.getElementById('ans-'+id);a.classList.toggle('show');const b=a.parentElement.querySelector('button');b.innerHTML=a.classList.contains('show')?'<i class="ti ti-eye-off"></i> Hide answer':'<i class="ti ti-eye"></i> Show answer';}
-function logQBank(qid,correct){
-  const q=S.qbank.find(x=>x.id===qid);if(!q)return;
-  q.attempts=(q.attempts||0)+1;if(!correct)q.wrong=(q.wrong||0)+1;
-  const prev=S.attempts.filter(a=>a.qbankId===qid&&!a.correct).length,interval=correct?(prev>0?3:7):1;
-  S.attempts.push({id:Date.now(),qbankId:qid,course:q.course,topic:q.topic,text:(q.q||q.topic).slice(0,65),correct,date:tod(),nextReview:new Date(Date.now()+interval*DAY).toDateString(),interval});
-  save();renderQBank();toast(correct?'✓ Logged as correct! Review in 7 days.':'✗ Logged as wrong. Review tomorrow.');
-}
-function deleteQB(id){if(!confirm('Delete this question?'))return;S.qbank=S.qbank.filter(q=>q.id!==id);save();renderQBank();}
-function openAddQ(){document.getElementById('add-q-modal').style.display='block';curImg=null;document.getElementById('img-preview').style.display='none';document.getElementById('extract-bar').style.display='none';}
-function closeAddQ(){document.getElementById('add-q-modal').style.display='none';}
-function saveNewQ(){
-  const q=document.getElementById('aq-q').value.trim(),a=document.getElementById('aq-a').value.trim();
-  if(!q&&!curImg){alert('Please add a question (text or image).');return;}
-  if(!a){alert('Please add an answer or key steps.');return;}
-  S.qbank.push({id:'uq'+Date.now(),course:document.getElementById('aq-course').value,diff:document.getElementById('aq-diff').value,topic:document.getElementById('aq-topic').value.trim()||'Custom',q,a,img:curImg||null,attempts:0,wrong:0});
-  ['aq-q','aq-a','aq-topic'].forEach(id=>document.getElementById(id).value='');curImg=null;
-  document.getElementById('img-preview').style.display='none';document.getElementById('extract-bar').style.display='none';
-  save();closeAddQ();renderQBank();toast('Question saved to your bank!');
-}
 
 /* ANALYTICS */
 function renderAnalytics(){
-  const total=S.attempts.length,correct=S.attempts.filter(a=>a.correct).length;
-  const pct=total?Math.round(correct/total*100):0,due=S.attempts.filter(a=>dTo(tod(),a.nextReview)<=0).length;
   const totF=(S.pomoLog||[]).filter(p=>p.type==='work').reduce((s,p)=>s+p.mins,0);
+  const srItems=SR.topics||[];
+  const dueCount=srItems.filter(t=>dTo(tod(),t.nextReview)<=0).length;
+  const avgConf=srItems.length?Math.round(srItems.reduce((s,t)=>s+(t.confidence||3),0)/srItems.length*20):0;
+  const sessions=(S.pomoLog||[]).filter(p=>p.type==='work').length;
   document.getElementById('ana-metrics').innerHTML=`
-    <div class="metric"><div class="val">${total}</div><div class="lbl">Total attempts</div></div>
-    <div class="metric"><div class="val">${pct}%</div><div class="lbl">Overall accuracy</div></div>
+    <div class="metric"><div class="val">${sessions}</div><div class="lbl">Flow sessions</div></div>
     <div class="metric"><div class="val">${totF}m</div><div class="lbl">Total focus time</div></div>
-    <div class="metric"><div class="val">${due}</div><div class="lbl">Due for review</div></div>`;
-  const byC={};COURSES.forEach(c=>{byC[c]={t:0,c:0};});
-  S.attempts.forEach(a=>{if(byC[a.course]){byC[a.course].t++;if(a.correct)byC[a.course].c++;}});
+    <div class="metric"><div class="val">${avgConf}%</div><div class="lbl">Avg confidence</div></div>
+    <div class="metric"><div class="val">${dueCount}</div><div class="lbl">Reviews due</div></div>`;
+  // Course confidence from SR system
   const cB=document.getElementById('ana-course-bars');
-  if(!Object.values(byC).some(v=>v.t>0))cB.innerHTML='<div class="empty">Log some questions to see breakdown.</div>';
-  else cB.innerHTML=COURSES.map(c=>{const d=byC[c];if(!d.t)return'';const p=Math.round(d.c/d.t*100),col=p>=70?'pf-green':p>=40?'pf-amber':'pf-red';return`<div class="ana-bar"><span class="ana-label"><span class="chip ${CHIP[c]||''}">${c}</span></span><div class="pb"><div class="pf ${col}" style="width:${p}%"></div></div><span class="ana-pct">${p}%</span><span style="font-size:11px;color:var(--text-soft);margin-left:4px">(${d.t})</span></div>`;}).join('');
+  const srTopics=SR.topics||[];
+  const byC2={};COURSES.forEach(c=>{byC2[c]={total:0,confSum:0};});
+  srTopics.forEach(t=>{if(byC2[t.course]){byC2[t.course].total++;byC2[t.course].confSum+=(t.confidence||3);}});
+  if(!Object.values(byC2).some(v=>v.total>0)){cB.innerHTML='<div class="empty">Log flow sessions to see confidence breakdown.</div>';}
+  else cB.innerHTML=COURSES.map(c=>{const d=byC2[c];if(!d.total)return'';const p=Math.round(d.confSum/d.total/5*100),col=p>=70?'pf-green':p>=40?'pf-amber':'pf-red';return`<div class="ana-bar"><span class="ana-label"><span class="chip ${CHIP[c]||''}">${c}</span></span><div class="pb"><div class="pf ${col}" style="width:${p}%"></div></div><span class="ana-pct">${p}%</span><span style="font-size:11px;color:var(--text-soft);margin-left:4px">(${d.total} topics)</span></div>`;}).join('');
   const pBC={};COURSES.forEach(c=>{pBC[c]=0;});
   (S.pomoLog||[]).filter(p=>p.type==='work'&&p.course).forEach(p=>{if(pBC[p.course]!==undefined)pBC[p.course]+=p.mins;});
   const pe=document.getElementById('ana-pomo-stats');
   if(!totF)pe.innerHTML='<div class="empty">No flow sessions yet — start the timer!</div>';
   else pe.innerHTML=`<div style="font-size:13px;font-weight:700;color:var(--aqua5);margin-bottom:10px">Total: ${totF} min of focus 🎯</div>`+COURSES.map(c=>{const m=pBC[c];if(!m)return'';const p=Math.round(m/totF*100);return`<div class="ana-bar"><span class="ana-label"><span class="chip ${CHIP[c]||''}">${c}</span></span><div class="pb"><div class="pf" style="width:${p}%"></div></div><span class="ana-pct">${m}m</span></div>`;}).join('');
-  const tf={};S.attempts.filter(a=>!a.correct).forEach(a=>{const k=(a.course||'')+': '+(a.topic||'General');tf[k]=(tf[k]||0)+1;});
-  const ts=Object.entries(tf).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  // Weakest topics from SR
   const wt=document.getElementById('ana-wrong-topics');
-  if(!ts.length)wt.innerHTML='<div class="empty">No wrong answers yet — amazing!</div>';
-  else{const mx=ts[0][1];wt.innerHTML=ts.map(([k,n])=>`<div class="ana-bar"><span class="ana-label" style="font-size:11px">${k}</span><div class="pb"><div class="pf pf-red" style="width:${Math.round(n/mx*100)}%"></div></div><span class="ana-pct">${n}✗</span></div>`).join('');}
+  if(wt){
+    const weak=[...srTopics].filter(t=>t.confidence<=2).sort((a,b)=>(a.confidence||3)-(b.confidence||3)).slice(0,7);
+    if(!weak.length)wt.innerHTML='<div class="empty">No weak topics yet — keep logging sessions!</div>';
+    else{const mx=5;wt.innerHTML=weak.map(t=>`<div class="ana-bar"><span class="ana-label" style="font-size:11px">${t.course}: ${t.topic}</span><div class="pb"><div class="pf pf-red" style="width:${Math.round((t.confidence||1)/mx*100)}%"></div></div><span class="ana-pct" style="color:var(--red3)">${['','😵','😰','😐','😊','🌊'][t.confidence||1]}</span></div>`).join('');}
+  }
   const rec=document.getElementById('ana-recent');
-  if(!S.attempts.length){rec.innerHTML='<div class="empty">No attempts yet.</div>';return;}
-  rec.innerHTML=[...S.attempts].reverse().slice(0,10).map(a=>`<div class="row"><span class="chip ${CHIP[a.course]||''}">${a.course}</span><span style="flex:1;font-size:12px;color:var(--text-deep)">${a.text}</span><span class="badge ${a.correct?'b-green':'b-red'}">${a.correct?'✓':'✗'}</span><span style="font-size:11px;color:var(--text-soft)">${a.date}</span></div>`).join('');
+  const recentSessions=[...(S.pomoLog||[])].filter(p=>p.type==='work').reverse().slice(0,10);
+  if(!recentSessions.length){rec.innerHTML='<div class="empty">No sessions logged yet.</div>';return;}
+  rec.innerHTML=recentSessions.map(p=>`<div class="row"><span class="chip ${CHIP[p.course]||''}">${p.course}</span><span style="flex:1;font-size:12px;color:var(--text-deep)">${p.label}</span><span class="badge b-blue">${p.mins} min</span><span style="font-size:11px;color:var(--text-soft)">${p.date}</span></div>`).join('');
 }
 
 /* ════════════════════════════════════
@@ -1286,7 +1358,8 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
     wrap.addEventListener('drop',ev=>{
       ev.preventDefault();if(!SG.dragBlock)return;
       const rect=wrap.getBoundingClientRect();
-      const yOff=ev.clientY-rect.top;
+      const scrollTop=document.getElementById('sg-cal-body').scrollTop;
+      const yOff=(ev.clientY-rect.top)+scrollTop;
       let newStart=Math.round((SG.H_START*60+(yOff/SG.PX_PER_MIN))/15)*15;
       newStart=Math.max(SG.H_START*60,Math.min(newStart,(SG.H_END*60)-SG.dragBlock.dur));
       const b=sgFluid.find(x=>x.id===SG.dragBlock.id);
@@ -1303,83 +1376,88 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
   });
 }
 
+/* ── shared calendar builder ── */
+function sgBuildCalendar(daysToRender,today){
+  const HOURS=SG.H_END-SG.H_START;
+  const PX=60; // pixels per hour — matches .sg-time-slot and .sg-col-hour height
+  SG.PX_PER_MIN=PX/60;
+
+  const header=document.getElementById('sg-cal-header');
+  const sidebar=document.getElementById('sg-time-sidebar');
+  const dayCols=document.getElementById('sg-day-cols');
+  const ws=sgGetWeekStart();
+  const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  const DAY_SHORT=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+
+  /* ── CSS custom property for column count ── */
+  document.getElementById('sg-cal-outer').style.setProperty('--day-cols',daysToRender.length);
+
+  /* ── header: spacer already in HTML, inject day name cells ── */
+  /* remove old day headers (keep spacer) */
+  header.querySelectorAll('.sg-day-hdr').forEach(e=>e.remove());
+  daysToRender.forEach(d=>{
+    const dt=new Date(ws);dt.setDate(ws.getDate()+d);
+    const el=document.createElement('div');
+    el.className='sg-day-hdr'+(d===today?' today':'');
+    const isWeek=daysToRender.length>1;
+    el.innerHTML=isWeek?`${DAY_SHORT[d]}<br><span style="font-size:12px;font-weight:800">${dt.getDate()}</span>`
+                       :`<span style="font-size:13px">${DAY_NAMES[d]}</span>`;
+    header.appendChild(el);
+  });
+
+  /* ── sidebar: one label per hour ── */
+  sidebar.innerHTML='';
+  for(let h=SG.H_START;h<SG.H_END;h++){
+    const el=document.createElement('div');
+    el.className='sg-time-slot';
+    el.textContent=`${h.toString().padStart(2,'0')}:00`;
+    sidebar.appendChild(el);
+  }
+
+  /* ── day columns: one .sg-day-col per day ── */
+  dayCols.innerHTML='';
+  const wrappers=[];
+  daysToRender.forEach((d,i)=>{
+    const col=document.createElement('div');
+    col.className='sg-day-col';
+    /* hour background stripes */
+    for(let h=0;h<HOURS;h++){
+      const stripe=document.createElement('div');
+      stripe.className='sg-col-hour';
+      col.appendChild(stripe);
+    }
+    /* overlay wrapper — positioned over the stripes */
+    const wrap=document.createElement('div');
+    wrap.style.cssText='position:absolute;inset:0;pointer-events:none;';
+    col.appendChild(wrap);
+    dayCols.appendChild(col);
+    wrappers.push(wrap);
+  });
+
+  // render test blocks on top
+  sgBuildDayContentTests(wrappers,daysToRender);
+  return wrappers;
+}
+
 /* ── week view ── */
 function renderWeekView(today,DAY_SHORT){
-  const grid=document.getElementById('sched-grid');
-  const ws=sgGetWeekStart();
-  const SLOTS=(SG.H_END-SG.H_START)*2;
-  const cols=7;
-
-  grid.style.gridTemplateColumns='48px repeat(7,minmax(80px,1fr))';
-  grid.style.gridTemplateRows='auto repeat('+(SG.H_END-SG.H_START)*2+',26px)';
-  grid.style.animation='none';
-
-  /* header row */
-  let html='<div class="sg-time-hdr"></div>';
-  for(let d=0;d<cols;d++){
-    const dt=new Date(ws);dt.setDate(ws.getDate()+d);
-    html+=`<div class="sg-day-hdr${d===today?' today':''}">${DAY_SHORT[d]}<br>${dt.getDate()}</div>`;
-  }
-
-  /* time + cells — each full hour gets one row spanning 2 slots */
-  for(let h=SG.H_START;h<SG.H_END;h++){
-    const lbl=`${h.toString().padStart(2,'0')}:00`;
-    /* full-hour row (label shown, solid border) */
-    html+=`<div class="sg-time-cell sg-tc-hour">${lbl}</div>`;
-    for(let d=0;d<cols;d++) html+=`<div class="sg-hour-cell" data-day="${d}" data-min="${sgToMin(h,0)}"></div>`;
-    /* half-hour row (no label, dashed) */
-    html+=`<div class="sg-time-cell sg-tc-half"></div>`;
-    for(let d=0;d<cols;d++) html+=`<div class="sg-hour-cell half-hr" data-day="${d}" data-min="${sgToMin(h,30)}"></div>`;
-  }
-
-  grid.innerHTML=html;
-
-  /* overlay wrappers — one per day column.
-     Grid layout: row 1 = header. Each hour emits exactly 2 rows (:00 + :30).
-     Total content rows = SLOTS = (H_END-H_START)*2.
-     Wrappers must span grid-row 2 to 2+SLOTS to cover ALL content rows. */
-  const wrappers=[];
-  for(let d=0;d<cols;d++){
-    const w=document.createElement('div');
-    w.style.cssText=`position:relative;grid-column:${d+2};grid-row:2/${2+SLOTS};pointer-events:none;`;
-    grid.appendChild(w);wrappers.push(w);
-  }
-
-  sgBuildDayContent(today,[...wrappers],[0,1,2,3,4,5,6]);
-  sgPlaceNowLine(grid,[...wrappers],today,[0,1,2,3,4,5,6]);
-  sgStartNowClock(grid,[...wrappers],today,[0,1,2,3,4,5,6],'week');
+  const outer=document.getElementById('sg-cal-outer');
+  outer.style.animation='none';
+  const wrappers=sgBuildCalendar([0,1,2,3,4,5,6],today);
+  sgBuildDayContent(today,wrappers,[0,1,2,3,4,5,6]);
+  sgPlaceNowLine(null,wrappers,today,[0,1,2,3,4,5,6]);
+  sgStartNowClock(null,wrappers,today,[0,1,2,3,4,5,6],'week');
 }
 
 /* ── day view ── */
 function renderDayView(today){
-  const grid=document.getElementById('sched-grid');
-  const SLOTS=(SG.H_END-SG.H_START)*2;
   const d=SG.viewDay;
-
-  grid.style.gridTemplateColumns='56px 1fr';
-  grid.style.gridTemplateRows='auto repeat('+(SG.H_END-SG.H_START)*2+',26px)';
-  grid.style.animation='sgDayIn .35s cubic-bezier(.22,1,.36,1) both';
-
-  let html='<div class="sg-time-hdr"></div>';
-  const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-  html+=`<div class="sg-day-hdr${d===today?' today':''}" style="font-size:13px;padding:10px">${DAY_NAMES[d]}</div>`;
-
-  for(let h=SG.H_START;h<SG.H_END;h++){
-    const lbl=`${h.toString().padStart(2,'0')}:00`;
-    html+=`<div class="sg-time-cell sg-tc-hour">${lbl}</div>`;
-    html+=`<div class="sg-hour-cell" data-day="${d}" data-min="${sgToMin(h,0)}"></div>`;
-    html+=`<div class="sg-time-cell sg-tc-half"></div>`;
-    html+=`<div class="sg-hour-cell half-hr" data-day="${d}" data-min="${sgToMin(h,30)}"></div>`;
-  }
-  grid.innerHTML=html;
-
-  const w=document.createElement('div');
-  w.style.cssText=`position:relative;grid-column:2;grid-row:2/${2+SLOTS};pointer-events:none;`;
-  grid.appendChild(w);
-
-  sgBuildDayContent(d,[w],[d]);
-  sgPlaceNowLine(grid,[w],today,[d]);
-  sgStartNowClock(grid,[w],today,[d],'day');
+  const outer=document.getElementById('sg-cal-outer');
+  outer.style.animation='sgDayIn .35s cubic-bezier(.22,1,.36,1) both';
+  const wrappers=sgBuildCalendar([d],today);
+  sgBuildDayContent(d,wrappers,[d]);
+  sgPlaceNowLine(null,wrappers,today,[d]);
+  sgStartNowClock(null,wrappers,today,[d],'day');
 }
 
 /* ── now line ── */
@@ -1390,37 +1468,44 @@ function sgNowTopPx(){
 }
 
 function sgPlaceNowLine(grid,wrappers,today,days){
-  /* remove old */
-  grid.querySelectorAll('.sg-now-line,.sg-now-dot').forEach(e=>e.remove());
+  /* remove stale indicators */
+  const sidebar=document.getElementById('sg-time-sidebar');
+  if(sidebar)sidebar.querySelectorAll('.sg-now-indicator,.sg-now-label,.sg-now-dot').forEach(e=>e.remove());
+
   if(SG.weekOffset!==0)return;
-  const todayCol=days.indexOf(today);
-  if(todayCol<0)return;
   const top=sgNowTopPx();
-  if(top<0)return;
+  if(!sidebar||top<0)return;
 
-  const wrap=wrappers[todayCol];
+  const now=new Date();
+  const timeStr=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false});
 
-  /* glowing dot */
+  /* horizontal line across the sidebar at current time */
+  const line=document.createElement('div');
+  line.className='sg-now-indicator';
+  line.style.top=top+'px';
+  sidebar.appendChild(line);
+
+  /* time label */
+  const lbl=document.createElement('div');
+  lbl.className='sg-now-label';
+  lbl.style.top=top+'px';
+  lbl.textContent=timeStr;
+  sidebar.appendChild(lbl);
+
+  /* dot on right edge of sidebar pointing into the day columns */
   const dot=document.createElement('div');
   dot.className='sg-now-dot';
-  dot.style.cssText=`top:${top-4}px;left:-4px`;
-  wrap.appendChild(dot);
-
-  /* line */
-  const line=document.createElement('div');
-  line.className='sg-now-line';
-  line.style.cssText=`top:${top}px;left:0;right:0`;
-  wrap.appendChild(line);
+  dot.style.top=top+'px';
+  sidebar.appendChild(dot);
 }
 
 function sgStartNowClock(grid,wrappers,today,days,viewKey){
   if(SG.nowLineInterval)clearInterval(SG.nowLineInterval);
   SG.nowLineInterval=setInterval(()=>{
-    /* only update if still on schedule tab in same view */
     if(document.getElementById('panel-schedule').classList.contains('active')&&SG.viewMode===viewKey){
-      sgPlaceNowLine(grid,wrappers,today,days);
+      sgPlaceNowLine(null,wrappers,today,days);
     }
-  },30000); // update every 30s
+  },30000);
 }
 
 function schedAddTask(){
@@ -1448,6 +1533,212 @@ function schedClearFluid(){
   toast('Schedule reset to defaults.');
 }
 
+/* ── Add panel tab switcher ── */
+function sapSwitch(tab){
+  ['task','smart','test'].forEach(t=>{
+    document.getElementById('sap-tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('sap-panel-'+t).style.display=t===tab?'block':'none';
+  });
+}
+
+/* ── SMART SUGGEST ── */
+// Day energy profiles — matches existing TT structure
+const DAY_ENERGY_PROFILE={
+  0:['medium','medium','low'],   // Mon
+  1:['medium','high','medium','low'], // Tue — best deep work day
+  2:['low','medium','low'],      // Wed — very busy
+  3:['high','medium','medium'],  // Thu — good deep work
+  4:['low','medium','medium'],   // Fri
+  5:['high','medium'],           // Sat
+  6:['low','low'],               // Sun
+};
+const FREE_WINDOWS={
+  0:[{s:7*60,e:8*60},{s:12*60+30,e:14*60},{s:16*60,e:17*60+30},{s:18*60+30,e:20*60}],
+  1:[{s:7*60,e:8*60},{s:9*60+30,e:11*60},{s:14*60,e:16*60},{s:18*60,e:20*60}],
+  2:[{s:9*60,e:10*60},{s:19*60,e:20*60}],
+  3:[{s:11*60,e:13*60},{s:13*60+30,e:15*60},{s:16*60+30,e:18*60}],
+  4:[{s:7*60+30,e:9*60},{s:11*60,e:13*60},{s:18*60+30,e:20*60}],
+  5:[{s:9*60,e:12*60},{s:14*60,e:17*60}],
+  6:[{s:15*60,e:18*60}],
+};
+const DAY_NAMES_SG=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+function schedSmartSuggest(){
+  const label=document.getElementById('smart-label').value.trim()||'Study session';
+  const course=document.getElementById('smart-course').value;
+  const dur=parseInt(document.getElementById('smart-dur').value)||60;
+  const urgency=parseInt(document.getElementById('smart-urgency').value);
+  const energy=document.getElementById('smart-energy').value;
+  const el=document.getElementById('smart-result');
+
+  // Score each free window
+  const candidates=[];
+  const today=sgGetToday();
+  // Look across the week (start from today if urgent)
+  const daysToScan=urgency<=3?[0,1,2,3,4,5,6].slice(today).concat([0,1,2,3,4,5,6].slice(0,today)):[0,1,2,3,4,5,6];
+
+  daysToScan.forEach(day=>{
+    const windows=FREE_WINDOWS[day]||[];
+    windows.forEach(win=>{
+      const winDur=win.e-win.s;
+      if(winDur<dur)return;
+      // Check if already occupied by fluid block
+      const occupied=sgFluid.filter(b=>b.day===day&&b.start<win.e&&(b.start+b.dur)>win.s);
+      const usedMins=occupied.reduce((a,b)=>a+b.dur,0);
+      if(winDur-usedMins<dur)return;
+      // Find first gap in window
+      const startMin=win.s+usedMins;
+      // Check no prayer overlap
+      const overlaps=sgPrayerOverlaps(day,startMin,dur);
+
+      // Scoring
+      let score=0;
+      // Energy match
+      const dayProf=DAY_ENERGY_PROFILE[day]||['medium'];
+      const winEnergy=dayProf[Math.floor(windows.indexOf(win)%dayProf.length)]||'medium';
+      if(winEnergy===energy)score+=40;
+      else if(winEnergy==='high'&&energy==='medium')score+=20;
+      // Urgency — prefer sooner if urgent
+      const daysAway=(day-today+7)%7;
+      score+=Math.max(0,(7-daysAway)*urgency);
+      // Prayer overlap penalty
+      if(overlaps.length)score-=15;
+      // Related class proximity bonus
+      const SCHED_CLASSES_LOCAL=typeof SCHED_CLASSES!=='undefined'?SCHED_CLASSES:[];
+      const hasSameCourseSameDay=SCHED_CLASSES_LOCAL.some(c=>c.day===day&&c.course===course);
+      if(hasSameCourseSameDay)score+=25;
+
+      candidates.push({day,start:startMin,dur,score,winEnergy,overlaps:overlaps.length>0,label,course,daysAway});
+    });
+  });
+
+  if(!candidates.length){
+    el.innerHTML='<div class="tip" style="color:var(--red3)"><i class="ti ti-alert-circle"></i> No free slots found this week for that duration. Try a shorter session or reset to defaults.</div>';
+    return;
+  }
+
+  // Sort by score desc, take top 3
+  candidates.sort((a,b)=>b.score-a.score);
+  const top=candidates.slice(0,3);
+
+  el.innerHTML=`<div style="font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:8px">Best slots for <em>${label}</em>:</div>`+
+  top.map((c,i)=>`
+    <div class="smart-slot-card ${i===0?'best':''}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+        ${i===0?'<span class="badge b-green">Best fit</span>':'<span class="badge b-blue">Alt '+(i+1)+'</span>'}
+        <span style="font-size:13px;font-weight:700;color:var(--text-deep)">${DAY_NAMES_SG[c.day]} · ${sgMinStr(c.start)}</span>
+        <span style="font-size:11px;color:var(--text-soft)">${c.dur} min · ${c.daysAway===0?'today':c.daysAway===1?'tomorrow':'in '+c.daysAway+' days'}</span>
+      </div>
+      <div style="font-size:11px;color:var(--text-soft);margin-bottom:8px">
+        Energy match: <strong>${c.winEnergy}</strong>${c.overlaps?' · ⚠ may overlap prayer (will auto-split)':''}
+      </div>
+      <button class="fb primary" style="font-size:11px;padding:6px 12px" onclick="schedAcceptSuggestion(${c.day},${c.start},${c.dur},'${label.replace(/'/g,"\'")}','${course}')">
+        <i class="ti ti-check"></i> Use this slot
+      </button>
+    </div>`).join('');
+}
+
+function schedAcceptSuggestion(day,start,dur,label,course){
+  const id='sg'+Date.now();
+  sgFluid.push({id,day,label,course,start,dur});
+  const didRipple=sgApplyRipple(day);
+  const overlaps=sgPrayerOverlaps(day,start,dur);
+  SG.rippleNotes=[];
+  if(overlaps.length)SG.rippleNotes.push('"'+label+'" overlaps '+overlaps.map(p=>p.name).join(' & ')+' — auto-split around prayer.');
+  if(didRipple)SG.rippleNotes.push('Ripple: overlapping blocks nudged forward.');
+  sgShowRipple();sgSave();renderSchedule();
+  document.getElementById('smart-result').innerHTML='<div class="tip"><i class="ti ti-check"></i> Added to schedule!</div>';
+  toast('Task placed in schedule!');
+}
+
+/* ── TESTS ── */
+let sgTests=JSON.parse(localStorage.getItem('fs_tests_v1')||'[]');
+function sgSaveTests(){localStorage.setItem('fs_tests_v1',JSON.stringify(sgTests));}
+
+function schedAddTest(){
+  const label=document.getElementById('test-label').value.trim();
+  const course=document.getElementById('test-course').value;
+  const date=document.getElementById('test-date').value;
+  const time=document.getElementById('test-time').value||'09:00';
+  const notes=document.getElementById('test-notes').value.trim();
+  if(!label||!date){document.getElementById('test-add-result').innerHTML='<span style="color:var(--red3);font-size:11px">Please fill in name and date.</span>';return;}
+  sgTests.push({id:'t'+Date.now(),label,course,date,time,notes});
+  sgSaveTests();
+  renderTestCountdown();
+  renderSchedule(); // re-render so test appears as block
+  document.getElementById('test-label').value='';
+  document.getElementById('test-notes').value='';
+  document.getElementById('test-add-result').innerHTML='<span style="color:var(--green3);font-size:11px"><i class="ti ti-check"></i> Test saved!</span>';
+  setTimeout(()=>{document.getElementById('test-add-result').innerHTML='';},2500);
+  toast('Test added to schedule!');
+}
+
+function deleteTest(id){
+  sgTests=sgTests.filter(t=>t.id!==id);
+  sgSaveTests();renderTestCountdown();renderSchedule();
+}
+
+function renderTestCountdown(){
+  const el=document.getElementById('test-countdown-list');
+  if(!el)return;
+  if(!sgTests.length){el.innerHTML='<div class="empty" style="padding:1rem">No tests saved yet — add one above.</div>';return;}
+  const now=new Date();
+  const sorted=[...sgTests].sort((a,b)=>new Date(a.date)-new Date(b.date));
+  el.innerHTML=sorted.map(t=>{
+    const testDate=new Date(t.date+'T'+t.time);
+    const diffMs=testDate-now;
+    const days=Math.ceil(diffMs/(1000*60*60*24));
+    const isPast=days<0;
+    const badgeCls=isPast?'tcb-ok':days<=3?'tcb-urgent':days<=10?'tcb-soon':'tcb-ok';
+    const chipCls={'PH127/133':'c-ph127','CH117':'c-ch173','CH173':'c-ch17a','CH174':'c-ch174','PH126':'c-ph116','PH116':'c-ph116','DS115':'c-ds115'}[t.course]||'c-ph127';
+    return`<div class="test-card">
+      <div class="test-countdown-badge ${badgeCls}">
+        <div class="tcb-days">${isPast?'✓':days}</div>
+        <div class="tcb-lbl">${isPast?'done':'days'}</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:var(--text-deep)">${t.label}</div>
+        <div style="font-size:11px;color:var(--text-soft);margin-top:2px">
+          <span class="chip ${chipCls}">${t.course}</span>
+          ${new Date(t.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})} · ${t.time}
+          ${t.notes?'· '+t.notes:''}
+        </div>
+      </div>
+      <button class="fb danger" style="padding:4px 8px" onclick="deleteTest('${t.id}')"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+
+/* sgBuildDayContentTests — called at end of sgBuildDayContent */
+function sgBuildDayContentTests(wrappers,daysToRender){
+  // overlay test blocks
+  const colMap={};daysToRender.forEach((d,i)=>{colMap[d]=i;});
+  const ws=sgGetWeekStart();
+  sgTests.forEach(t=>{
+    const td=new Date(t.date);
+    const ws2=new Date(ws);
+    // find which day-of-week column this test falls in for the current week view
+    for(let d=0;d<7;d++){
+      const colDate=new Date(ws2);colDate.setDate(ws2.getDate()+d);
+      if(colDate.toDateString()===td.toDateString()&&daysToRender.includes(d)){
+        const col=colMap[d];
+        if(col===undefined)return;
+        const[th,tm]=t.time.split(':').map(Number);
+        const startMin=th*60+tm;
+        const top=sgTopPx(startMin);
+        if(top<0)return;
+        const el=document.createElement('div');
+        el.className='sched-block sb-test';
+        el.style.cssText=`top:${top}px;height:${Math.max(sgHPx(30),20)}px;pointer-events:all;z-index:15`;
+        el.innerHTML=`<div class="sb-label">${t.label}</div><div class="sb-sub">${t.course} · ${t.time}</div>`;
+        el.addEventListener('mouseenter',ev=>sgShowTip(ev,t.label,'📝 '+t.course+' — exam/test',t.time+(t.notes?' · '+t.notes:'')));
+        el.addEventListener('mouseleave',sgHideTip);
+        wrappers[col].appendChild(el);
+      }
+    }
+  });
+}
+
 function sgShowInfo(msg){const el=document.getElementById('sched-info');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
 function sgShowRipple(){
   const el=document.getElementById('sched-ripple');
@@ -1464,27 +1755,179 @@ function sgMoveTip(ev){const t=document.getElementById('sched-tooltip');t.style.
 function sgHideTip(){document.getElementById('sched-tooltip').style.display='none';}
 document.addEventListener('mousemove',ev=>{const t=document.getElementById('sched-tooltip');if(t&&t.style.display!=='none')sgMoveTip(ev);});
 
-/* REVIEW */
-function renderReview(){
-  const el=document.getElementById('review-full-list');
-  if(!S.attempts.length){el.innerHTML='<div class="empty">Log questions in the Question Bank to fill this queue.</div>';return;}
-  el.innerHTML=[...S.attempts].sort((a,b)=>new Date(a.nextReview)-new Date(b.nextReview)).map(a=>{const d=dTo(tod(),a.nextReview),label=d<0?'Overdue':d===0?'Due today':'In '+d+'d',bc=d<=0?'b-red':d<=3?'b-amber':'b-blue';return`<div style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid rgba(56,194,232,0.1)"><span class="chip ${CHIP[a.course]||''}">${a.course}</span><div style="flex:1"><div style="font-size:12px">${a.text}</div>${a.topic?`<div style="font-size:10px;color:var(--text-soft)">${a.topic}</div>`:''}</div><span class="badge ${bc}" style="font-size:10px;padding:2px 7px">${label}</span><span class="badge ${a.correct?'b-green':'b-red'}" style="font-size:10px;padding:2px 7px">${a.correct?'Was ✓':'Was ✗'}</span></div>`;}).join('');
+/* ════════════════════════════════════
+   SPACED REPETITION ENGINE (session-based)
+   Confidence 1-5: 1=confused,2=shaky,3=ok,4=good,5=solid
+   Difficulty 1-5: 1=easy,2=ok,3=medium,4=hard,5=brutal
+   Interval formula: base * confidence_factor / difficulty_factor
+════════════════════════════════════ */
+function srSave(){localStorage.setItem('fs_sr_v1',JSON.stringify(SR.topics));}
+
+function srInterval(confidence,difficulty){
+  // Base intervals (days): [1,2,4,7,14] for confidence 1-5
+  const base=[1,2,4,7,14][Math.max(0,Math.min(4,confidence-1))];
+  // Difficulty modifier: harder = revisit sooner
+  const diffMod=[1.6,1.2,1.0,0.75,0.5][Math.max(0,Math.min(4,difficulty-1))];
+  return Math.max(1,Math.round(base*diffMod));
 }
 
-/* LOG Q */
-function quickLog(correct){
-  const course=document.getElementById('lq-course').value,topic=document.getElementById('lq-topic').value.trim(),text=document.getElementById('lq-text').value.trim();
-  if(!text){alert('Please describe the question first.');return;}
-  const prev=S.attempts.filter(a=>a.text===text&&!a.correct).length,interval=correct?(prev>0?3:7):1;
-  S.attempts.push({id:Date.now(),course,topic,text,correct,date:tod(),nextReview:new Date(Date.now()+interval*DAY).toDateString(),interval});
-  document.getElementById('lq-topic').value='';document.getElementById('lq-text').value='';
-  save();renderLogQ();toast(correct?'✓ Logged as correct!':'✗ Logged as wrong — review tomorrow.');
+function srLogTopic(course,topic,confidence,difficulty){
+  const existing=SR.topics.find(t=>t.course===course&&t.topic===topic);
+  const interval=srInterval(confidence,difficulty);
+  const nextReview=new Date(Date.now()+interval*DAY).toDateString();
+  if(existing){
+    existing.confidence=confidence;existing.difficulty=difficulty;
+    existing.interval=interval;existing.nextReview=nextReview;
+    existing.lastSeen=tod();existing.sessions=(existing.sessions||0)+1;
+  } else {
+    SR.topics.push({id:'sr'+Date.now(),course,topic,confidence,difficulty,interval,nextReview,lastSeen:tod(),sessions:1});
+  }
+  srSave();
 }
-function renderLogQ(){
-  const el=document.getElementById('lq-recent');
-  if(!S.attempts.length){el.innerHTML='<div class="empty">Nothing logged yet.</div>';return;}
-  el.innerHTML=[...S.attempts].reverse().slice(0,10).map(a=>`<div class="row"><span class="chip ${CHIP[a.course]||''}">${a.course}</span><span style="flex:1;font-size:12px">${a.text}</span><span class="badge ${a.correct?'b-green':'b-red'}">${a.correct?'✓ Right':'✗ Wrong'}</span><span class="badge b-blue">+${a.interval}d</span></div>`).join('');
+
+/* REVIEW renders */
+function renderReview(){
+  // confidence bars by course
+  const cb=document.getElementById('sr-course-bars');
+  if(cb){
+    const byC={};COURSES.forEach(c=>{byC[c]=[];});
+    SR.topics.forEach(t=>{if(byC[t.course])byC[t.course].push(t.confidence||3);});
+    const hasSR=Object.values(byC).some(v=>v.length>0);
+    if(!hasSR){cb.innerHTML='<div class="empty">Log flow sessions to build confidence data.</div>';}
+    else cb.innerHTML=COURSES.map(c=>{
+      const arr=byC[c];if(!arr.length)return'';
+      const avg=arr.reduce((a,b)=>a+b,0)/arr.length;
+      const pct=Math.round(avg/5*100);
+      const col=pct>=70?'pf-green':pct>=40?'pf-amber':'pf-red';
+      const emoji=['','😵','😰','😐','😊','🌊'][Math.round(avg)]||'😐';
+      return`<div class="ana-bar"><span class="ana-label"><span class="chip ${CHIP[c]||''}">${c}</span></span><div class="pb"><div class="pf ${col}" style="width:${pct}%"></div></div><span class="ana-pct">${emoji}</span><span style="font-size:10px;color:var(--text-soft);margin-left:4px">${arr.length} topics</span></div>`;
+    }).join('');
+  }
+
+  // due today
+  const dt=document.getElementById('sr-due-today');
+  if(dt){
+    const due=SR.topics.filter(t=>dTo(tod(),t.nextReview)<=0).sort((a,b)=>(a.confidence||3)-(b.confidence||3));
+    if(!due.length){dt.innerHTML='<div class="empty">Nothing due — enjoy the flow! 🌊</div>';}
+    else dt.innerHTML=due.map(t=>{
+      const d=dTo(tod(),t.nextReview),bc=d<0?'b-red':'b-amber';
+      const conf=['','😵','😰','😐','😊','🌊'][t.confidence||3];
+      return`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(56,194,232,0.1)">
+        <span class="chip ${CHIP[t.course]||''}">${t.course}</span>
+        <div style="flex:1"><div style="font-size:12px;font-weight:600">${t.topic}</div>
+        <div style="font-size:10px;color:var(--text-soft)">Last seen: ${t.lastSeen} · ${t.sessions} session${t.sessions>1?'s':''}</div></div>
+        <span style="font-size:16px">${conf}</span>
+        <span class="badge ${bc}" style="font-size:10px">${d<0?'Overdue':'Due today'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // full queue
+  const fq=document.getElementById('sr-full-queue');
+  if(fq){
+    if(!SR.topics.length){fq.innerHTML='<div class="empty">No topics logged yet.</div>';return;}
+    const sorted=[...SR.topics].sort((a,b)=>new Date(a.nextReview)-new Date(b.nextReview));
+    fq.innerHTML=sorted.map(t=>{
+      const d=dTo(tod(),t.nextReview);
+      const label=d<0?'Overdue':d===0?'Due today':'In '+d+'d';
+      const bc=d<=0?'b-red':d<=3?'b-amber':'b-blue';
+      const conf=['','😵','😰','😐','😊','🌊'][t.confidence||3];
+      return`<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(56,194,232,0.1)">
+        <span class="chip ${CHIP[t.course]||''}">${t.course}</span>
+        <div style="flex:1"><div style="font-size:12px;font-weight:600">${t.topic}</div></div>
+        <span style="font-size:14px">${conf}</span>
+        <span class="badge ${bc}" style="font-size:10px">${label}</span>
+        <button style="background:none;border:none;color:var(--red3);cursor:pointer;font-size:12px" onclick="srDeleteTopic('${t.id}')" title="Remove"><i class="ti ti-x"></i></button>
+      </div>`;
+    }).join('');
+  }
 }
+
+function srDeleteTopic(id){SR.topics=SR.topics.filter(t=>t.id!==id);srSave();renderReview();}
+
+/* ── Session rating modal (shown after pomoFinish) ── */
+function srShowRatingModal(course,label){
+  // build topic options from course outlines
+  const outline=COURSE_OUTLINES.find(c=>c.course===course);
+  const topics=outline?outline.topics.map(t=>t.t):['General study'];
+
+  let modal=document.getElementById('sr-modal');
+  if(!modal){modal=document.createElement('div');modal.id='sr-modal';document.body.appendChild(modal);}
+  modal.style.cssText='position:fixed;inset:0;z-index:11000;display:flex;align-items:center;justify-content:center;background:rgba(10,58,74,0.65);backdrop-filter:blur(6px)';
+
+  modal.innerHTML=`<div style="background:linear-gradient(135deg,rgba(220,250,255,0.97),rgba(200,240,255,0.95));border:1.5px solid rgba(180,230,255,0.9);border-radius:20px;padding:1.75rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(8,128,168,0.3)">
+    <div style="font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:var(--aqua5);margin-bottom:4px">🌊 Session complete!</div>
+    <div style="font-size:12px;color:var(--text-soft);margin-bottom:1.25rem">${course} · ${label}</div>
+
+    <div style="margin-bottom:1rem">
+      <div style="font-size:11px;font-weight:800;color:var(--text-mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Topics covered</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px" id="sr-topic-chips">
+        ${topics.map((t,i)=>`<button onclick="srToggleTopic(this)" data-topic="${t.replace(/"/g,'&quot;')}" style="padding:5px 10px;font-size:11px;font-weight:700;border:1.5px solid rgba(56,194,232,0.35);border-radius:50px;background:rgba(255,255,255,0.6);color:var(--text-mid);cursor:pointer;font-family:'Nunito',sans-serif;transition:all .15s">${t}</button>`).join('')}
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--text-mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">How well did you understand?</div>
+        <div style="display:flex;gap:6px" id="sr-conf-btns">
+          ${['😵','😰','😐','😊','🌊'].map((e,i)=>`<button onclick="srSelectConf(${i+1},this)" title="${['Confused','Shaky','Okay','Good','Solid'][i]}" style="font-size:20px;padding:6px;border:2px solid transparent;border-radius:8px;background:rgba(255,255,255,0.5);cursor:pointer;transition:all .15s">${e}</button>`).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:800;color:var(--text-mid);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Session difficulty</div>
+        <div style="display:flex;gap:6px" id="sr-diff-btns">
+          ${['1','2','3','4','5'].map((n,i)=>`<button onclick="srSelectDiff(${i+1},this)" title="${['Easy','Okay','Medium','Hard','Brutal'][i]}" style="font-size:13px;font-weight:800;padding:6px 8px;border:2px solid transparent;border-radius:8px;background:rgba(255,255,255,0.5);color:var(--text-mid);cursor:pointer;transition:all .15s">${n}</button>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="srCloseModal()" style="padding:8px 16px;font-size:12px;font-weight:700;border:1.5px solid rgba(56,194,232,0.3);border-radius:50px;background:rgba(255,255,255,0.6);color:var(--text-mid);cursor:pointer;font-family:'Nunito',sans-serif">Skip</button>
+      <button onclick="srSubmitRating('${course.replace(/'/g,"\'")}')" style="padding:8px 20px;font-size:12px;font-weight:700;border:none;border-radius:50px;background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 12px rgba(15,163,204,0.3)"><i class="ti ti-check"></i> Save &amp; schedule review</button>
+    </div>
+  </div>`;
+
+  window._srSelectedTopics=[];
+  window._srConf=3;
+  window._srDiff=3;
+  // pre-select middle buttons
+  setTimeout(()=>{
+    const cb=document.querySelectorAll('#sr-conf-btns button');
+    const db=document.querySelectorAll('#sr-diff-btns button');
+    if(cb[2])srSelectConf(3,cb[2]);
+    if(db[2])srSelectDiff(3,db[2]);
+  },50);
+}
+
+function srToggleTopic(btn){
+  const t=btn.dataset.topic;
+  if(window._srSelectedTopics.includes(t)){
+    window._srSelectedTopics=window._srSelectedTopics.filter(x=>x!==t);
+    btn.style.background='rgba(255,255,255,0.6)';btn.style.borderColor='rgba(56,194,232,0.35)';btn.style.color='var(--text-mid)';
+  } else {
+    window._srSelectedTopics.push(t);
+    btn.style.background='linear-gradient(135deg,#38c2e8,#0fa3cc)';btn.style.borderColor='#38c2e8';btn.style.color='#fff';
+  }
+}
+function srSelectConf(v,btn){
+  window._srConf=v;
+  document.querySelectorAll('#sr-conf-btns button').forEach(b=>{b.style.borderColor='transparent';b.style.background='rgba(255,255,255,0.5)';});
+  btn.style.borderColor='#38c2e8';btn.style.background='rgba(56,194,232,0.15)';
+}
+function srSelectDiff(v,btn){
+  window._srDiff=v;
+  document.querySelectorAll('#sr-diff-btns button').forEach(b=>{b.style.borderColor='transparent';b.style.background='rgba(255,255,255,0.5)';});
+  btn.style.borderColor='#6c52e8';btn.style.background='rgba(108,82,232,0.12)';
+}
+function srSubmitRating(course){
+  const topics=window._srSelectedTopics.length?window._srSelectedTopics:['General study'];
+  topics.forEach(t=>srLogTopic(course,t,window._srConf||3,window._srDiff||3));
+  srSave();srCloseModal();
+  const due=SR.topics.filter(t=>dTo(tod(),t.nextReview)<=0).length;
+  toast('📚 Logged '+topics.length+' topic'+(topics.length>1?'s':'')+'. '+due+' review'+(due!==1?'s':'')+' due today.');
+  renderReview();
+}
+function srCloseModal(){const m=document.getElementById('sr-modal');if(m)m.style.display='none';}
 
 
 /* ════════════════════════════════════
@@ -1823,6 +2266,7 @@ if(!document.getElementById('dhikr-ring-style')){
 
 
 renderToday();
+renderTestCountdown();
 </script>
 
 <!-- DHIKR MODE OVERLAY -->
