@@ -354,6 +354,12 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 /* test block in calendar */
 .sb-test{background:rgba(214,48,48,0.12);border:2px solid rgba(214,48,48,0.5);color:#8B1A1A;cursor:default}
 .sb-test::before{content:'📝 ';font-size:8px}
+/* personal/life task blocks */
+.sb-life{cursor:grab}
+.sb-life.dragging{opacity:.4}
+/* revision blocks */
+.sb-revision{background:rgba(108,82,232,0.1);border:1.5px dashed rgba(108,82,232,0.5);color:#3d2e8a}
+/* category colour map applied via inline border-left */
 /* course outlines */
 .outline-section{margin-bottom:1rem}
 .outline-course-hdr{display:flex;align-items:center;gap:10px;padding:.6rem 1rem;background:linear-gradient(135deg,rgba(255,255,255,0.7),rgba(200,248,255,0.5));border:1.5px solid var(--glass-border);border-radius:12px 12px 0 0;font-weight:800;font-size:13px;color:var(--text-deep)}
@@ -580,8 +586,18 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     <!-- ── MANUAL ADD ── -->
     <div id="sap-panel-task">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
-        <div><div class="fl">Task / topic</div><input type="text" class="fi" id="sched-new-label" placeholder="e.g. Organic mechanisms"></div>
-        <div><div class="fl">Course</div>
+        <div><div class="fl">Task name</div><input type="text" class="fi" id="sched-new-label" placeholder="e.g. Organic mechanisms / Gym / Errands"></div>
+        <div><div class="fl">Category</div>
+          <select class="fi" id="sched-new-category" onchange="schedCategoryChange()">
+            <option value="study">📚 Study</option>
+            <option value="personal">🏃 Personal / Health</option>
+            <option value="social">👥 Social / Family</option>
+            <option value="admin">📋 Admin / Errands</option>
+            <option value="faith">🤲 Faith / Ibadah</option>
+            <option value="rest">😴 Rest / Recovery</option>
+          </select>
+        </div>
+        <div id="sched-course-row"><div class="fl">Course</div>
           <select class="fi" id="sched-new-course">
             <option value="PH127/133">PH127/133 — Vibrations</option>
             <option value="CH117">CH117 — Organic Chem 1</option>
@@ -995,21 +1011,29 @@ function updDots(){
 }
 function pomoToggle(){
   if(P.running){
+    // PAUSE
     clearInterval(P.interval);P.running=false;
     document.getElementById('pomo-bubble-wrap').classList.remove('running');
     document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Resume';
     fadeBubbleSound(0,800);
+  } else if(P.mode==='work'&&(P.secsLeft===pwMins()*60)){
+    // FRESH START — show pre-session modal first
+    pomoShowPresession();
   } else {
-    P.running=true;
-    document.getElementById('pomo-bubble-wrap').classList.add('running');
-    document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-pause"></i> Pause';
-    // play sound + trigger bubble rush on first start
-    if(P.secsLeft===(pwMins()*60)||P.secsLeft===(pbMins()*60)){
-      playBubbleSound(false);
-      startBubbleRush();
-    }
-    P.interval=setInterval(()=>{P.secsLeft--;updDisp();if(P.secsLeft<=0)pomoFinish();},1000);
+    // RESUME after pause
+    _pomoActuallyStart();
   }
+}
+function _pomoActuallyStart(){
+  P.running=true;
+  document.getElementById('pomo-bubble-wrap').classList.add('running');
+  document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-pause"></i> Pause';
+  if(P.secsLeft===(pwMins()*60)||P.secsLeft===(pbMins()*60)){
+    playBubbleSound(false);
+    startBubbleRush();
+  }
+  if(P.mode==='work')qcShow();
+  P.interval=setInterval(()=>{P.secsLeft--;updDisp();if(P.secsLeft<=0)pomoFinish();},1000);
 }
 function pomoFinish(){
   clearInterval(P.interval);P.running=false;
@@ -1019,8 +1043,9 @@ function pomoFinish(){
     fadeBubbleSound(0,600);
     const mins=pwMins(),course=document.getElementById('pomo-course').value,label=document.getElementById('pomo-label').value.trim()||course+' study';
     S.pomoLog=S.pomoLog||[];
-    S.pomoLog.push({type:'work',mins,course,label,date:tod(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    S.pomoLog.push({type:'work',mins,course,label,date:tod(),time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),qAttempted:QC.attempted,qCorrect:QC.correct,qTarget:QC.target,qType:QC.qtype});
     S.pomoSessions=(S.pomoSessions||0)+1;save();
+    qcHide();QC={attempted:0,correct:0,target:0,qtype:'practice'};
     // show SR rating modal after a short delay so pop animation plays first
     setTimeout(()=>srShowRatingModal(course,label),600);
     P.session=(P.session+1)%4;P.mode='break';
@@ -1034,7 +1059,7 @@ function pomoFinish(){
   document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';
   updDisp();
 }
-function pomoReset(){clearInterval(P.interval);P.running=false;P.mode='work';P.secsLeft=pwMins()*60;document.getElementById('pomo-bubble-wrap').classList.remove('running');document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';fadeBubbleSound(0,400);updDisp();}
+function pomoReset(){clearInterval(P.interval);P.running=false;P.mode='work';P.secsLeft=pwMins()*60;document.getElementById('pomo-bubble-wrap').classList.remove('running');document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';fadeBubbleSound(0,400);qcHide();QC={attempted:0,correct:0,target:0,qtype:'practice'};updDisp();}
 function pomoSkip(){clearInterval(P.interval);P.running=false;P.mode=P.mode==='work'?'break':'work';P.secsLeft=(P.mode==='work'?pwMins():pbMins())*60;document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Start';updDisp();}
 function renderPomoLog(){
   const el=document.getElementById('pomo-log-today');
@@ -1042,7 +1067,7 @@ function renderPomoLog(){
   if(!log.length){el.innerHTML='<div class="empty">No sessions yet today — start your first flow session above.</div>';return;}
   const total=log.reduce((s,p)=>s+p.mins,0);
   el.innerHTML=`<div style="font-size:13px;font-weight:700;color:var(--aqua5);margin-bottom:10px">Today: ${total} min total focus 🎯</div>`+
-  [...log].reverse().map(p=>`<div class="row"><i class="ti ti-clock" style="font-size:15px;color:var(--text-soft);margin-top:2px"></i><div style="flex:1"><div style="font-size:13px"><span class="chip ${CHIP[p.course]||''}">${p.course}</span>${p.label}</div><div style="font-size:11px;color:var(--text-soft)">${p.time}</div></div><span class="badge b-blue">${p.mins} min</span></div>`).join('');
+  [...log].reverse().map(p=>{const qInfo=p.qAttempted>0?`<span class="badge b-green" style="font-size:10px;margin-left:4px">${p.qCorrect}/${p.qAttempted} ${p.qType||''}</span>`:'';const targetBadge=p.qTarget>0&&p.qAttempted>=p.qTarget?'<span style="font-size:10px;margin-left:4px">🎯</span>':'';return`<div class="row"><i class="ti ti-clock" style="font-size:15px;color:var(--text-soft);margin-top:2px"></i><div style="flex:1"><div style="font-size:13px"><span class="chip ${CHIP[p.course]||''}">${p.course}</span>${p.label}${qInfo}${targetBadge}</div><div style="font-size:11px;color:var(--text-soft)">${p.time}</div></div><span class="badge b-blue">${p.mins} min</span></div>`;}).join('');
 }
 updDisp();
 
@@ -1337,13 +1362,16 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       const ht=Math.max(sgHPx(piece.dur),14);
       const el=document.createElement('div');
       el.className='sched-block '+(piece.split?'sb-split':'sb-study');
-      el.style.cssText=`top:${top}px;height:${ht}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[b.course]||'#7adfa8'}`;
+      const bColor=(b.category&&b.category!=='study')?CATEGORY_COLORS[b.category]:(COURSE_LEFT[b.course]||'#7adfa8');
+      const bClass=b.isRevision?'sb-revision':(b.category&&b.category!=='study'?'sb-life':'');      el.style.cssText=`top:${top}px;height:${ht}px;pointer-events:all;border-left:3px solid ${bColor}`;
+      if(bClass)el.classList.add(bClass);
       el.draggable=true;el.dataset.id=b.id;
       const displayLbl=piece.split?`${b.label} pt.${piece.partN}`:b.label;
       el.innerHTML=`<div class="sb-label">${displayLbl}</div><div class="sb-sub">${b.course} · ${sgMinStr(piece.start)}</div>`;
       el.addEventListener('dragstart',ev=>{SG.dragBlock=b;el.classList.add('dragging');ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',b.id);});
       el.addEventListener('dragend',()=>{el.classList.remove('dragging');SG.dragBlock=null;});
-      el.addEventListener('mouseenter',ev=>sgShowTip(ev,b.label,b.course+(piece.split?' — auto-split around prayer':' — drag to move'),`${sgMinStr(piece.start)} – ${sgMinStr(piece.start+piece.dur)}, ${piece.dur} min`));
+      const tipSub=b.category&&b.category!=='study'?(CATEGORY_LABELS[b.category]||b.category)+(piece.split?' — split around prayer':' — drag to move'):(b.course+(piece.split?' — auto-split around prayer':' — drag to move'));
+      el.addEventListener('mouseenter',ev=>sgShowTip(ev,b.label,tipSub,`${sgMinStr(piece.start)} – ${sgMinStr(piece.start+piece.dur)}, ${piece.dur} min`));
       el.addEventListener('mouseleave',sgHideTip);
       el.addEventListener('dblclick',()=>{if(confirm(`Remove "${b.label}"?`)){sgFluid=sgFluid.filter(x=>x.id!==b.id);sgSave();renderSchedule();}});
       wrappers[col].appendChild(el);
@@ -1508,15 +1536,32 @@ function sgStartNowClock(grid,wrappers,today,days,viewKey){
   },30000);
 }
 
+
+/* ── Category system ── */
+const CATEGORY_COLORS={
+  study:'#7adfa8',personal:'#ffd260',social:'#b8a8f8',
+  admin:'#aaddee',faith:'#38c2e8',rest:'#f0c0ff'
+};
+const CATEGORY_LABELS={
+  study:'📚 Study',personal:'🏃 Personal',social:'👥 Social',
+  admin:'📋 Admin',faith:'🤲 Faith',rest:'😴 Rest'
+};
+function schedCategoryChange(){
+  const cat=document.getElementById('sched-new-category').value;
+  const row=document.getElementById('sched-course-row');
+  if(row)row.style.display=cat==='study'?'block':'none';
+}
+
 function schedAddTask(){
   const label=document.getElementById('sched-new-label').value.trim();
-  const course=document.getElementById('sched-new-course').value;
+  const category=document.getElementById('sched-new-category').value||'study';
+  const course=category==='study'?(document.getElementById('sched-new-course').value||''):'';
   const day=parseInt(document.getElementById('sched-new-day').value);
   const startMin=sgStrToMin(document.getElementById('sched-new-time').value);
   const dur=parseInt(document.getElementById('sched-new-dur').value)||60;
   if(!label){sgShowInfo('Please enter a task name.');return;}
   const id='sg'+Date.now();
-  sgFluid.push({id,day,label,course,start:startMin,dur});
+  sgFluid.push({id,day,label,course,category,start:startMin,dur});
   const didRipple=sgApplyRipple(day);
   const overlaps=sgPrayerOverlaps(day,startMin,dur);
   SG.rippleNotes=[];
@@ -1662,15 +1707,75 @@ function schedAddTest(){
   const time=document.getElementById('test-time').value||'09:00';
   const notes=document.getElementById('test-notes').value.trim();
   if(!label||!date){document.getElementById('test-add-result').innerHTML='<span style="color:var(--red3);font-size:11px">Please fill in name and date.</span>';return;}
-  sgTests.push({id:'t'+Date.now(),label,course,date,time,notes});
+  const testId='t'+Date.now();
+  sgTests.push({id:testId,label,course,date,time,notes});
   sgSaveTests();
+  // Generate front-loaded revision slots
+  const revCount=schedGenerateRevisionSlots(course,label,date,testId);
   renderTestCountdown();
-  renderSchedule(); // re-render so test appears as block
+  renderSchedule();
   document.getElementById('test-label').value='';
   document.getElementById('test-notes').value='';
-  document.getElementById('test-add-result').innerHTML='<span style="color:var(--green3);font-size:11px"><i class="ti ti-check"></i> Test saved!</span>';
-  setTimeout(()=>{document.getElementById('test-add-result').innerHTML='';},2500);
-  toast('Test added to schedule!');
+  document.getElementById('test-add-result').innerHTML=`<span style="color:var(--green3);font-size:11px"><i class="ti ti-check"></i> Test saved! ${revCount>0?revCount+' revision slots added to schedule.':''}</span>`;
+  setTimeout(()=>{document.getElementById('test-add-result').innerHTML='';},3500);
+  toast('Test saved! '+revCount+' revision sessions scheduled.');
+}
+
+/* Front-loaded revision slot generator
+   Distribution: more sessions early, tapering toward test date.
+   e.g. 14 days away → sessions on days 1,2,3,5,7,10,12 (front-heavy) */
+function schedGenerateRevisionSlots(course,testLabel,dateStr,testId){
+  const testDate=new Date(dateStr);
+  const today=new Date();today.setHours(0,0,0,0);
+  const daysUntil=Math.floor((testDate-today)/(1000*60*60*24));
+  if(daysUntil<=0)return 0;
+
+  // Build front-loaded day offsets
+  // Formula: concentrate ~60% of sessions in first half of remaining time
+  let offsets=[];
+  if(daysUntil<=3)       offsets=[1];
+  else if(daysUntil<=7)  offsets=[1,2,4,6];
+  else if(daysUntil<=14) offsets=[1,2,3,5,7,10,12];
+  else if(daysUntil<=21) offsets=[1,2,3,5,7,9,12,15,18];
+  else                   offsets=[1,2,3,5,7,10,14,18,22,26];
+  // Filter to only valid future days
+  offsets=offsets.filter(o=>o<daysUntil);
+
+  let added=0;
+  offsets.forEach(offset=>{
+    const slotDate=new Date(today);slotDate.setDate(today.getDate()+offset);
+    const dayOfWeek=slotDate.getDay()===0?6:slotDate.getDay()-1; // 0=Mon
+    // Find a free window on that day
+    const windows=FREE_WINDOWS[dayOfWeek]||[];
+    for(const win of windows){
+      const dur=60;
+      const occupied=sgFluid.filter(b=>b.day===dayOfWeek&&b.start<win.e&&(b.start+b.dur)>win.s);
+      const usedMins=occupied.reduce((a,b)=>a+b.dur,0);
+      if(win.e-win.s-usedMins>=dur){
+        const startMin=win.s+usedMins;
+        const overlaps=sgPrayerOverlaps(dayOfWeek,startMin,dur);
+        // Use first gap after any prayer overlap
+        const actualStart=overlaps.length?(overlaps[0].start+overlaps[0].dur):startMin;
+        if(actualStart+dur<=win.e){
+          sgFluid.push({
+            id:'rev'+Date.now()+'_'+offset,
+            day:dayOfWeek,
+            label:'Revision: '+testLabel,
+            course,
+            category:'study',
+            start:actualStart,
+            dur,
+            isRevision:true,
+            testId
+          });
+          added++;break;
+        }
+      }
+    }
+  });
+  sgApplyRipple(-1); // no specific day — just save
+  sgSave();
+  return added;
 }
 
 function deleteTest(id){
@@ -1984,19 +2089,36 @@ const COURSE_OUTLINES=[
   ]},
 ];
 
-let outlineConf=JSON.parse(localStorage.getItem('fs_outlines_v1')||'null');
-if(!outlineConf){
-  outlineConf={};
-  COURSE_OUTLINES.forEach(c=>c.topics.forEach((t,i)=>{outlineConf[c.course+'_'+i]=t.covered;}));
-  localStorage.setItem('fs_outlines_v1',JSON.stringify(outlineConf));
-}
+let outlineConf=(()=>{
+  try{
+    const stored=localStorage.getItem('fs_outlines_v1');
+    if(stored){const p=JSON.parse(stored);if(p&&typeof p==='object')return p;}
+  }catch(e){}
+  // build defaults from COURSE_OUTLINES
+  const defaults={};
+  COURSE_OUTLINES.forEach(c=>c.topics.forEach((t,i)=>{defaults[c.course+'_'+i]=t.covered;}));
+  localStorage.setItem('fs_outlines_v1',JSON.stringify(defaults));
+  return defaults;
+})();
 
 function tlCycle(course,idx){
   const key=course+'_'+idx;
   outlineConf[key]=((outlineConf[key]||0)+1)%3;
   localStorage.setItem('fs_outlines_v1',JSON.stringify(outlineConf));
-  const btn=document.getElementById('tl-'+course+'-'+idx);
+  // sanitise course name — slashes and special chars break getElementById
+  const safeId='tl-'+course.replace(/[^a-zA-Z0-9]/g,'_')+'-'+idx;
+  const btn=document.getElementById(safeId);
   if(btn){btn.className='tl-btn tl-'+outlineConf[key];}
+  // also update the summary counts in the header without full re-render
+  const hdrId='tl-hdr-'+course.replace(/[^a-zA-Z0-9]/g,'_');
+  const hdr=document.getElementById(hdrId);
+  if(hdr){
+    const topics=COURSE_OUTLINES.find(c=>c.course===course)?.topics||[];
+    const c0=topics.filter((_,i2)=>(outlineConf[course+'_'+i2]||0)===0).length;
+    const c1=topics.filter((_,i2)=>(outlineConf[course+'_'+i2]||0)===1).length;
+    const c2=topics.filter((_,i2)=>(outlineConf[course+'_'+i2]||0)===2).length;
+    hdr.innerHTML=`<span style="color:#d63030">●</span> ${c0} &nbsp;<span style="color:#e09a00">●</span> ${c1} &nbsp;<span style="color:#1ab870">●</span> ${c2}`;
+  }
 }
 
 function renderOutlines(){
@@ -2010,7 +2132,7 @@ function renderOutlines(){
       <div class="outline-course-hdr">
         <span class="chip ${c.chip}">${c.course}</span>
         <span style="flex:1">${c.name}</span>
-        <span style="font-size:11px;font-weight:600;color:var(--text-soft)">
+        <span id="tl-hdr-${c.course.replace(/[^a-zA-Z0-9]/g,'_')}" style="font-size:11px;font-weight:600;color:var(--text-soft)">
           <span style="color:#d63030">●</span> ${conf0} &nbsp;
           <span style="color:#e09a00">●</span> ${conf1} &nbsp;
           <span style="color:#1ab870">●</span> ${conf2}
@@ -2022,7 +2144,8 @@ function renderOutlines(){
           const lv=outlineConf[c.course+'_'+i]||0;
           const covLv=t.covered;
           const covBadge=covLv===2?'<span class="covered-badge cov-yes">✓ Yes</span>':covLv===1?'<span class="covered-badge cov-partial">Almost done</span>':'<span class="covered-badge cov-no">Not yet</span>';
-          return`<tr><td style="font-weight:500">${t.t}</td><td>${covBadge}</td><td><button class="tl-btn tl-${lv}" id="tl-${c.course}-${i}" onclick="tlCycle('${c.course}',${i})" title="Click to change confidence"></button></td></tr>`;
+          const safeIdBtn='tl-'+c.course.replace(/[^a-zA-Z0-9]/g,'_')+'-'+i;
+          return`<tr><td style="font-weight:500">${t.t}</td><td>${covBadge}</td><td><button class="tl-btn tl-${lv}" id="${safeIdBtn}" onclick="tlCycle('${c.course}',${i})" title="Click to change confidence"></button></td></tr>`;
         }).join('')}</tbody>
       </table>
     </div>`;
@@ -2265,6 +2388,54 @@ if(!document.getElementById('dhikr-ring-style')){
 }
 
 
+
+/* ════════════════════════════════════
+   PRE-SESSION MODAL + IN-SESSION Q COUNTER
+════════════════════════════════════ */
+let QC={attempted:0,correct:0,target:0,qtype:'practice'};
+
+function pomoShowPresession(){
+  // Show only if in work mode and not already running
+  const modal=document.getElementById('presession-modal');
+  if(modal){modal.style.display='flex';}
+}
+function presessionSkip(){
+  QC={attempted:0,correct:0,target:0,qtype:'practice'};
+  document.getElementById('presession-modal').style.display='none';
+  _pomoActuallyStart();
+}
+function presessionStart(){
+  QC.target=parseInt(document.getElementById('presession-target').value)||0;
+  QC.qtype=document.getElementById('presession-qtype').value;
+  QC.attempted=0;QC.correct=0;
+  document.getElementById('presession-modal').style.display='none';
+  _pomoActuallyStart();
+}
+function qcAdjust(delta,field){
+  if(field==='attempted'){QC.attempted=Math.max(0,QC.attempted+delta);}
+  else{QC.correct=Math.max(0,Math.min(QC.attempted,QC.correct+delta));}
+  qcRender();
+}
+function qcRender(){
+  const ae=document.getElementById('qc-attempted');
+  const ce=document.getElementById('qc-correct');
+  const tl=document.getElementById('qc-target-lbl');
+  const pf=document.getElementById('qc-progress-fill');
+  if(ae)ae.textContent=QC.attempted;
+  if(ce)ce.textContent=QC.correct;
+  const pct=QC.target>0?Math.min(100,Math.round(QC.attempted/QC.target*100)):0;
+  if(tl)tl.textContent=QC.target>0?`${QC.attempted}/${QC.target} target · ${pct}%`:(QC.attempted>0?`${QC.attempted} attempted`:'');
+  if(pf)pf.style.width=(QC.target>0?pct:0)+'%';
+}
+function qcShow(){
+  const el=document.getElementById('session-qcounter');
+  if(el){el.style.display='block';qcRender();}
+}
+function qcHide(){
+  const el=document.getElementById('session-qcounter');
+  if(el)el.style.display='none';
+}
+
 renderToday();
 renderTestCountdown();
 </script>
@@ -2323,6 +2494,58 @@ renderTestCountdown();
     <!-- skip break -->
     <button onclick="dhikrSkipBreak()" style="margin-top:1.2rem;background:none;border:none;font-size:11px;color:rgba(140,200,220,0.4);cursor:pointer;font-family:'Nunito',sans-serif;text-decoration:underline">Skip break — return to study</button>
   </div>
+</div>
+
+
+<!-- PRE-SESSION MODAL -->
+<div id="presession-modal" style="display:none;position:fixed;inset:0;z-index:11500;display:none;align-items:center;justify-content:center;background:rgba(10,58,74,0.6);backdrop-filter:blur(6px)">
+  <div style="background:linear-gradient(135deg,rgba(220,250,255,0.97),rgba(200,240,255,0.95));border:1.5px solid rgba(180,230,255,0.9);border-radius:20px;padding:1.75rem;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(8,128,168,0.25)">
+    <div style="font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:var(--aqua5);margin-bottom:4px">🎯 Set your session target</div>
+    <div style="font-size:12px;color:var(--text-soft);margin-bottom:1.25rem">Optional — helps track your pace across sessions.</div>
+    <div class="fr" style="margin-bottom:1rem">
+      <div>
+        <div class="fl">Target questions</div>
+        <input type="number" class="fi" id="presession-target" placeholder="e.g. 10" min="0" max="200" value="">
+      </div>
+      <div>
+        <div class="fl">Question type</div>
+        <select class="fi" id="presession-qtype">
+          <option value="practice">Practice problems</option>
+          <option value="tutorial">Tutorial questions</option>
+          <option value="past-paper">Past paper Qs</option>
+          <option value="flashcards">Flashcards / recall</option>
+          <option value="reading">Reading / notes</option>
+        </select>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="presessionSkip()" style="padding:8px 16px;font-size:12px;font-weight:700;border:1.5px solid rgba(56,194,232,0.3);border-radius:50px;background:rgba(255,255,255,0.6);color:var(--text-mid);cursor:pointer;font-family:'Nunito',sans-serif">Skip</button>
+      <button onclick="presessionStart()" style="padding:8px 20px;font-size:12px;font-weight:700;border:none;border-radius:50px;background:linear-gradient(135deg,#6c52e8,#38c2e8);color:#fff;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 12px rgba(108,82,232,0.3)"><i class="ti ti-ripple"></i> Dive In</button>
+    </div>
+  </div>
+</div>
+
+<!-- IN-SESSION QUESTION COUNTER (bottom of screen during session) -->
+<div id="session-qcounter" style="display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:9990;background:linear-gradient(135deg,rgba(220,250,255,0.96),rgba(200,235,255,0.94));border:1.5px solid rgba(180,230,255,0.85);border-radius:16px;padding:.75rem 1rem;box-shadow:0 4px 20px rgba(56,194,232,0.25);backdrop-filter:blur(8px);min-width:160px">
+  <div style="font-size:10px;font-weight:800;color:var(--text-soft);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Questions</div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+    <button onclick="qcAdjust(-1,'attempted')" style="width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(56,194,232,0.4);background:rgba(255,255,255,0.7);color:var(--text-mid);font-size:14px;cursor:pointer;line-height:1;font-weight:700">−</button>
+    <div style="flex:1;text-align:center">
+      <div style="font-family:'Quicksand',sans-serif;font-size:20px;font-weight:700;color:var(--aqua5);line-height:1" id="qc-attempted">0</div>
+      <div style="font-size:9px;color:var(--text-soft)">attempted</div>
+    </div>
+    <button onclick="qcAdjust(1,'attempted')" style="width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(56,194,232,0.4);background:rgba(255,255,255,0.7);color:var(--text-mid);font-size:14px;cursor:pointer;line-height:1;font-weight:700">+</button>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+    <button onclick="qcAdjust(-1,'correct')" style="width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(26,184,112,0.4);background:rgba(255,255,255,0.7);color:var(--green3);font-size:14px;cursor:pointer;line-height:1;font-weight:700">−</button>
+    <div style="flex:1;text-align:center">
+      <div style="font-family:'Quicksand',sans-serif;font-size:20px;font-weight:700;color:var(--green3);line-height:1" id="qc-correct">0</div>
+      <div style="font-size:9px;color:var(--text-soft)">correct</div>
+    </div>
+    <button onclick="qcAdjust(1,'correct')" style="width:22px;height:22px;border-radius:50%;border:1.5px solid rgba(26,184,112,0.4);background:rgba(255,255,255,0.7);color:var(--green3);font-size:14px;cursor:pointer;line-height:1;font-weight:700">+</button>
+  </div>
+  <div style="font-size:9px;color:var(--text-soft);text-align:center" id="qc-target-lbl"></div>
+  <div id="qc-progress-bar" style="height:4px;background:rgba(56,194,232,0.12);border-radius:50px;margin-top:5px;overflow:hidden"><div id="qc-progress-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#38c2e8,#1ab870);border-radius:50px;transition:width .3s"></div></div>
 </div>
 
 </body>
