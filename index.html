@@ -357,6 +357,20 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 /* personal/life task blocks */
 .sb-life{cursor:grab}
 .sb-life.dragging{opacity:.4}
+/* cancelled class → free block */
+.sb-free{
+  background:repeating-linear-gradient(
+    45deg,
+    rgba(56,194,232,0.06),
+    rgba(56,194,232,0.06) 4px,
+    rgba(255,255,255,0.35) 4px,
+    rgba(255,255,255,0.35) 8px
+  );
+  border:1.5px dashed rgba(56,194,232,0.4);
+  color:var(--text-soft);
+  cursor:pointer;
+}
+.sb-free:hover{background:rgba(56,194,232,0.1);border-color:var(--aqua3);}
 /* revision blocks */
 .sb-revision{background:rgba(108,82,232,0.1);border:1.5px dashed rgba(108,82,232,0.5);color:#3d2e8a}
 /* category colour map applied via inline border-left */
@@ -401,7 +415,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
   <div class="bdeco" style="width:20px;height:20px;bottom:30px;left:180px;opacity:.4"></div>
   <div class="hero-badge" id="hero-streak">🌊 0 day streak</div>
   <h1>Flow State</h1>
-  <p>Welcome back, Taz &nbsp;·&nbsp; PH127/133 + 6 courses &nbsp;·&nbsp; Stay in the flow</p>
+  <p>As-Salamu Alaykum, Taz &nbsp;·&nbsp; PH127/133 + 6 courses &nbsp;·&nbsp; Stay in the flow</p>
 </div>
 
 <!-- Nav -->
@@ -1341,19 +1355,74 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
   });
 
   /* fixed classes */
+  // Get exact calendar dates for this view (needed to key cancellations)
+  const wsForClass=sgGetWeekStart();
+  const colDatesForClass={};
+  daysToRender.forEach(d=>{
+    const dt=new Date(wsForClass);dt.setDate(wsForClass.getDate()+d);
+    colDatesForClass[d]=dt.toISOString().slice(0,10);
+  });
+
   SCHED_CLASSES.filter(c=>daysToRender.includes(c.day)).forEach(c=>{
     const col=colMap[c.day];
+    const calDate=colDatesForClass[c.day];
+    const ckey=sgCancelKey(c.day,c.start,calDate);
+    const isCancelled=sgCancelled.has(ckey);
+
     const el=document.createElement('div');
-    el.className='sched-block sb-class';
-    el.style.cssText=`top:${sgTopPx(c.start)}px;height:${Math.max(sgHPx(c.dur),14)}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[c.course]||'#ffd260'}`;
-    el.innerHTML=`<div class="sb-label">${c.label}</div><div class="sb-sub">${sgMinStr(c.start)}</div>`;
-    el.addEventListener('mouseenter',ev=>sgShowTip(ev,c.label,c.course+' — fixed class',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min`));
-    el.addEventListener('mouseleave',sgHideTip);
+    const ht=Math.max(sgHPx(c.dur),14);
+
+    if(isCancelled){
+      // Render as a free/available block
+      el.className='sched-block sb-free';
+      el.style.cssText=`top:${sgTopPx(c.start)}px;height:${ht}px;pointer-events:all`;
+      el.innerHTML=`<div class="sb-label" style="opacity:.6">🆓 Free — ${sgMinStr(c.start)}</div><div class="sb-sub" style="opacity:.5">${c.label} cancelled</div>`;
+      el.title='Class cancelled — click to restore';
+      el.addEventListener('click',()=>sgRestoreClass(ckey,c,calDate));
+      el.addEventListener('mouseenter',ev=>sgShowTip(ev,'Free slot',c.label+' cancelled — click to restore',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min free`));
+      el.addEventListener('mouseleave',sgHideTip);
+    } else {
+      // Normal fixed class block with right-click to cancel
+      el.className='sched-block sb-class';
+      el.style.cssText=`top:${sgTopPx(c.start)}px;height:${ht}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[c.course]||'#ffd260'}`;
+      el.innerHTML=`<div class="sb-label">${c.label}</div><div class="sb-sub">${sgMinStr(c.start)}</div>`;
+      el.title='Right-click to cancel this class';
+      el.addEventListener('mouseenter',ev=>sgShowTip(ev,c.label,c.course+' — right-click to cancel',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min`));
+      el.addEventListener('mouseleave',sgHideTip);
+      el.addEventListener('contextmenu',ev=>{
+        ev.preventDefault();
+        sgShowCancelMenu(ev,c,ckey,calDate,col,wrappers,c.dur);
+      });
+    }
     wrappers[col].appendChild(el);
   });
 
   /* fluid */
-  sgFluid.filter(b=>daysToRender.includes(b.day)).forEach(b=>{
+  // Build a set of exact dates for this view
+  const ws=sgGetWeekStart();
+  const viewDates={};
+  daysToRender.forEach(d=>{
+    const dt=new Date(ws);dt.setDate(ws.getDate()+d);
+    viewDates[d]=dt.toISOString().slice(0,10);
+  });
+
+  // A block belongs in this view if:
+  //   - it has a calDate and it matches one of the visible dates, OR
+  //   - it has no calDate and its day-of-week is in daysToRender
+  const visibleBlocks=sgFluid.filter(b=>{
+    if(b.calDate){
+      const matchDay=Object.entries(viewDates).find(([d,dt])=>dt===b.calDate);
+      return!!matchDay;
+    }
+    return daysToRender.includes(b.day);
+  });
+
+  visibleBlocks.forEach(b=>{
+    // resolve which column to render in
+    if(b.calDate){
+      const matchEntry=Object.entries(viewDates).find(([d,dt])=>dt===b.calDate);
+      if(matchEntry)b=Object.assign({},b,{day:parseInt(matchEntry[0])});
+    }
     const col=colMap[b.day];
     const pieces=sgSplitAroundPrayers(b);
     pieces.forEach(piece=>{
@@ -1700,6 +1769,11 @@ function schedAcceptSuggestion(day,start,dur,label,course){
 let sgTests=JSON.parse(localStorage.getItem('fs_tests_v1')||'[]');
 function sgSaveTests(){localStorage.setItem('fs_tests_v1',JSON.stringify(sgTests));}
 
+/* ── Cancelled classes: Set of keys "day|start|calDate" ── */
+let sgCancelled=new Set(JSON.parse(localStorage.getItem('fs_cancelled_v1')||'[]'));
+function sgSaveCancelled(){localStorage.setItem('fs_cancelled_v1',JSON.stringify([...sgCancelled]));}
+function sgCancelKey(day,start,calDate){return day+'|'+start+'|'+(calDate||'recurring');}
+
 function schedAddTest(){
   const label=document.getElementById('test-label').value.trim();
   const course=document.getElementById('test-course').value;
@@ -1713,6 +1787,8 @@ function schedAddTest(){
   // Generate front-loaded revision slots
   const revCount=schedGenerateRevisionSlots(course,label,date,testId);
   renderTestCountdown();
+  // Jump to current week so the new revision blocks are visible
+  SG.weekOffset=0;
   renderSchedule();
   document.getElementById('test-label').value='';
   document.getElementById('test-notes').value='';
@@ -1730,57 +1806,87 @@ function schedGenerateRevisionSlots(course,testLabel,dateStr,testId){
   const daysUntil=Math.floor((testDate-today)/(1000*60*60*24));
   if(daysUntil<=0)return 0;
 
-  // Build front-loaded day offsets
-  // Formula: concentrate ~60% of sessions in first half of remaining time
+  // Front-loaded offsets (days from today)
   let offsets=[];
   if(daysUntil<=3)       offsets=[1];
   else if(daysUntil<=7)  offsets=[1,2,4,6];
   else if(daysUntil<=14) offsets=[1,2,3,5,7,10,12];
   else if(daysUntil<=21) offsets=[1,2,3,5,7,9,12,15,18];
   else                   offsets=[1,2,3,5,7,10,14,18,22,26];
-  // Filter to only valid future days
   offsets=offsets.filter(o=>o<daysUntil);
 
   let added=0;
+  // Use a counter-based ID suffix so IDs are unique even inside one synchronous loop
+  let idCounter=0;
+
   offsets.forEach(offset=>{
-    const slotDate=new Date(today);slotDate.setDate(today.getDate()+offset);
-    const dayOfWeek=slotDate.getDay()===0?6:slotDate.getDay()-1; // 0=Mon
-    // Find a free window on that day
+    idCounter++;
+    const slotDate=new Date(today);
+    slotDate.setDate(today.getDate()+offset);
+    const dayOfWeek=slotDate.getDay()===0?6:slotDate.getDay()-1; // Mon=0
+    const slotDateStr=slotDate.toISOString().slice(0,10);
+    const dur=60;
+
+    // Try each free window in order; pick the first one with enough room
     const windows=FREE_WINDOWS[dayOfWeek]||[];
     for(const win of windows){
-      const dur=60;
-      const occupied=sgFluid.filter(b=>b.day===dayOfWeek&&b.start<win.e&&(b.start+b.dur)>win.s);
-      const usedMins=occupied.reduce((a,b)=>a+b.dur,0);
-      if(win.e-win.s-usedMins>=dur){
-        const startMin=win.s+usedMins;
-        const overlaps=sgPrayerOverlaps(dayOfWeek,startMin,dur);
-        // Use first gap after any prayer overlap
-        const actualStart=overlaps.length?(overlaps[0].start+overlaps[0].dur):startMin;
-        if(actualStart+dur<=win.e){
-          sgFluid.push({
-            id:'rev'+Date.now()+'_'+offset,
-            day:dayOfWeek,
-            label:'Revision: '+testLabel,
-            course,
-            category:'study',
-            start:actualStart,
-            dur,
-            isRevision:true,
-            testId
-          });
-          added++;break;
-        }
-      }
+      // All blocks already occupying this exact date+window
+      const occupied=sgFluid.filter(b=>{
+        const bDate=b.calDate||null;
+        if(bDate)return bDate===slotDateStr&&b.start<win.e&&(b.start+b.dur)>win.s;
+        return b.day===dayOfWeek&&b.start<win.e&&(b.start+b.dur)>win.s;
+      });
+
+      // Find the latest end time among occupied blocks — start after that
+      const latestEnd=occupied.length
+        ? Math.max(...occupied.map(b=>b.start+b.dur))
+        : win.s;
+      let startMin=Math.max(win.s,latestEnd);
+
+      // Skip past any prayer that overlaps our proposed slot
+      const overlaps=sgPrayerOverlaps(dayOfWeek,startMin,dur);
+      if(overlaps.length)startMin=overlaps[0].start+overlaps[0].dur;
+
+      // Check the slot still fits inside the window
+      if(startMin+dur>win.e)continue;
+
+      // Unique ID: testId + offset + counter ensures no collision
+      const revId='rev_'+testId+'_'+offset+'_'+idCounter;
+
+      sgFluid.push({
+        id:revId,
+        day:dayOfWeek,
+        calDate:slotDateStr,
+        label:'Revision: '+testLabel,
+        course,
+        category:'study',
+        start:startMin,
+        dur,
+        isRevision:true,
+        testId
+      });
+      added++;
+      break; // move to next offset once a slot is found
     }
   });
-  sgApplyRipple(-1); // no specific day — just save
+
   sgSave();
   return added;
 }
 
 function deleteTest(id){
+  // Remove test entry
   sgTests=sgTests.filter(t=>t.id!==id);
-  sgSaveTests();renderTestCountdown();renderSchedule();
+  sgSaveTests();
+  // Remove all linked revision blocks from fluid schedule
+  const before=sgFluid.length;
+  sgFluid=sgFluid.filter(b=>b.testId!==id);
+  const removed=before-sgFluid.length;
+  sgSave();
+  renderTestCountdown();
+  renderSchedule();
+  if(removed>0)toast('Test and '+removed+' revision session'+(removed>1?'s':'')+' removed.');
+  else toast('Test removed from schedule.');
 }
 
 function renderTestCountdown(){
@@ -1814,37 +1920,134 @@ function renderTestCountdown(){
   }).join('');
 }
 
-/* sgBuildDayContentTests — called at end of sgBuildDayContent */
+/* sgBuildDayContentTests — called at end of sgBuildCalendar */
 function sgBuildDayContentTests(wrappers,daysToRender){
-  // overlay test blocks
   const colMap={};daysToRender.forEach((d,i)=>{colMap[d]=i;});
   const ws=sgGetWeekStart();
+  // Build date strings for each visible column
+  const colDates={};
+  daysToRender.forEach(d=>{
+    const dt=new Date(ws);dt.setDate(ws.getDate()+d);
+    colDates[d]=dt.toISOString().slice(0,10);
+  });
+
   sgTests.forEach(t=>{
-    const td=new Date(t.date);
-    const ws2=new Date(ws);
-    // find which day-of-week column this test falls in for the current week view
-    for(let d=0;d<7;d++){
-      const colDate=new Date(ws2);colDate.setDate(ws2.getDate()+d);
-      if(colDate.toDateString()===td.toDateString()&&daysToRender.includes(d)){
-        const col=colMap[d];
-        if(col===undefined)return;
-        const[th,tm]=t.time.split(':').map(Number);
-        const startMin=th*60+tm;
-        const top=sgTopPx(startMin);
-        if(top<0)return;
-        const el=document.createElement('div');
-        el.className='sched-block sb-test';
-        el.style.cssText=`top:${top}px;height:${Math.max(sgHPx(30),20)}px;pointer-events:all;z-index:15`;
-        el.innerHTML=`<div class="sb-label">${t.label}</div><div class="sb-sub">${t.course} · ${t.time}</div>`;
-        el.addEventListener('mouseenter',ev=>sgShowTip(ev,t.label,'📝 '+t.course+' — exam/test',t.time+(t.notes?' · '+t.notes:'')));
-        el.addEventListener('mouseleave',sgHideTip);
-        wrappers[col].appendChild(el);
-      }
-    }
+    const testDateStr=t.date; // 'YYYY-MM-DD'
+    // Find which column matches this test's date
+    const matchDay=daysToRender.find(d=>colDates[d]===testDateStr);
+    if(matchDay===undefined)return;
+    const col=colMap[matchDay];
+    if(col===undefined)return;
+
+    const[th,tm]=t.time.split(':').map(Number);
+    const startMin=th*60+tm;
+    const top=sgTopPx(startMin);
+    if(top<0)return;
+
+    const el=document.createElement('div');
+    el.className='sched-block sb-test';
+    el.style.cssText=`top:${top}px;height:${Math.max(sgHPx(45),22)}px;pointer-events:all;z-index:15`;
+    el.innerHTML=`<div class="sb-label">${t.label}</div><div class="sb-sub">${t.course} · ${t.time}</div>`;
+    el.addEventListener('mouseenter',ev=>sgShowTip(ev,t.label,'📝 '+t.course+' — exam/test',t.time+(t.notes?' · '+t.notes:'')));
+    el.addEventListener('mouseleave',sgHideTip);
+    wrappers[col].appendChild(el);
   });
 }
 
 function sgShowInfo(msg){const el=document.getElementById('sched-info');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
+
+/* ── Cancel / restore class ── */
+function sgShowCancelMenu(ev,c,ckey,calDate,col,wrappers,dur){
+  // Remove any existing menu
+  document.getElementById('sg-cancel-menu')?.remove();
+
+  const menu=document.createElement('div');
+  menu.id='sg-cancel-menu';
+  menu.style.cssText=`position:fixed;top:${ev.clientY}px;left:${ev.clientX}px;z-index:20000;
+    background:rgba(255,255,255,0.97);border:1.5px solid rgba(56,194,232,0.3);
+    border-radius:12px;padding:6px;box-shadow:0 8px 28px rgba(56,194,232,0.2);
+    backdrop-filter:blur(8px);min-width:200px;font-family:'Nunito',sans-serif`;
+
+  menu.innerHTML=`
+    <div style="font-size:11px;font-weight:800;color:var(--text-soft);padding:4px 8px 6px;text-transform:uppercase;letter-spacing:.06em">${c.label}</div>
+    <button onclick="sgCancelClass('${ckey}','${c.course}',${c.start},${dur},'${calDate}')" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;border-radius:8px;background:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--red3)">
+      <i class="ti ti-calendar-x"></i> Cancel this class
+    </button>
+    <button onclick="document.getElementById('sg-cancel-menu').remove()" style="display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:none;border-radius:8px;background:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;color:var(--text-soft)">
+      <i class="ti ti-x"></i> Keep as scheduled
+    </button>`;
+
+  document.body.appendChild(menu);
+
+  // Close on click outside
+  setTimeout(()=>{
+    document.addEventListener('click',function handler(){
+      menu.remove();
+      document.removeEventListener('click',handler);
+    },{once:true});
+  },50);
+}
+
+function sgCancelClass(ckey,course,start,dur,calDate){
+  document.getElementById('sg-cancel-menu')?.remove();
+  sgCancelled.add(ckey);
+  sgSaveCancelled();
+  renderSchedule();
+  toast('Class cancelled — slot is now free.');
+  // Ask if they want a smart suggestion to fill the freed time
+  setTimeout(()=>sgSuggestFreeSlot(course,start,dur,calDate),400);
+}
+
+function sgRestoreClass(ckey,c,calDate){
+  sgCancelled.delete(ckey);
+  sgSaveCancelled();
+  renderSchedule();
+  toast('Class restored to schedule.');
+}
+
+function sgSuggestFreeSlot(course,start,dur,calDate){
+  // Show a small prompt banner at the top of the schedule add panel
+  const el=document.getElementById('sched-ripple');
+  if(!el)return;
+  el.innerHTML=`<i class="ti ti-bulb"></i> You freed <strong>${dur} min</strong> at ${sgMinStr(start)}. 
+    <button onclick="sgAutoFillFreeSlot('${course}',${start},${dur},'${calDate}')" 
+      style="margin-left:8px;padding:3px 10px;font-size:11px;font-weight:700;border:1.5px solid rgba(224,154,0,0.4);
+      border-radius:50px;background:rgba(255,243,204,0.8);color:#854F0B;cursor:pointer;font-family:'Nunito',sans-serif">
+      Get a suggestion
+    </button>
+    <button onclick="this.closest('.sched-ripple').classList.remove('show')"
+      style="margin-left:6px;padding:3px 8px;font-size:11px;border:none;background:none;cursor:pointer;color:var(--amber3)">
+      No thanks
+    </button>`;
+  el.classList.add('show');
+}
+
+function sgAutoFillFreeSlot(course,start,dur,calDate){
+  document.getElementById('sched-ripple').classList.remove('show');
+  // Switch to smart suggest tab and pre-fill with freed slot details
+  sapSwitch('smart');
+  // Scroll to the add panel
+  document.querySelector('.sched-add-panel')?.scrollIntoView({behavior:'smooth',block:'start'});
+  // Pre-fill smart suggest fields
+  const courseEl=document.getElementById('smart-course');
+  const durEl=document.getElementById('smart-dur');
+  const energyEl=document.getElementById('smart-energy');
+  if(courseEl)courseEl.value=course;
+  if(durEl)durEl.value=dur;
+  // Set urgency based on any upcoming test for this course
+  const upcomingTest=sgTests.filter(t=>t.course===course)
+    .map(t=>Math.ceil((new Date(t.date)-new Date())/(1000*60*60*24)))
+    .filter(d=>d>0).sort((a,b)=>a-b)[0];
+  const urgencyEl=document.getElementById('smart-urgency');
+  if(urgencyEl&&upcomingTest){
+    if(upcomingTest<=3)urgencyEl.value='3';
+    else if(upcomingTest<=7)urgencyEl.value='7';
+    else urgencyEl.value='14';
+  }
+  // Auto-run the suggestion
+  schedSmartSuggest();
+  toast('Smart suggest pre-filled with your freed time!');
+}
 function sgShowRipple(){
   const el=document.getElementById('sched-ripple');
   if(!SG.rippleNotes.length){el.classList.remove('show');return;}
