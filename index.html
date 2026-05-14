@@ -467,6 +467,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes duaPulse{0%,100%{opacity:.45}50%{opacity:.85}}
 
 @media(max-width:540px){.metrics{grid-template-columns:repeat(2,1fr)}.fr{grid-template-columns:1fr}.hero h1{font-size:24px}.hero-badge{display:none}.wrapper{padding:1rem .75rem 4rem}}
 </style>
@@ -945,7 +946,7 @@ function renderToday(){
 function toggleTask(tid,el){if(S.tasks.includes(tid))S.tasks=S.tasks.filter(t=>t!==tid);else S.tasks.push(tid);save();renderToday();}
 
 /* POMODORO */
-let P={running:false,mode:'work',secsLeft:25*60,interval:null,session:0};
+let P={running:false,mode:'work',secsLeft:25*60,interval:null,session:0,endTime:null};
 // ARC now computed inline in updDisp (r=100)
 function pwMins(){return parseInt(document.getElementById('pomo-work-dur').value)||25;}
 function pbMins(){return parseInt(document.getElementById('pomo-break-dur').value)||5;}
@@ -1089,13 +1090,31 @@ function updDisp(){
   const m=Math.floor(P.secsLeft/60).toString().padStart(2,'0'),s=(P.secsLeft%60).toString().padStart(2,'0');
   document.getElementById('pomo-display').textContent=m+':'+s;
   const total=(P.mode==='work'?pwMins():pbMins())*60,frac=P.secsLeft/total;
-  const ARC2=2*Math.PI*100; // r=100
+  const elapsed=1-frac; // 0=start, 1=end
+
+  // Arc depletion
+  const ARC2=2*Math.PI*100;
   const arc=document.getElementById('pomo-arc');
   if(arc){
     arc.style.strokeDasharray=ARC2;
     arc.style.strokeDashoffset=ARC2*(1-frac);
     arc.style.stroke=P.mode==='work'?'url(#bubbleGradPurple)':'#1ab870';
   }
+
+  // Bubble body grows from r=72 to r=100 over the session (moon rising effect)
+  if(P.mode==='work'&&P.running){
+    const body=document.getElementById('pomo-bubble-body');
+    if(body){
+      const r=72+elapsed*28; // 72→100
+      body.setAttribute('r',r.toFixed(1));
+    }
+    // also update focus mode timer if showing
+    const fmDisp=document.getElementById('fm-display');
+    if(fmDisp)fmDisp.textContent=m+':'+s;
+    const fmFrac=document.getElementById('fm-frac');
+    if(fmFrac)fmFrac.style.height=(elapsed*100)+'%';
+  }
+
   document.getElementById('pomo-mode-label').textContent=P.mode==='work'?'Focus':'Break';
   updDots();
 }
@@ -1107,11 +1126,13 @@ function updDots(){
 }
 function pomoToggle(){
   if(P.running){
-    // PAUSE
-    clearInterval(P.interval);P.running=false;
+    // PAUSE — snapshot remaining time accurately
+    P.secsLeft=Math.max(0,Math.round((P.endTime-Date.now())/1000));
+    clearInterval(P.interval);P.running=false;P.endTime=null;
     document.getElementById('pomo-bubble-wrap').classList.remove('running');
     document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Resume';
     fadeBubbleSound(0,800);
+    focusModeExit();
   } else if(P.mode==='work'&&(P.secsLeft===pwMins()*60)){
     // FRESH START — show pre-session modal first
     pomoShowPresession();
@@ -1122,19 +1143,26 @@ function pomoToggle(){
 }
 function _pomoActuallyStart(){
   P.running=true;
+  // Set absolute end time — immune to tab throttling
+  P.endTime=Date.now()+(P.secsLeft*1000);
   document.getElementById('pomo-bubble-wrap').classList.add('running');
   document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-pause"></i> Pause';
-  if(P.secsLeft===(pwMins()*60)||P.secsLeft===(pbMins()*60)){
-    playBubbleSound(false);
-    startBubbleRush();
-  }
-  if(P.mode==='work')qcShow();
-  P.interval=setInterval(()=>{P.secsLeft--;updDisp();if(P.secsLeft<=0)pomoFinish();},1000);
+  const isFresh=(P.secsLeft===(pwMins()*60)||P.secsLeft===(pbMins()*60));
+  if(isFresh){playBubbleSound(false);startBubbleRush();}
+  if(P.mode==='work'){qcShow();focusModeEnter();}
+  clearInterval(P.interval);
+  P.interval=setInterval(()=>{
+    const remaining=Math.max(0,Math.round((P.endTime-Date.now())/1000));
+    P.secsLeft=remaining;
+    updDisp();
+    if(remaining<=0)pomoFinish();
+  },500); // tick twice per second for accuracy
 }
 function pomoFinish(){
   clearInterval(P.interval);P.running=false;
   document.getElementById('pomo-bubble-wrap').classList.remove('running');
   if(P.mode==='work'){
+    focusModeExit(false);
     triggerBubblePop();
     fadeBubbleSound(0,600);
     const mins=pwMins(),course=document.getElementById('pomo-course').value,label=document.getElementById('pomo-label').value.trim()||course+' study';
@@ -1155,7 +1183,7 @@ function pomoFinish(){
   document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';
   updDisp();
 }
-function pomoReset(){clearInterval(P.interval);P.running=false;P.mode='work';P.secsLeft=pwMins()*60;document.getElementById('pomo-bubble-wrap').classList.remove('running');document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';fadeBubbleSound(0,400);qcHide();QC={attempted:0,correct:0,target:0,qtype:'practice'};updDisp();}
+function pomoReset(){clearInterval(P.interval);P.running=false;P.endTime=null;P.mode='work';P.secsLeft=pwMins()*60;document.getElementById('pomo-bubble-wrap').classList.remove('running');document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';fadeBubbleSound(0,400);qcHide();QC={attempted:0,correct:0,target:0,qtype:'practice'};focusModeExit();updDisp();}
 function pomoSkip(){clearInterval(P.interval);P.running=false;P.mode=P.mode==='work'?'break':'work';P.secsLeft=(P.mode==='work'?pwMins():pbMins())*60;document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Start';updDisp();}
 function renderPomoLog(){
   const el=document.getElementById('pomo-log-today');
@@ -2775,11 +2803,65 @@ if(!document.getElementById('dhikr-ring-style')){
    PRE-SESSION MODAL + IN-SESSION Q COUNTER
 ════════════════════════════════════ */
 let QC={attempted:0,correct:0,target:0,qtype:'practice'};
+let duaIndex=0;
+const DUAS=[
+  {arabic:'رَبِّ زِدۡنِي عِلۡمٗا',translit:"Rabbi zidni 'ilma",meaning:'My Lord, increase me in knowledge.',source:'Surah Ta-Ha 20:114'},
+  {arabic:'رَبِّ اشۡرَحۡ لِي صَدۡرِي وَيَسِّرۡ لِي أَمۡرِي وَاحۡلُلۡ عُقۡدَةٗ مِّن لِّسَانِي يَفۡقَهُواْ قَوۡلِي',translit:"Rabbish-rahli sadri, wa yassir li amri, wahlul 'uqdatan min lisani, yafqahu qawli",meaning:'My Lord, expand my breast, ease my task, and remove the knot from my tongue so they may understand my speech.',source:'Surah Ta-Ha 20:25–28'},
+  {arabic:'لَا إِلَٰهَ إِلَّا أَنتَ سُبۡحَٰنَكَ إِنِّي كُنتُ مِنَ ٱلظَّٰلِمِينَ',translit:"La ilaha illa anta, subhanaka, inni kuntu min adh-dhalimin",meaning:'There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.',source:"Dua of Yunus (as) — Surah Al-Anbiya 21:87"},
+  {arabic:'رَبَّنَآ ءَاتِنَا فِي ٱلدُّنۡيَا حَسَنَةٗ وَفِي ٱلۡأٓخِرَةِ حَسَنَةٗ وَقِنَا عَذَابَ ٱلنَّارِ',translit:"Rabbana atina fid-dunya hasanatan wa fil akhirati hasanatan wa qina adhaban-nar",meaning:'Our Lord, give us good in this world and good in the hereafter, and protect us from the punishment of the Fire.',source:'Surah Al-Baqarah 2:201'},
+];
 
 function pomoShowPresession(){
-  // Show only if in work mode and not already running
-  const modal=document.getElementById('presession-modal');
-  if(modal){modal.style.display='flex';}
+  // Show dua screen first, then pre-session modal on tap
+  duaIndex=P.session%DUAS.length;
+  const d=DUAS[duaIndex];
+  let dua=document.getElementById('dua-screen');
+  if(!dua){
+    dua=document.createElement('div');
+    dua.id='dua-screen';
+    dua.style.cssText='position:fixed;inset:0;z-index:11800;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#080e22 0%,#0a1a3a 40%,#0d2448 100%);flex-direction:column;gap:0;cursor:pointer';
+    document.body.appendChild(dua);
+  }
+  dua.innerHTML=`
+    <canvas id="dua-stars-canvas" style="position:absolute;inset:0;pointer-events:none"></canvas>
+    <div style="position:relative;z-index:1;text-align:center;padding:2rem;max-width:520px">
+      <div style="font-size:11px;font-weight:700;color:rgba(140,200,255,0.5);letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.5rem;font-family:'Nunito',sans-serif">Before you dive in</div>
+      <div style="font-size:clamp(20px,4vw,30px);color:rgba(220,240,255,0.92);line-height:1.8;font-weight:600;text-shadow:0 0 40px rgba(100,180,255,0.4);margin-bottom:1rem;direction:rtl">${d.arabic}</div>
+      <div style="font-size:clamp(13px,2vw,16px);color:rgba(160,210,255,0.75);font-style:italic;margin-bottom:.5rem;font-family:'Nunito',sans-serif">${d.translit}</div>
+      <div style="font-size:13px;color:rgba(120,180,230,0.6);margin-bottom:.4rem;font-family:'Nunito',sans-serif">${d.meaning}</div>
+      <div style="font-size:11px;color:rgba(90,140,200,0.45);margin-bottom:2.5rem;font-family:'Nunito',sans-serif">${d.source}</div>
+      <div style="font-size:12px;color:rgba(100,170,220,0.5);letter-spacing:.1em;font-family:'Nunito',sans-serif;animation:duaPulse 2s ease-in-out infinite">Tap anywhere to begin your session</div>
+    </div>`;
+  dua.style.display='flex';
+  dua.style.opacity='0';dua.style.transition='opacity .7s ease';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>dua.style.opacity='1'));
+  duaInitStars();
+  dua.onclick=()=>{
+    dua.style.opacity='0';
+    setTimeout(()=>{dua.style.display='none';},720);
+    setTimeout(()=>{
+      const modal=document.getElementById('presession-modal');
+      if(modal)modal.style.display='flex';
+    },400);
+  };
+}
+
+function duaInitStars(){
+  const canvas=document.getElementById('dua-stars-canvas');
+  if(!canvas)return;
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const stars=Array.from({length:160},()=>({
+    x:Math.random()*canvas.width,y:Math.random()*canvas.height*0.55,
+    r:Math.random()*1.2+0.2,a:Math.random(),da:(Math.random()-.5)*.004
+  }));
+  function frame(){
+    if(!document.getElementById('dua-screen')||document.getElementById('dua-screen').style.display==='none')return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s=>{s.a=Math.max(.1,Math.min(1,s.a+s.da));if(s.a<=.1||s.a>=1)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(200,230,255,${s.a})`;ctx.fill();});
+    requestAnimationFrame(frame);
+  }
+  frame();
 }
 function presessionSkip(){
   QC={attempted:0,correct:0,target:0,qtype:'practice'};
@@ -2818,6 +2900,126 @@ function qcHide(){
   if(el)el.style.display='none';
 }
 
+
+/* ════════════════════════════════════
+   FOCUS MODE — moonlit ocean
+════════════════════════════════════ */
+let FM={active:false,oceanRaf:null,oceanT:0};
+
+function focusModeEnter(){
+  const ov=document.getElementById('focus-overlay');
+  if(!ov||FM.active)return;
+  FM.active=true;
+  // Set course label
+  const course=document.getElementById('pomo-course')?.value||'';
+  const label=document.getElementById('pomo-label')?.value.trim()||course;
+  const lbl=document.getElementById('fm-course-lbl');
+  if(lbl)lbl.textContent=course+(label&&label!==course?' · '+label:'');
+  // Show overlay
+  ov.style.display='flex';ov.style.opacity='0';ov.style.transition='opacity .8s ease';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>ov.style.opacity='1'));
+  // Start ocean animation
+  fmInitOcean();
+  // Sync display immediately
+  const arc=document.getElementById('fm-arc');
+  if(arc){const ARC=2*Math.PI*100;arc.style.strokeDasharray=ARC;arc.style.strokeDashoffset=0;}
+}
+
+function focusModeExit(pause=false){
+  const ov=document.getElementById('focus-overlay');
+  if(!ov)return;
+  FM.active=false;
+  cancelAnimationFrame(FM.oceanRaf);
+  ov.style.opacity='0';
+  setTimeout(()=>{ov.style.display='none';},820);
+  if(pause){
+    // Also pause the timer
+    if(P.running)pomoToggle();
+  }
+}
+
+function focusModePause(){
+  focusModeExit(true);
+}
+
+function fmInitOcean(){
+  const canvas=document.getElementById('fm-ocean-canvas');
+  if(!canvas)return;
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  FM.oceanT=0;
+
+  // Reflected moonlight shimmer particles
+  const shimmer=Array.from({length:60},()=>({
+    x:Math.random()*canvas.width,
+    y:canvas.height*(0.52+Math.random()*0.48),
+    w:2+Math.random()*18,h:.5+Math.random()*1.5,
+    a:Math.random()*.5,da:(Math.random()-.5)*.015,
+    spd:(Math.random()-.5)*.4,
+  }));
+
+  function frame(){
+    if(!FM.active)return;
+    FM.oceanT+=.012;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Animated wave lines across water surface
+    const horizon=canvas.height*.52;
+    for(let i=0;i<6;i++){
+      const y=horizon+i*22+Math.sin(FM.oceanT+i*.7)*4;
+      const alpha=.04+i*.015;
+      ctx.beginPath();
+      ctx.moveTo(0,y);
+      for(let x=0;x<=canvas.width;x+=4){
+        ctx.lineTo(x,y+Math.sin(x*.018+FM.oceanT+i)*(3-i*.3)+Math.cos(x*.009+FM.oceanT*.7)*2);
+      }
+      ctx.strokeStyle=`rgba(120,180,255,${alpha})`;
+      ctx.lineWidth=1;ctx.stroke();
+    }
+
+    // Moon reflection pillar shimmer
+    const cx=canvas.width/2;
+    const grad=ctx.createLinearGradient(cx-40,horizon,cx+40,canvas.height);
+    grad.addColorStop(0,'rgba(200,225,255,0.18)');
+    grad.addColorStop(0.4,'rgba(160,200,255,0.08)');
+    grad.addColorStop(1,'rgba(100,160,220,0)');
+    ctx.fillStyle=grad;
+    const pillarW=55+Math.sin(FM.oceanT*.8)*8;
+    ctx.beginPath();
+    ctx.ellipse(cx,horizon+10,pillarW,canvas.height-horizon,0,0,Math.PI*2);
+    ctx.fill();
+
+    // Shimmer flecks
+    shimmer.forEach(s=>{
+      s.x+=s.spd;s.a=Math.max(.02,Math.min(.55,s.a+s.da));
+      if(s.a<=.02||s.a>=.55)s.da*=-1;
+      if(s.x<-20)s.x=canvas.width+20;if(s.x>canvas.width+20)s.x=-20;
+      ctx.save();ctx.globalAlpha=s.a;
+      ctx.fillStyle='rgba(200,230,255,0.9)';
+      ctx.beginPath();
+      ctx.ellipse(s.x,s.y+Math.sin(FM.oceanT+s.x*.01)*3,s.w,s.h,0,0,Math.PI*2);
+      ctx.fill();ctx.restore();
+    });
+
+    // Sync moon body size from main bubble
+    const mainBody=document.getElementById('pomo-bubble-body');
+    const fmBody=document.getElementById('fm-moon-body');
+    if(mainBody&&fmBody)fmBody.setAttribute('r',mainBody.getAttribute('r')||'72');
+
+    // Sync arc
+    const mainArc=document.getElementById('pomo-arc');
+    const fmArc=document.getElementById('fm-arc');
+    if(mainArc&&fmArc){
+      fmArc.style.strokeDasharray=mainArc.style.strokeDasharray;
+      fmArc.style.strokeDashoffset=mainArc.style.strokeDashoffset;
+    }
+
+    FM.oceanRaf=requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+// Also exit focus mode when session finishes (before dhikr)
 renderToday();
 renderTestCountdown();
 </script>
@@ -2928,6 +3130,80 @@ renderTestCountdown();
   </div>
   <div style="font-size:9px;color:var(--text-soft);text-align:center" id="qc-target-lbl"></div>
   <div id="qc-progress-bar" style="height:4px;background:rgba(56,194,232,0.12);border-radius:50px;margin-top:5px;overflow:hidden"><div id="qc-progress-fill" style="height:100%;width:0%;background:linear-gradient(90deg,#38c2e8,#1ab870);border-radius:50px;transition:width .3s"></div></div>
+</div>
+
+
+<!-- FOCUS MODE OVERLAY — moonlit ocean -->
+<div id="focus-overlay" style="display:none;position:fixed;inset:0;z-index:10500;flex-direction:column;align-items:center;justify-content:center;overflow:hidden">
+  <!-- layered ocean background -->
+  <div style="position:absolute;inset:0;background:linear-gradient(180deg,#0b1a3e 0%,#0d2252 30%,#0a1e4a 55%,#071428 100%)"></div>
+  <!-- animated water surface -->
+  <canvas id="fm-ocean-canvas" style="position:absolute;inset:0;pointer-events:none"></canvas>
+
+  <!-- moon glow behind timer (the bubble IS the moon) -->
+  <div id="fm-moon-glow" style="position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(200,220,255,0.06) 0%,rgba(100,150,255,0.03) 50%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-55%);pointer-events:none"></div>
+
+  <!-- water rise indicator (fills from bottom as time passes) -->
+  <div style="position:absolute;bottom:0;left:0;right:0;overflow:hidden;height:35%;pointer-events:none">
+    <div id="fm-frac" style="position:absolute;bottom:0;left:0;right:0;height:0%;background:linear-gradient(0deg,rgba(10,40,100,0.55) 0%,rgba(20,80,180,0.2) 80%,transparent 100%);transition:height 1s linear"></div>
+    <!-- water surface shimmer line -->
+    <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(100,180,255,0.4),rgba(200,230,255,0.6),rgba(100,180,255,0.4),transparent)"></div>
+  </div>
+
+  <!-- main content -->
+  <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0">
+    <!-- moon/bubble timer -->
+    <div style="position:relative;width:220px;height:220px;display:flex;align-items:center;justify-content:center;margin-bottom:.5rem">
+      <svg width="220" height="220" viewBox="0 0 220 220" style="position:absolute;top:0;left:0">
+        <defs>
+          <radialGradient id="fmMoonGrad" cx="38%" cy="32%" r="65%">
+            <stop offset="0%" stop-color="rgba(235,245,255,0.92)"/>
+            <stop offset="35%" stop-color="rgba(200,225,255,0.75)"/>
+            <stop offset="70%" stop-color="rgba(160,195,240,0.55)"/>
+            <stop offset="100%" stop-color="rgba(100,150,220,0.2)"/>
+          </radialGradient>
+          <filter id="fmMoonBlur"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <!-- moon surface texture via subtle noise circles -->
+        </defs>
+        <!-- outer glow -->
+        <circle cx="110" cy="110" r="105" fill="rgba(180,210,255,0.04)"/>
+        <circle cx="110" cy="110" r="100" fill="rgba(180,210,255,0.06)"/>
+        <!-- progress arc (depletes) -->
+        <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(200,230,255,0.08)" stroke-width="2"/>
+        <circle id="fm-arc" cx="110" cy="110" r="100" fill="none"
+          stroke="rgba(180,220,255,0.3)" stroke-width="2"
+          stroke-dasharray="628.32" stroke-dashoffset="0"
+          stroke-linecap="round"
+          style="transform:rotate(-90deg);transform-origin:110px 110px;transition:stroke-dashoffset 1s linear"/>
+        <!-- the moon body — grows from 72→100 -->
+        <circle id="fm-moon-body" cx="110" cy="110" r="72"
+          fill="url(#fmMoonGrad)" filter="url(#fmMoonBlur)"/>
+        <!-- surface craters (subtle) -->
+        <circle cx="95" cy="95" r="8" fill="rgba(150,180,220,0.12)"/>
+        <circle cx="125" cy="115" r="5" fill="rgba(150,180,220,0.1)"/>
+        <circle cx="100" cy="125" r="6" fill="rgba(140,170,215,0.1)"/>
+        <!-- specular highlight -->
+        <ellipse cx="88" cy="82" rx="18" ry="11" fill="rgba(255,255,255,0.18)" style="transform:rotate(-25deg);transform-origin:88px 82px"/>
+      </svg>
+      <!-- time inside moon -->
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+        <div id="fm-display" style="font-family:'Quicksand',sans-serif;font-size:36px;font-weight:700;color:rgba(30,60,120,0.85);letter-spacing:-2px;line-height:1"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(40,80,150,0.6);margin-top:4px">Focus</div>
+      </div>
+    </div>
+
+    <!-- moonlight reflection label -->
+    <div style="font-size:12px;color:rgba(140,200,255,0.5);letter-spacing:.18em;text-transform:uppercase;font-family:'Nunito',sans-serif;margin-bottom:1.5rem">In the flow</div>
+
+    <!-- course + label -->
+    <div id="fm-course-lbl" style="font-size:13px;font-weight:700;color:rgba(180,220,255,0.7);font-family:'Nunito',sans-serif;margin-bottom:1.5rem"></div>
+
+    <!-- controls -->
+    <div style="display:flex;gap:12px">
+      <button onclick="focusModePause()" style="padding:9px 20px;font-size:12px;font-weight:700;border:1.5px solid rgba(180,220,255,0.25);border-radius:50px;background:rgba(255,255,255,0.06);color:rgba(180,220,255,0.8);cursor:pointer;font-family:'Nunito',sans-serif;backdrop-filter:blur(4px)"><i class="ti ti-player-pause"></i> Pause</button>
+      <button onclick="focusModeExit(true)" style="padding:9px 20px;font-size:12px;font-weight:700;border:1.5px solid rgba(180,220,255,0.15);border-radius:50px;background:rgba(255,255,255,0.04);color:rgba(140,180,220,0.6);cursor:pointer;font-family:'Nunito',sans-serif">Surface</button>
+    </div>
+  </div>
 </div>
 
 </body>
