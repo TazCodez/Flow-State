@@ -335,6 +335,76 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .sched-ripple{margin-top:6px;font-size:11px;color:var(--amber3);background:var(--amber1);border:1px solid rgba(224,154,0,0.3);border-radius:8px;padding:6px 10px;display:none}
 .sched-ripple.show{display:block}
 .sched-tooltip{position:fixed;background:rgba(255,255,255,0.96);border:1.5px solid rgba(56,194,232,0.3);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--text-deep);box-shadow:0 4px 14px rgba(56,194,232,0.15);pointer-events:none;z-index:9998;display:none;max-width:200px;line-height:1.5;backdrop-filter:blur(6px)}
+/* ── Schedule edit mode ── */
+.sg-cal-wrap{position:relative;margin-bottom:0}
+
+/* floating lock button — hidden until hover */
+.sg-lock-btn{
+  position:absolute;top:10px;right:10px;z-index:25;
+  width:32px;height:32px;border-radius:50%;
+  border:1.5px solid rgba(56,194,232,0.3);
+  background:rgba(255,255,255,0.7);
+  color:var(--text-soft);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  opacity:0;transition:opacity .2s,background .15s,border-color .15s;
+  backdrop-filter:blur(6px);
+  box-shadow:0 2px 8px rgba(56,194,232,0.15);
+}
+.sg-cal-wrap:hover .sg-lock-btn,
+.sg-lock-btn.visible{opacity:1}
+.sg-lock-btn.edit-active{
+  background:linear-gradient(135deg,rgba(255,200,50,0.35),rgba(255,160,20,0.3));
+  border-color:rgba(255,180,30,0.55);
+  color:#a06000;
+}
+.sg-lock-btn.edit-active:hover{background:linear-gradient(135deg,rgba(255,210,80,0.5),rgba(255,170,30,0.45));}
+
+/* locked overlay — covers calendar when NOT in edit mode */
+.sg-locked-overlay{
+  position:absolute;inset:0;z-index:18;
+  cursor:default;
+  /* just intercepts pointer events — visually transparent */
+  background:transparent;
+}
+
+/* edit mode banner */
+.sg-edit-bar{
+  display:none;align-items:center;justify-content:space-between;
+  padding:8px 14px;margin-top:6px;
+  background:linear-gradient(135deg,rgba(255,243,200,0.6),rgba(255,230,150,0.5));
+  border:1.5px solid rgba(224,154,0,0.35);
+  border-radius:12px;backdrop-filter:blur(6px);
+  gap:12px;flex-wrap:wrap;
+}
+.sg-edit-bar.active{display:flex}
+.sg-edit-label{
+  font-size:12px;font-weight:700;color:var(--amber3);
+  display:flex;align-items:center;gap:6px;
+}
+.sg-edit-save{
+  padding:6px 14px;font-size:11px;font-weight:800;
+  font-family:'Nunito',sans-serif;border-radius:50px;cursor:pointer;
+  background:linear-gradient(135deg,var(--green3),#0e9658);
+  color:#fff;border:none;
+  box-shadow:0 2px 8px rgba(26,184,112,0.3);
+  transition:opacity .15s;
+}
+.sg-edit-save:hover{opacity:.88}
+.sg-edit-discard{
+  padding:6px 14px;font-size:11px;font-weight:800;
+  font-family:'Nunito',sans-serif;border-radius:50px;cursor:pointer;
+  background:rgba(255,255,255,0.6);
+  color:var(--text-mid);
+  border:1.5px solid rgba(56,194,232,0.3);
+  transition:background .15s;
+}
+.sg-edit-discard:hover{background:rgba(255,255,255,0.9)}
+
+/* when locked, make draggable cursors show default */
+.sg-locked .sb-study,.sg-locked .sb-life,.sg-locked .sb-split{cursor:default !important}
+
+/* add-panel tabs */
 /* add-panel tabs */
 .sap-tab{padding:7px 14px;font-size:11px;font-weight:700;font-family:'Nunito',sans-serif;border:none;border-radius:8px 8px 0 0;cursor:pointer;background:transparent;color:var(--text-soft);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s}
 .sap-tab:hover{color:var(--aqua5);background:rgba(56,194,232,0.06)}
@@ -572,20 +642,32 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     <div class="sleg"><div class="sleg-split"></div> Auto-split around prayer</div>
     <div class="sleg"><div style="width:13px;height:13px;border-radius:3px;background:rgba(214,48,48,0.12);border:2px solid rgba(214,48,48,0.5)"></div> Test / exam</div>
   </div>
-  <!-- New two-panel calendar layout -->
-  <div class="sg-cal-outer" id="sg-cal-outer">
-    <!-- header: spacer + day names -->
-    <div class="sg-cal-header" id="sg-cal-header">
-      <div class="sg-cal-header-spacer"></div>
-      <!-- day headers injected by JS -->
-    </div>
-    <!-- body: time sidebar + day columns -->
-    <div class="sg-cal-body" id="sg-cal-body">
-      <div class="sg-time-sidebar" id="sg-time-sidebar">
-        <!-- hour labels injected by JS -->
+  <!-- New two-panel calendar layout — wrapped in a hover container for the lock -->
+  <div class="sg-cal-wrap" id="sg-cal-wrap"
+       onmouseenter="sgShowLock()" onmouseleave="sgMaybehideLock()">
+
+    <!-- floating lock button -->
+    <button class="sg-lock-btn" id="sg-lock-btn" onclick="sgToggleEdit()"
+            title="Click to enter Edit Mode">
+      <i class="ti ti-lock" id="sg-lock-icon" aria-hidden="true"></i>
+    </button>
+
+    <div class="sg-cal-outer" id="sg-cal-outer">
+      <div class="sg-cal-header" id="sg-cal-header">
+        <div class="sg-cal-header-spacer"></div>
       </div>
-      <div class="sg-day-cols" id="sg-day-cols">
-        <!-- day content injected by JS -->
+      <div class="sg-cal-body" id="sg-cal-body">
+        <div class="sg-time-sidebar" id="sg-time-sidebar"></div>
+        <div class="sg-day-cols" id="sg-day-cols"></div>
+      </div>
+    </div>
+
+    <!-- edit mode banner with save/discard -->
+    <div class="sg-edit-bar" id="sg-edit-bar">
+      <span class="sg-edit-label"><i class="ti ti-edit" aria-hidden="true"></i> Edit mode — changes are unsaved</span>
+      <div style="display:flex;gap:8px">
+        <button class="sg-edit-save" onclick="sgSaveEdit()"><i class="ti ti-device-floppy" aria-hidden="true"></i> Save changes</button>
+        <button class="sg-edit-discard" onclick="sgDiscardEdit()"><i class="ti ti-x" aria-hidden="true"></i> Discard</button>
       </div>
     </div>
   </div>
@@ -1275,6 +1357,9 @@ function sgGetWeekStart(){
 SG.viewMode='week'; // 'week' | 'day'
 SG.viewDay=sgGetToday();
 SG.nowLineInterval=null;
+SG.editMode=false;       // locked by default
+SG.pendingFluid=null;    // staging copy while in edit mode
+SG.pendingCancelled=null;// staging copy of cancellations
 
 function schedPrevWeek(){
   if(SG.viewMode==='day'){SG.viewDay=(SG.viewDay+6)%7;}
@@ -1315,6 +1400,8 @@ function sgEnsureToggle(){
 
 function renderSchedule(){
   sgEnsureToggle();
+  // Apply lock state visually after every render
+  setTimeout(sgApplyEditUI,0);
   const today=SG.weekOffset===0?sgGetToday():-1;
   const DAY_NAMES=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   const DAY_SHORT=['MON','TUE','WED','THU','FRI','SAT','SUN'];
@@ -1367,7 +1454,7 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
     const col=colMap[c.day];
     const calDate=colDatesForClass[c.day];
     const ckey=sgCancelKey(c.day,c.start,calDate);
-    const isCancelled=sgCancelled.has(ckey);
+    const isCancelled=sgGetCancelled().has(ckey);
 
     const el=document.createElement('div');
     const ht=Math.max(sgHPx(c.dur),14);
@@ -1378,7 +1465,7 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       el.style.cssText=`top:${sgTopPx(c.start)}px;height:${ht}px;pointer-events:all`;
       el.innerHTML=`<div class="sb-label" style="opacity:.6">🆓 Free — ${sgMinStr(c.start)}</div><div class="sb-sub" style="opacity:.5">${c.label} cancelled</div>`;
       el.title='Class cancelled — click to restore';
-      el.addEventListener('click',()=>sgRestoreClass(ckey,c,calDate));
+      el.addEventListener('click',()=>{if(!SG.editMode){toast('Unlock the schedule to restore a class.');return;}sgRestoreClass(ckey,c,calDate);});
       el.addEventListener('mouseenter',ev=>sgShowTip(ev,'Free slot',c.label+' cancelled — click to restore',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min free`));
       el.addEventListener('mouseleave',sgHideTip);
     } else {
@@ -1391,6 +1478,7 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       el.addEventListener('mouseleave',sgHideTip);
       el.addEventListener('contextmenu',ev=>{
         ev.preventDefault();
+        if(!SG.editMode){toast('Unlock the schedule to cancel a class.');return;}
         sgShowCancelMenu(ev,c,ckey,calDate,col,wrappers,c.dur);
       });
     }
@@ -1437,12 +1525,12 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       el.draggable=true;el.dataset.id=b.id;
       const displayLbl=piece.split?`${b.label} pt.${piece.partN}`:b.label;
       el.innerHTML=`<div class="sb-label">${displayLbl}</div><div class="sb-sub">${b.course} · ${sgMinStr(piece.start)}</div>`;
-      el.addEventListener('dragstart',ev=>{SG.dragBlock=b;el.classList.add('dragging');ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',b.id);});
+      el.addEventListener('dragstart',ev=>{if(!SG.editMode){ev.preventDefault();return;}SG.dragBlock=b;el.classList.add('dragging');ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',b.id);});
       el.addEventListener('dragend',()=>{el.classList.remove('dragging');SG.dragBlock=null;});
       const tipSub=b.category&&b.category!=='study'?(CATEGORY_LABELS[b.category]||b.category)+(piece.split?' — split around prayer':' — drag to move'):(b.course+(piece.split?' — auto-split around prayer':' — drag to move'));
       el.addEventListener('mouseenter',ev=>sgShowTip(ev,b.label,tipSub,`${sgMinStr(piece.start)} – ${sgMinStr(piece.start+piece.dur)}, ${piece.dur} min`));
       el.addEventListener('mouseleave',sgHideTip);
-      el.addEventListener('dblclick',()=>{if(confirm(`Remove "${b.label}"?`)){sgFluid=sgFluid.filter(x=>x.id!==b.id);sgSave();renderSchedule();}});
+      el.addEventListener('dblclick',()=>{if(!SG.editMode){toast('Unlock the schedule to make changes.');return;}if(confirm(`Remove "${b.label}"?`)){const arr=sgGetFluid().filter(x=>x.id!==b.id);sgWriteFluid(arr);renderSchedule();}});
       wrappers[col].appendChild(el);
     });
   });
@@ -1459,7 +1547,9 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       const yOff=(ev.clientY-rect.top)+scrollTop;
       let newStart=Math.round((SG.H_START*60+(yOff/SG.PX_PER_MIN))/15)*15;
       newStart=Math.max(SG.H_START*60,Math.min(newStart,(SG.H_END*60)-SG.dragBlock.dur));
-      const b=sgFluid.find(x=>x.id===SG.dragBlock.id);
+      if(!SG.editMode){toast('Unlock the schedule to make changes.');return;}
+      const fluid=sgGetFluid();
+      const b=fluid.find(x=>x.id===SG.dragBlock.id);
       if(b){
         b.day=dayIdx;b.start=newStart;
         const didRipple=sgApplyRipple(dayIdx);
@@ -1467,7 +1557,7 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
         SG.rippleNotes=[];
         if(overlaps.length)SG.rippleNotes.push(`"${b.label}" overlaps ${overlaps.map(p=>p.name).join(' & ')} — auto-split around prayer.`);
         if(didRipple)SG.rippleNotes.push('Ripple: overlapping blocks nudged forward.');
-        sgShowRipple();sgSave();renderSchedule();
+        sgShowRipple();renderSchedule();
       }
     });
   });
@@ -1629,22 +1719,27 @@ function schedAddTask(){
   const startMin=sgStrToMin(document.getElementById('sched-new-time').value);
   const dur=parseInt(document.getElementById('sched-new-dur').value)||60;
   if(!label){sgShowInfo('Please enter a task name.');return;}
+  if(!SG.editMode){toast('Unlock the schedule to add tasks.');return;}
   const id='sg'+Date.now();
-  sgFluid.push({id,day,label,course,category,start:startMin,dur});
+  const fluid=sgGetFluid();
+  fluid.push({id,day,label,course,category,start:startMin,dur});
+  if(SG.editMode&&SG.pendingFluid!==null)SG.pendingFluid=fluid;
   const didRipple=sgApplyRipple(day);
   const overlaps=sgPrayerOverlaps(day,startMin,dur);
   SG.rippleNotes=[];
   if(overlaps.length)SG.rippleNotes.push(`"${label}" overlaps ${overlaps.map(p=>p.name).join(' & ')} — auto-split around prayer.`);
   if(didRipple)SG.rippleNotes.push('Ripple: overlapping blocks nudged forward.');
-  sgShowRipple();sgSave();renderSchedule();
+  sgShowRipple();renderSchedule();
   document.getElementById('sched-new-label').value='';
-  toast('Block added to schedule!');
+  toast('Block added — remember to Save Changes.');
 }
 
 function schedClearFluid(){
+  if(!SG.editMode){toast('Unlock the schedule to reset.');return;}
   if(!confirm('Reset all fluid study blocks to defaults?'))return;
-  sgFluid=DEFAULT_FLUID_SG.map((b,i)=>({...b,id:'sg'+i}));sgSave();renderSchedule();
-  toast('Schedule reset to defaults.');
+  const reset=DEFAULT_FLUID_SG.map((b,i)=>({...b,id:'sg'+i}));
+  sgWriteFluid(reset);renderSchedule();
+  toast('Reset to defaults — remember to Save Changes.');
 }
 
 /* ── Add panel tab switcher ── */
@@ -1753,8 +1848,10 @@ function schedSmartSuggest(){
 }
 
 function schedAcceptSuggestion(day,start,dur,label,course){
+  if(!SG.editMode){sgToggleEdit();} // auto-enter edit mode
   const id='sg'+Date.now();
-  sgFluid.push({id,day,label,course,start,dur});
+  const fluid=sgGetFluid();fluid.push({id,day,label,course,start,dur});
+  if(SG.editMode&&SG.pendingFluid!==null)SG.pendingFluid=fluid;
   const didRipple=sgApplyRipple(day);
   const overlaps=sgPrayerOverlaps(day,start,dur);
   SG.rippleNotes=[];
@@ -1954,6 +2051,91 @@ function sgBuildDayContentTests(wrappers,daysToRender){
   });
 }
 
+/* ════════════════════════════════════
+   SCHEDULE EDIT MODE
+════════════════════════════════════ */
+function sgToggleEdit(){
+  if(SG.editMode){
+    // Already in edit mode — clicking lock again = prompt to save or discard
+    if(confirm('Save your schedule changes?'))sgSaveEdit();
+    else sgDiscardEdit();
+    return;
+  }
+  // Enter edit mode — snapshot current state into pending copies
+  SG.pendingFluid=[...sgFluid.map(b=>({...b}))];
+  SG.pendingCancelled=new Set([...sgCancelled]);
+  SG.editMode=true;
+  sgApplyEditUI();
+  toast('Edit mode — drag, cancel or add blocks. Hit Save when done.');
+}
+
+function sgSaveEdit(){
+  // Commit pending changes to live state
+  sgFluid=SG.pendingFluid;
+  sgCancelled=SG.pendingCancelled;
+  sgSave();sgSaveCancelled();
+  SG.pendingFluid=null;SG.pendingCancelled=null;
+  SG.editMode=false;
+  sgApplyEditUI();
+  renderSchedule();
+  toast('Schedule saved! 💾');
+}
+
+function sgDiscardEdit(){
+  // Throw away pending changes — restore from live state
+  SG.pendingFluid=null;SG.pendingCancelled=null;
+  SG.editMode=false;
+  sgApplyEditUI();
+  renderSchedule();
+  toast('Changes discarded.');
+}
+
+function sgApplyEditUI(){
+  const lockBtn=document.getElementById('sg-lock-btn');
+  const lockIcon=document.getElementById('sg-lock-icon');
+  const editBar=document.getElementById('sg-edit-bar');
+  const calOuter=document.getElementById('sg-cal-outer');
+  const lockBtnEl=document.getElementById('sg-lock-btn');
+
+  if(SG.editMode){
+    lockBtn&&lockBtn.classList.add('edit-active','visible');
+    if(lockIcon)lockIcon.className='ti ti-lock-open';
+    editBar&&editBar.classList.add('active');
+    calOuter&&calOuter.classList.remove('sg-locked');
+    // remove any locked overlay
+    document.getElementById('sg-locked-overlay')?.remove();
+  } else {
+    lockBtn&&lockBtn.classList.remove('edit-active','visible');
+    if(lockIcon)lockIcon.className='ti ti-lock';
+    editBar&&editBar.classList.remove('active');
+    calOuter&&calOuter.classList.add('sg-locked');
+    // add locked overlay
+    if(calOuter&&!document.getElementById('sg-locked-overlay')){
+      const ov=document.createElement('div');
+      ov.id='sg-locked-overlay';ov.className='sg-locked-overlay';
+      ov.title='Hover and click the lock icon to edit';
+      calOuter.style.position='relative';
+      calOuter.appendChild(ov);
+    }
+  }
+}
+
+function sgShowLock(){
+  const b=document.getElementById('sg-lock-btn');
+  if(b)b.classList.add('visible');
+}
+function sgMaybehideLock(){
+  if(SG.editMode)return; // keep visible while editing
+  const b=document.getElementById('sg-lock-btn');
+  if(b)b.classList.remove('visible');
+}
+
+/* Override sgFluid writes to go to pending when in edit mode */
+function sgGetFluid(){return SG.editMode&&SG.pendingFluid?SG.pendingFluid:sgFluid;}
+function sgGetCancelled(){return SG.editMode&&SG.pendingCancelled?SG.pendingCancelled:sgCancelled;}
+function sgWriteFluid(newArr){if(SG.editMode&&SG.pendingFluid!==null)SG.pendingFluid=newArr;else{sgFluid=newArr;}}
+function sgWriteCancelled(newSet){if(SG.editMode&&SG.pendingCancelled!==null)SG.pendingCancelled=newSet;else{sgCancelled=newSet;}}
+
 function sgShowInfo(msg){const el=document.getElementById('sched-info');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
 
 /* ── Cancel / restore class ── */
@@ -1990,17 +2172,14 @@ function sgShowCancelMenu(ev,c,ckey,calDate,col,wrappers,dur){
 
 function sgCancelClass(ckey,course,start,dur,calDate){
   document.getElementById('sg-cancel-menu')?.remove();
-  sgCancelled.add(ckey);
-  sgSaveCancelled();
+  const c=sgGetCancelled();c.add(ckey);sgWriteCancelled(c);
   renderSchedule();
   toast('Class cancelled — slot is now free.');
-  // Ask if they want a smart suggestion to fill the freed time
   setTimeout(()=>sgSuggestFreeSlot(course,start,dur,calDate),400);
 }
 
 function sgRestoreClass(ckey,c,calDate){
-  sgCancelled.delete(ckey);
-  sgSaveCancelled();
+  const set=sgGetCancelled();set.delete(ckey);sgWriteCancelled(set);
   renderSchedule();
   toast('Class restored to schedule.');
 }
