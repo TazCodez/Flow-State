@@ -112,22 +112,94 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .preview-img{max-width:100%;border-radius:10px;margin-top:10px;display:none;border:1.5px solid var(--glass-border)}
 .extract-bar{background:rgba(56,194,232,0.12);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:var(--text-mid);display:none;line-height:1.6;border-left:3px solid var(--aqua3)}
 
-/* pomodoro bubble timer */
+/* ── pomodoro growing bubble ── */
 .pomo-wrap{display:flex;flex-direction:column;align-items:center;padding:1rem 0}
-.pomo-bubble-wrap{position:relative;width:220px;height:220px;margin-bottom:1.25rem;display:flex;align-items:center;justify-content:center}
-.pomo-bubble-svg{position:absolute;top:0;left:0;transition:transform .4s cubic-bezier(.22,1,.36,1),filter .4s}
-.pomo-bubble-wrap.running .pomo-bubble-svg{filter:drop-shadow(0 0 18px rgba(160,120,255,0.45)) drop-shadow(0 0 40px rgba(56,194,232,0.3))}
-.pomo-bubble-wrap.pop .pomo-bubble-svg{animation:bubblePop .5s cubic-bezier(.22,1,.36,1) forwards}
-@keyframes bubblePop{
-  0%{transform:scale(1);opacity:1;filter:drop-shadow(0 0 30px rgba(200,180,255,0.9))}
-  40%{transform:scale(1.28);opacity:.9;filter:drop-shadow(0 0 60px rgba(255,255,255,1)) drop-shadow(0 0 80px rgba(160,120,255,0.8))}
-  60%{transform:scale(1.35);opacity:.5}
-  100%{transform:scale(0.1);opacity:0}
+
+/* fixed-height container so controls never move */
+.pomo-bubble-stage{
+  width:100%;height:420px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;margin-bottom:1.5rem;
 }
-.pomo-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-.pomo-time{font-family:'Quicksand',sans-serif;font-size:38px;font-weight:700;color:var(--aqua5);letter-spacing:-2px;text-shadow:0 2px 12px rgba(56,194,232,0.3)}
-.pomo-mode-lbl{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-soft);margin-top:3px}
-.pomo-dots{display:flex;gap:6px;margin-bottom:1rem}
+
+/* the growing bubble itself */
+.pomo-bubble{
+  position:relative;
+  width:50px;height:50px; /* JS will update this */
+  border-radius:50%;
+  /* glassmorphism bubble */
+  background:radial-gradient(circle at 35% 30%,
+    rgba(255,255,255,0.55) 0%,
+    rgba(180,220,255,0.25) 40%,
+    rgba(100,160,255,0.08) 100%);
+  border:1.5px solid rgba(220,240,255,0.75);
+  box-shadow:
+    0 0 0 1px rgba(180,220,255,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.6),
+    0 8px 32px rgba(80,140,255,0.15);
+  /* smooth continuous growth — no jump per second */
+  transition:width 1s linear, height 1s linear,
+             box-shadow .5s ease, border-color .5s ease;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+}
+.pomo-bubble.running{
+  border-color:rgba(160,200,255,0.85);
+  box-shadow:
+    0 0 0 2px rgba(160,200,255,0.15),
+    0 0 40px rgba(108,82,232,0.3),
+    0 0 80px rgba(56,194,232,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.6);
+}
+/* specular highlight — always top-left */
+.pomo-bubble::before{
+  content:'';
+  position:absolute;top:14%;left:18%;
+  width:28%;height:16%;
+  border-radius:50%;
+  background:rgba(255,255,255,0.42);
+  transform:rotate(-30deg);
+  pointer-events:none;
+}
+/* secondary highlight */
+.pomo-bubble::after{
+  content:'';
+  position:absolute;top:20%;right:22%;
+  width:10%;height:8%;
+  border-radius:50%;
+  background:rgba(255,255,255,0.22);
+  pointer-events:none;
+}
+
+/* pop animation */
+.pomo-bubble.pop{
+  animation:bubblePop .55s cubic-bezier(.22,1,.36,1) forwards;
+}
+@keyframes bubblePop{
+  0%  {transform:scale(1);opacity:1;
+       box-shadow:0 0 80px rgba(200,180,255,0.6),0 0 120px rgba(56,194,232,0.3)}
+  45% {transform:scale(1.18);opacity:.85;
+       box-shadow:0 0 120px rgba(255,255,255,.9),0 0 160px rgba(160,120,255,0.7)}
+  65% {transform:scale(1.24);opacity:.4}
+  100%{transform:scale(.05);opacity:0}
+}
+
+.pomo-time{
+  font-family:'Quicksand',sans-serif;
+  font-size:clamp(14px,4vw,36px);
+  font-weight:700;color:var(--aqua5);
+  letter-spacing:-1px;
+  text-shadow:0 1px 8px rgba(56,194,232,0.25);
+  line-height:1;
+  pointer-events:none;user-select:none;
+}
+.pomo-mode-lbl{
+  font-size:clamp(8px,1.5vw,10px);
+  font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-soft);
+  margin-top:4px;pointer-events:none;
+}
+.pomo-dots{display:flex;gap:6px;margin-bottom:.75rem}
 .pomo-dot{width:10px;height:10px;border-radius:50%;background:rgba(56,194,232,0.2);transition:background .3s}
 .pomo-dot.done{background:var(--aqua3)}
 .pomo-dot.current{background:var(--green3);box-shadow:0 0 6px rgba(26,184,112,0.5)}
@@ -443,6 +515,21 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .sb-free:hover{background:rgba(56,194,232,0.1);border-color:var(--aqua3);}
 /* revision blocks */
 .sb-revision{background:rgba(108,82,232,0.1);border:1.5px dashed rgba(108,82,232,0.5);color:#3d2e8a}
+/* universal block × close button */
+.sb-close{
+  position:absolute;top:2px;right:2px;
+  width:14px;height:14px;border-radius:50%;
+  background:rgba(0,0,0,0.18);
+  color:rgba(255,255,255,0.85);
+  font-size:9px;line-height:14px;text-align:center;
+  cursor:pointer;opacity:0;transition:opacity .15s;
+  z-index:10;border:none;padding:0;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.sched-block:hover .sb-close{opacity:1}
+/* fade-out animation */
+@keyframes blockFadeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.85)}}
+.sb-fading{animation:blockFadeOut .3s ease forwards;pointer-events:none}
 /* category colour map applied via inline border-left */
 /* course outlines */
 .outline-section{margin-bottom:1rem}
@@ -539,50 +626,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       <!-- Session dots -->
       <div class="pomo-dots" id="pomo-dots"></div>
 
-      <!-- THE BUBBLE TIMER -->
-      <div class="pomo-bubble-wrap" id="pomo-bubble-wrap">
-        <!-- outer glow ring that depletes -->
-        <svg class="pomo-bubble-svg" id="pomo-bubble-svg" width="220" height="220" viewBox="0 0 220 220">
-          <defs>
-            <radialGradient id="bubbleGrad" cx="38%" cy="32%" r="65%">
-              <stop offset="0%" stop-color="rgba(255,255,255,0.55)"/>
-              <stop offset="40%" stop-color="rgba(180,220,255,0.25)"/>
-              <stop offset="100%" stop-color="rgba(100,160,255,0.08)"/>
-            </radialGradient>
-            <radialGradient id="bubbleGradPurple" cx="38%" cy="32%" r="65%">
-              <stop offset="0%" stop-color="rgba(255,255,255,0.5)"/>
-              <stop offset="40%" stop-color="rgba(180,140,255,0.3)"/>
-              <stop offset="100%" stop-color="rgba(120,80,220,0.12)"/>
-            </radialGradient>
-            <filter id="bubbleGlow">
-              <feGaussianBlur stdDeviation="3" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
-          </defs>
-          <!-- progress arc track -->
-          <circle cx="110" cy="110" r="100" fill="none" stroke="rgba(180,220,255,0.12)" stroke-width="3"/>
-          <circle id="pomo-arc" cx="110" cy="110" r="100" fill="none"
-            stroke="url(#bubbleGradPurple)" stroke-width="3"
-            stroke-dasharray="628.32" stroke-dashoffset="0"
-            stroke-linecap="round"
-            style="transform:rotate(-90deg);transform-origin:110px 110px;transition:stroke-dashoffset .9s linear"/>
-          <!-- main bubble body -->
-          <circle id="pomo-bubble-body" cx="110" cy="110" r="92"
-            fill="url(#bubbleGrad)"
-            stroke="rgba(200,230,255,0.75)" stroke-width="1.5"
-            filter="url(#bubbleGlow)"
-            style="transition:r .3s"/>
-          <!-- specular highlight top-left -->
-          <ellipse cx="78" cy="72" rx="22" ry="14"
-            fill="rgba(255,255,255,0.35)"
-            style="transform:rotate(-30deg);transform-origin:78px 72px"/>
-          <!-- smaller highlight -->
-          <circle cx="130" cy="85" r="6" fill="rgba(255,255,255,0.2)"/>
-          <!-- subtle purple sheen bottom-right -->
-          <circle cx="140" cy="148" r="28" fill="rgba(160,100,255,0.08)"/>
-        </svg>
-        <!-- text inside bubble -->
-        <div class="pomo-inner" id="pomo-inner">
+      <!-- THE GROWING BUBBLE TIMER -->
+      <div class="pomo-bubble-stage" id="pomo-bubble-stage">
+        <div class="pomo-bubble" id="pomo-bubble-wrap">
           <div class="pomo-time" id="pomo-display">25:00</div>
           <div class="pomo-mode-lbl" id="pomo-mode-label">ready to dive</div>
         </div>
@@ -1071,6 +1117,7 @@ function startBubbleRush(){
 function triggerBubblePop(){
   const wrap=document.getElementById('pomo-bubble-wrap');
   if(!wrap)return;
+  wrap.style.transition='none'; // disable smooth growth during pop
   wrap.classList.add('pop');
   // flash the whole screen briefly
   const flash=document.createElement('div');
@@ -1086,34 +1133,37 @@ function triggerBubblePop(){
 }
 
 /* ── updDisp (new) ── */
+const BUBBLE_MIN=50,BUBBLE_MAX=380;
 function updDisp(){
   const m=Math.floor(P.secsLeft/60).toString().padStart(2,'0'),s=(P.secsLeft%60).toString().padStart(2,'0');
   document.getElementById('pomo-display').textContent=m+':'+s;
-  const total=(P.mode==='work'?pwMins():pbMins())*60,frac=P.secsLeft/total;
-  const elapsed=1-frac; // 0=start, 1=end
+  const total=(P.mode==='work'?pwMins():pbMins())*60;
+  const frac=Math.max(0,Math.min(1,P.secsLeft/total));
+  const elapsed=1-frac;
 
-  // Arc depletion
-  const ARC2=2*Math.PI*100;
-  const arc=document.getElementById('pomo-arc');
-  if(arc){
-    arc.style.strokeDasharray=ARC2;
-    arc.style.strokeDashoffset=ARC2*(1-frac);
-    arc.style.stroke=P.mode==='work'?'url(#bubbleGradPurple)':'#1ab870';
+  // Growing bubble — update size continuously
+  const bubble=document.getElementById('pomo-bubble-wrap');
+  if(bubble){
+    const sz=BUBBLE_MIN+elapsed*(BUBBLE_MAX-BUBBLE_MIN);
+    bubble.style.width=sz+'px';
+    bubble.style.height=sz+'px';
+    // font size scales with bubble
+    const timeEl=document.getElementById('pomo-display');
+    const modeEl=document.getElementById('pomo-mode-label');
+    if(timeEl)timeEl.style.fontSize=Math.max(14,Math.min(52,sz*.14))+'px';
+    if(modeEl)modeEl.style.fontSize=Math.max(8,Math.min(13,sz*.034))+'px';
   }
 
-  // Bubble body grows from r=72 to r=100 over the session (moon rising effect)
-  if(P.mode==='work'&&P.running){
-    const body=document.getElementById('pomo-bubble-body');
-    if(body){
-      const r=72+elapsed*28; // 72→100
-      body.setAttribute('r',r.toFixed(1));
-    }
-    // also update focus mode timer if showing
-    const fmDisp=document.getElementById('fm-display');
-    if(fmDisp)fmDisp.textContent=m+':'+s;
-    const fmFrac=document.getElementById('fm-frac');
-    if(fmFrac)fmFrac.style.height=(elapsed*100)+'%';
-  }
+  // Update focus mode if showing
+  const fmDisp=document.getElementById('fm-display');
+  if(fmDisp)fmDisp.textContent=m+':'+s;
+  const fmFrac=document.getElementById('fm-frac');
+  if(fmFrac)fmFrac.style.height=(elapsed*100)+'%';
+  // sync moon body size
+  const fmBody=document.getElementById('fm-moon-body');
+  if(fmBody)fmBody.setAttribute('r',(72+elapsed*28).toFixed(1));
+  const mainArc=document.getElementById('fm-arc');
+  if(mainArc){const ARC=2*Math.PI*100;mainArc.style.strokeDasharray=ARC;mainArc.style.strokeDashoffset=ARC*frac;}
 
   document.getElementById('pomo-mode-label').textContent=P.mode==='work'?'Focus':'Break';
   updDots();
@@ -1129,7 +1179,7 @@ function pomoToggle(){
     // PAUSE — snapshot remaining time accurately
     P.secsLeft=Math.max(0,Math.round((P.endTime-Date.now())/1000));
     clearInterval(P.interval);P.running=false;P.endTime=null;
-    document.getElementById('pomo-bubble-wrap').classList.remove('running');
+    const bwr=document.getElementById('pomo-bubble-wrap');if(bwr)bwr.classList.remove('running');
     document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Resume';
     fadeBubbleSound(0,800);
     focusModeExit();
@@ -1145,7 +1195,7 @@ function _pomoActuallyStart(){
   P.running=true;
   // Set absolute end time — immune to tab throttling
   P.endTime=Date.now()+(P.secsLeft*1000);
-  document.getElementById('pomo-bubble-wrap').classList.add('running');
+  const bw=document.getElementById('pomo-bubble-wrap');if(bw){bw.classList.add('running');bw.style.transition='width 1s linear,height 1s linear,box-shadow .5s ease';}
   document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-pause"></i> Pause';
   const isFresh=(P.secsLeft===(pwMins()*60)||P.secsLeft===(pbMins()*60));
   if(isFresh){playBubbleSound(false);startBubbleRush();}
@@ -1160,7 +1210,7 @@ function _pomoActuallyStart(){
 }
 function pomoFinish(){
   clearInterval(P.interval);P.running=false;
-  document.getElementById('pomo-bubble-wrap').classList.remove('running');
+  const bwf=document.getElementById('pomo-bubble-wrap');if(bwf)bwf.classList.remove('running');
   if(P.mode==='work'){
     focusModeExit(false);
     triggerBubblePop();
@@ -1183,7 +1233,7 @@ function pomoFinish(){
   document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';
   updDisp();
 }
-function pomoReset(){clearInterval(P.interval);P.running=false;P.endTime=null;P.mode='work';P.secsLeft=pwMins()*60;document.getElementById('pomo-bubble-wrap').classList.remove('running');document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';fadeBubbleSound(0,400);qcHide();QC={attempted:0,correct:0,target:0,qtype:'practice'};focusModeExit();updDisp();}
+function pomoReset(){clearInterval(P.interval);P.running=false;P.endTime=null;P.mode='work';P.secsLeft=pwMins()*60;document.getElementById('pomo-bubble-wrap').classList.remove('running');document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-ripple"></i> Dive In';fadeBubbleSound(0,400);qcHide();QC={attempted:0,correct:0,target:0,qtype:'practice'};focusModeExit();const bbl=document.getElementById('pomo-bubble-wrap');if(bbl){bbl.style.transition='width .6s ease,height .6s ease';bbl.style.width=BUBBLE_MIN+'px';bbl.style.height=BUBBLE_MIN+'px';}updDisp();}
 function pomoSkip(){clearInterval(P.interval);P.running=false;P.mode=P.mode==='work'?'break':'work';P.secsLeft=(P.mode==='work'?pwMins():pbMins())*60;document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-play"></i> Start';updDisp();}
 function renderPomoLog(){
   const el=document.getElementById('pomo-log-today');
@@ -1500,15 +1550,20 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       // Normal fixed class block with right-click to cancel
       el.className='sched-block sb-class';
       el.style.cssText=`top:${sgTopPx(c.start)}px;height:${ht}px;pointer-events:all;border-left:3px solid ${COURSE_LEFT[c.course]||'#ffd260'}`;
+      el.style.position='relative';
       el.innerHTML=`<div class="sb-label">${c.label}</div><div class="sb-sub">${sgMinStr(c.start)}</div>`;
-      el.title='Right-click to cancel this class';
-      el.addEventListener('mouseenter',ev=>sgShowTip(ev,c.label,c.course+' — right-click to cancel',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min`));
+      el.title='Hover for × to cancel, or right-click';
+      el.addEventListener('mouseenter',ev=>sgShowTip(ev,c.label,c.course+' — hover × to cancel',`${sgMinStr(c.start)} – ${sgMinStr(c.start+c.dur)}, ${c.dur} min`));
       el.addEventListener('mouseleave',sgHideTip);
       el.addEventListener('contextmenu',ev=>{
         ev.preventDefault();
         if(!SG.editMode){toast('Unlock the schedule to cancel a class.');return;}
         sgShowCancelMenu(ev,c,ckey,calDate,col,wrappers,c.dur);
       });
+      const classClose=document.createElement('button');
+      classClose.className='sb-close';classClose.innerHTML='×';classClose.title='Cancel this class';
+      classClose.addEventListener('click',ev=>{ev.stopPropagation();handleCancelBlock(el,'class',null,c.label,ckey,c,calDate);});
+      el.appendChild(classClose);
     }
     wrappers[col].appendChild(el);
   });
@@ -1552,7 +1607,12 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       if(bClass)el.classList.add(bClass);
       el.draggable=true;el.dataset.id=b.id;
       const displayLbl=piece.split?`${b.label} pt.${piece.partN}`:b.label;
-      el.innerHTML=`<div class="sb-label">${displayLbl}</div><div class="sb-sub">${b.course} · ${sgMinStr(piece.start)}</div>`;
+      el.style.position='relative';
+      el.innerHTML=`<div class="sb-label">${displayLbl}</div><div class="sb-sub">${b.course?b.course+' · ':''}${sgMinStr(piece.start)}</div>`;
+      const closeBtn=document.createElement('button');
+      closeBtn.className='sb-close';closeBtn.innerHTML='×';closeBtn.title='Remove';
+      closeBtn.addEventListener('click',ev=>{ev.stopPropagation();handleCancelBlock(el,'fluid',b.id,b.label);});
+      el.appendChild(closeBtn);
       el.addEventListener('dragstart',ev=>{if(!SG.editMode){ev.preventDefault();return;}SG.dragBlock=b;el.classList.add('dragging');ev.dataTransfer.effectAllowed='move';ev.dataTransfer.setData('text/plain',b.id);});
       el.addEventListener('dragend',()=>{el.classList.remove('dragging');SG.dragBlock=null;});
       const tipSub=b.category&&b.category!=='study'?(CATEGORY_LABELS[b.category]||b.category)+(piece.split?' — split around prayer':' — drag to move'):(b.course+(piece.split?' — auto-split around prayer':' — drag to move'));
@@ -2163,6 +2223,30 @@ function sgGetFluid(){return SG.editMode&&SG.pendingFluid?SG.pendingFluid:sgFlui
 function sgGetCancelled(){return SG.editMode&&SG.pendingCancelled?SG.pendingCancelled:sgCancelled;}
 function sgWriteFluid(newArr){if(SG.editMode&&SG.pendingFluid!==null)SG.pendingFluid=newArr;else{sgFluid=newArr;}}
 function sgWriteCancelled(newSet){if(SG.editMode&&SG.pendingCancelled!==null)SG.pendingCancelled=newSet;else{sgCancelled=newSet;}}
+
+/* ── Universal block cancel ── */
+function handleCancelBlock(el,type,id,label,ckey,c,calDate){
+  if(!SG.editMode){toast('Unlock the schedule to make changes.');return;}
+  if(type==='fluid'){
+    // Study/life/revision blocks — remove immediately with fade
+    el.classList.add('sb-fading');
+    setTimeout(()=>{
+      const arr=sgGetFluid().filter(x=>x.id!==id);
+      sgWriteFluid(arr);
+      renderSchedule();
+    },300);
+  } else if(type==='class'){
+    // Fixed class — confirm first
+    if(!confirm(`Cancel "${label}" for this occurrence?
+It will show as a free slot. You can restore it by clicking the slot.`))return;
+    el.classList.add('sb-fading');
+    setTimeout(()=>{
+      const set=sgGetCancelled();set.add(ckey);sgWriteCancelled(set);
+      renderSchedule();
+      setTimeout(()=>sgSuggestFreeSlot(c.course,c.start,c.dur,calDate),300);
+    },300);
+  }
+}
 
 function sgShowInfo(msg){const el=document.getElementById('sched-info');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
 
@@ -2890,6 +2974,11 @@ function qcRender(){
   const pct=QC.target>0?Math.min(100,Math.round(QC.attempted/QC.target*100)):0;
   if(tl)tl.textContent=QC.target>0?`${QC.attempted}/${QC.target} target · ${pct}%`:(QC.attempted>0?`${QC.attempted} attempted`:'');
   if(pf)pf.style.width=(QC.target>0?pct:0)+'%';
+  // mirror in focus mode
+  const fa=document.getElementById('fm-qc-attempted');if(fa)fa.textContent=QC.attempted;
+  const fc=document.getElementById('fm-qc-correct');if(fc)fc.textContent=QC.correct;
+  const ft=document.getElementById('fm-qc-target');if(ft)ft.textContent=QC.target>0?QC.target:'—';
+  const fb=document.getElementById('fm-qc-bar');if(fb)fb.style.width=(QC.target>0?pct:0)+'%';
 }
 function qcShow(){
   const el=document.getElementById('session-qcounter');
@@ -3198,6 +3287,35 @@ renderTestCountdown();
     <!-- course + label -->
     <div id="fm-course-lbl" style="font-size:13px;font-weight:700;color:rgba(180,220,255,0.7);font-family:'Nunito',sans-serif;margin-bottom:1.5rem"></div>
 
+    <!-- in-focus Q counter -->
+    <div style="display:flex;gap:20px;margin-bottom:1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(180,220,255,0.12);border-radius:14px;padding:10px 20px;backdrop-filter:blur(4px)">
+      <div style="text-align:center">
+        <div style="font-size:10px;font-weight:700;color:rgba(140,200,255,0.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Attempted</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button onclick="qcAdjust(-1,'attempted')" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(180,220,255,0.2);background:rgba(255,255,255,0.06);color:rgba(180,220,255,0.7);font-size:16px;cursor:pointer;line-height:1">−</button>
+          <span id="fm-qc-attempted" style="font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:rgba(200,230,255,0.9);min-width:32px;text-align:center">0</span>
+          <button onclick="qcAdjust(1,'attempted')" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(180,220,255,0.2);background:rgba(255,255,255,0.06);color:rgba(180,220,255,0.7);font-size:16px;cursor:pointer;line-height:1">+</button>
+        </div>
+      </div>
+      <div style="width:1px;background:rgba(180,220,255,0.1)"></div>
+      <div style="text-align:center">
+        <div style="font-size:10px;font-weight:700;color:rgba(140,200,255,0.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Correct</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button onclick="qcAdjust(-1,'correct')" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(100,220,150,0.2);background:rgba(255,255,255,0.06);color:rgba(100,220,150,0.7);font-size:16px;cursor:pointer;line-height:1">−</button>
+          <span id="fm-qc-correct" style="font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:rgba(100,220,150,0.9);min-width:32px;text-align:center">0</span>
+          <button onclick="qcAdjust(1,'correct')" style="width:24px;height:24px;border-radius:50%;border:1px solid rgba(100,220,150,0.2);background:rgba(255,255,255,0.06);color:rgba(100,220,150,0.7);font-size:16px;cursor:pointer;line-height:1">+</button>
+        </div>
+      </div>
+      <div style="width:1px;background:rgba(180,220,255,0.1)"></div>
+      <div style="text-align:center">
+        <div style="font-size:10px;font-weight:700;color:rgba(140,200,255,0.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Target</div>
+        <div id="fm-qc-target" style="font-family:'Quicksand',sans-serif;font-size:22px;font-weight:700;color:rgba(180,220,255,0.5);min-width:32px;text-align:center">—</div>
+      </div>
+    </div>
+    <!-- progress bar toward target -->
+    <div id="fm-qc-bar-wrap" style="width:200px;height:4px;background:rgba(180,220,255,0.1);border-radius:50px;margin-bottom:1.25rem;overflow:hidden">
+      <div id="fm-qc-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#38c2e8,#1ab870);border-radius:50px;transition:width .3s"></div>
+    </div>
     <!-- controls -->
     <div style="display:flex;gap:12px">
       <button onclick="focusModePause()" style="padding:9px 20px;font-size:12px;font-weight:700;border:1.5px solid rgba(180,220,255,0.25);border-radius:50px;background:rgba(255,255,255,0.06);color:rgba(180,220,255,0.8);cursor:pointer;font-family:'Nunito',sans-serif;backdrop-filter:blur(4px)"><i class="ti ti-player-pause"></i> Pause</button>
