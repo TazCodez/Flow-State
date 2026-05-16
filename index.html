@@ -150,6 +150,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
     0 0 40px rgba(108,82,232,0.3),
     0 0 80px rgba(56,194,232,0.15),
     inset 0 1px 0 rgba(255,255,255,0.6);
+  animation:bubblePulse 4s ease-in-out infinite;
+}
+@keyframes bubblePulse{
+  0%,100%{box-shadow:0 0 0 2px rgba(160,200,255,0.12),0 0 30px rgba(108,82,232,0.2),inset 0 1px 0 rgba(255,255,255,0.6)}
+  50%    {box-shadow:0 0 0 4px rgba(160,200,255,0.22),0 0 60px rgba(108,82,232,0.4),0 0 100px rgba(56,194,232,0.2),inset 0 1px 0 rgba(255,255,255,0.6)}
 }
 /* specular highlight — always top-left */
 .pomo-bubble::before{
@@ -553,6 +558,102 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(80px);background:linear-gradient(135deg,#38c2e8,#0fa3cc);color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;z-index:9999;opacity:0;transition:all .4s;pointer-events:none;box-shadow:0 6px 20px rgba(15,163,204,0.4);white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* ── Plunge In card ── */
+.plunge-card{
+  background:linear-gradient(135deg,rgba(8,14,40,0.92),rgba(10,24,60,0.88));
+  border:1.5px solid rgba(56,194,232,0.25);
+  border-radius:20px;padding:1.5rem 1.75rem;margin-bottom:14px;
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 24px rgba(8,30,80,0.35),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.plunge-card::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 40%,rgba(56,194,232,0.06) 0%,transparent 60%),
+             radial-gradient(ellipse at 80% 70%,rgba(80,100,200,0.05) 0%,transparent 55%);
+  pointer-events:none;
+}
+.plunge-rank{
+  font-family:'Quicksand',sans-serif;font-size:11px;font-weight:600;
+  color:rgba(100,180,255,0.6);letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:.5rem;
+}
+.plunge-rank-title{
+  font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;
+  color:rgba(180,225,255,0.9);margin-bottom:.25rem;
+}
+.plunge-streak{
+  font-size:12px;color:rgba(120,180,230,0.55);margin-bottom:1.1rem;
+  font-family:'Nunito',sans-serif;
+}
+.plunge-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 26px;font-size:13px;font-weight:800;
+  font-family:'Nunito',sans-serif;letter-spacing:.06em;
+  border-radius:50px;border:1.5px solid rgba(56,194,232,0.4);
+  background:linear-gradient(135deg,rgba(30,80,180,0.5),rgba(20,120,200,0.4));
+  color:rgba(200,235,255,0.95);cursor:pointer;
+  transition:all .2s;
+  box-shadow:0 4px 18px rgba(20,80,200,0.25),inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.plunge-btn:hover:not(:disabled){
+  background:linear-gradient(135deg,rgba(50,120,220,0.65),rgba(30,150,220,0.55));
+  border-color:rgba(100,200,255,0.6);
+  box-shadow:0 6px 24px rgba(30,100,220,0.4);
+  transform:translateY(-1px);
+}
+.plunge-btn:disabled{opacity:.45;cursor:default;transform:none}
+.plunge-msg{
+  font-size:12px;font-family:'Nunito',sans-serif;
+  color:rgba(140,200,255,0.65);margin-top:.75rem;line-height:1.6;
+  font-style:italic;
+}
+.plunge-window-badge{
+  display:inline-block;font-size:10px;font-weight:700;
+  color:rgba(100,180,255,0.55);background:rgba(56,194,232,0.08);
+  border:1px solid rgba(56,194,232,0.15);border-radius:50px;
+  padding:2px 10px;letter-spacing:.08em;margin-bottom:1rem;
+}
+
+/* ── Bismillah overlay ── */
+.bismillah-overlay{
+  position:fixed;inset:0;z-index:19000;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .5s ease;
+}
+.bismillah-overlay.show{opacity:1}
+.bismillah-inner{
+  text-align:center;
+  animation:bismillahFloat 2.2s ease forwards;
+}
+.bismillah-arabic{
+  font-size:clamp(28px,5vw,52px);
+  color:rgba(220,240,255,0.92);
+  text-shadow:0 0 40px rgba(100,180,255,0.6),0 0 80px rgba(56,194,232,0.3);
+  line-height:1.4;direction:rtl;
+  font-weight:300;letter-spacing:.04em;
+}
+.bismillah-translit{
+  font-family:'Quicksand',sans-serif;font-size:14px;font-weight:500;
+  color:rgba(140,200,255,0.5);letter-spacing:.12em;margin-top:.5rem;
+}
+@keyframes bismillahFloat{
+  0%  {transform:translateY(12px);opacity:0}
+  20% {opacity:1}
+  70% {opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-8px)}
+}
+
+/* ── Expand timer button ── */
+.pomo-expand-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;font-size:11px;font-weight:700;
+  font-family:'Nunito',sans-serif;border-radius:50px;
+  border:1.5px solid rgba(56,194,232,0.3);
+  background:rgba(255,255,255,0.55);color:var(--text-soft);
+  cursor:pointer;transition:all .15s;margin-bottom:.75rem;
+}
+.pomo-expand-btn:hover{background:rgba(255,255,255,0.85);color:var(--aqua5)}
+
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes duaPulse{0%,100%{opacity:.45}50%{opacity:.85}}
 
@@ -588,6 +689,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
 
 <!-- TODAY -->
 <div id="panel-today" class="panel active">
+  <!-- PLUNGE IN morning tracker -->
+  <div class="plunge-card" id="plunge-card">
+    <div class="plunge-rank" id="plunge-rank-label">DEPTH RANK</div>
+    <div class="plunge-rank-title" id="plunge-rank-title">🏝️ Coastal Drifter</div>
+    <div class="plunge-streak" id="plunge-streak-txt">0 day streak · No plunge yet</div>
+    <div class="plunge-window-badge">⏱ Golden window: 4:15 AM – 4:45 AM</div><br>
+    <button class="plunge-btn" id="plunge-btn" onclick="plungeIn()">
+      🌊 Plunge In
+    </button>
+    <div class="plunge-msg" id="plunge-msg"></div>
+  </div>
   <div class="metrics" id="today-metrics"></div>
   <div class="gc" id="today-card"></div>
   <div class="gc">
@@ -635,6 +747,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
       </div>
 
       <!-- Controls -->
+      <div style="text-align:center;margin-bottom:.5rem">
+        <button class="pomo-expand-btn" onclick="focusModeEnter()" title="Full-screen focus mode">
+          <i class="ti ti-arrows-maximize" aria-hidden="true"></i> Full-screen focus
+        </button>
+      </div>
       <div class="pomo-controls">
         <button class="fb primary pomo-dive-btn" id="pomo-start-btn" onclick="pomoToggle()">
           <i class="ti ti-ripple" aria-hidden="true"></i> Dive In
@@ -758,9 +875,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle
             <option value="4">Friday</option><option value="5">Saturday</option><option value="6">Sunday</option>
           </select>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
           <div><div class="fl">Start time</div><input type="time" class="fi" id="sched-new-time" value="09:00"></div>
-          <div><div class="fl">Duration (min)</div><input type="number" class="fi" id="sched-new-dur" value="60" min="15" max="240" step="15"></div>
+          <div><div class="fl">End time</div><input type="time" class="fi" id="sched-new-end" value="10:00"></div>
+          <div><div class="fl">Deadline (optional)</div><input type="date" class="fi" id="sched-new-deadline"></div>
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -877,6 +995,20 @@ const E_ORD={high:['high','medium','low'],medium:['medium','high','low'],low:['l
 
 let S={tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0};
 let SR={topics:[]}; // populated after load()
+let plungeState={
+  streak:parseInt(localStorage.getItem('plunge_streak')||'0'),
+  lastDate:localStorage.getItem('plunge_lastDate')||'',
+  doneToday:false,
+};
+let FM={active:false,oceanRaf:null,oceanT:0};
+const DUAS=[
+  {arabic:"رَبِّ زِدۡنِي عِلۡمٗا",translit:"Rabbi zidni \u02BCilma",meaning:"My Lord, increase me in knowledge.",source:"Surah Ta-Ha 20:114"},
+  {arabic:"رَبِّ اشۡرَحۡ لِي صَدۡرِي وَيَسِّرۡ لِي أَمۡرِي وَاحۡلُلۡ عُقۡدَةٗ مِّن لِّسَانِي يَفۡقَهُواْ قَوۡلِي",translit:"Rabbish-rahli sadri, wa yassir li amri, wahlul uqdatan min lisani, yafqahu qawli",meaning:"My Lord, expand my breast, ease my task, and remove the knot from my tongue so they may understand my speech.",source:"Surah Ta-Ha 20:25\u201328"},
+  {arabic:"لَا إِلَٰهَ إِلَّا أَنتَ سُبۡحَٰنَكَ إِنِّي كُنتُ مِنَ ٱلظَّٰلِمِينَ",translit:"La ilaha illa anta, subhanaka, inni kuntu min adh-dhalimin",meaning:"There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.",source:"Dua of Yunus (as) \u2014 Surah Al-Anbiya 21:87"},
+  {arabic:"رَبَّنَآ ءَاتِنَا فِي ٱلدُّنۡيَا حَسَنَةٗ وَفِي ٱلۡأٓخِرَةِ حَسَنَةٗ وَقِنَا عَذَابَ ٱلنَّارِ",translit:"Rabbana atina fid-dunya hasanatan wa fil akhirati hasanatan wa qina adhaban-nar",meaning:"Our Lord, give us good in this world and good in the hereafter, and protect us from the punishment of the Fire.",source:"Surah Al-Baqarah 2:201"},
+];
+let QC={attempted:0,correct:0,target:0,qtype:'practice'};
+let duaIndex=0;
 
 function save(){try{localStorage.setItem('flowstate_v2',JSON.stringify(S));}catch(e){}}
 function load(){try{const d=localStorage.getItem('flowstate_v2');if(d){const loaded=JSON.parse(d);S=Object.assign({tasks:[],energy:'medium',streak:0,lastDate:null,pomoLog:[],pomoSessions:0},loaded);}}catch(e){}}
@@ -1141,17 +1273,24 @@ function updDisp(){
   const frac=Math.max(0,Math.min(1,P.secsLeft/total));
   const elapsed=1-frac;
 
-  // Growing bubble — update size continuously
+  // Bubble only grows in full-screen focus mode; stays compact on tab
   const bubble=document.getElementById('pomo-bubble-wrap');
   if(bubble){
-    const sz=BUBBLE_MIN+elapsed*(BUBBLE_MAX-BUBBLE_MIN);
-    bubble.style.width=sz+'px';
-    bubble.style.height=sz+'px';
-    // font size scales with bubble
-    const timeEl=document.getElementById('pomo-display');
-    const modeEl=document.getElementById('pomo-mode-label');
-    if(timeEl)timeEl.style.fontSize=Math.max(14,Math.min(52,sz*.14))+'px';
-    if(modeEl)modeEl.style.fontSize=Math.max(8,Math.min(13,sz*.034))+'px';
+    if(FM.active&&P.mode==='work'){
+      const sz=BUBBLE_MIN+elapsed*(BUBBLE_MAX-BUBBLE_MIN);
+      bubble.style.width=sz+'px'; bubble.style.height=sz+'px';
+      const timeEl=document.getElementById('pomo-display');
+      const modeEl=document.getElementById('pomo-mode-label');
+      if(timeEl)timeEl.style.fontSize=Math.max(14,Math.min(52,sz*.14))+'px';
+      if(modeEl)modeEl.style.fontSize=Math.max(8,Math.min(13,sz*.034))+'px';
+    } else if(!FM.active){
+      // Static compact mode — fixed 160px with gentle pulse when running
+      bubble.style.width='160px'; bubble.style.height='160px';
+      const timeEl=document.getElementById('pomo-display');
+      const modeEl=document.getElementById('pomo-mode-label');
+      if(timeEl)timeEl.style.fontSize='32px';
+      if(modeEl)modeEl.style.fontSize='10px';
+    }
   }
 
   // Update focus mode if showing
@@ -1199,7 +1338,8 @@ function _pomoActuallyStart(){
   document.getElementById('pomo-start-btn').innerHTML='<i class="ti ti-player-pause"></i> Pause';
   const isFresh=(P.secsLeft===(pwMins()*60)||P.secsLeft===(pbMins()*60));
   if(isFresh){playBubbleSound(false);startBubbleRush();}
-  if(P.mode==='work'){qcShow();focusModeEnter();}
+  if(P.mode==='work')qcShow();
+  // Do NOT auto-enter focus mode — user must click expand button
   clearInterval(P.interval);
   P.interval=setInterval(()=>{
     const remaining=Math.max(0,Math.round((P.endTime-Date.now())/1000));
@@ -1608,7 +1748,8 @@ function sgBuildDayContent(dayIdx,wrappers,daysToRender){
       el.draggable=true;el.dataset.id=b.id;
       const displayLbl=piece.split?`${b.label} pt.${piece.partN}`:b.label;
       el.style.position='relative';
-      el.innerHTML=`<div class="sb-label">${displayLbl}</div><div class="sb-sub">${b.course?b.course+' · ':''}${sgMinStr(piece.start)}</div>`;
+      const deadlineBadge=b.deadline?`<span style="font-size:7px;background:rgba(214,48,48,0.18);color:#a83030;border-radius:3px;padding:1px 4px;margin-left:3px">📅 ${b.deadline}</span>`:'';
+      el.innerHTML=`<div class="sb-label">${displayLbl}${deadlineBadge}</div><div class="sb-sub">${b.course?b.course+' · ':''}${sgMinStr(piece.start)}</div>`;
       const closeBtn=document.createElement('button');
       closeBtn.className='sb-close';closeBtn.innerHTML='×';closeBtn.title='Remove';
       closeBtn.addEventListener('click',ev=>{ev.stopPropagation();handleCancelBlock(el,'fluid',b.id,b.label);});
@@ -1805,7 +1946,10 @@ function schedAddTask(){
   const course=category==='study'?(document.getElementById('sched-new-course').value||''):'';
   const day=parseInt(document.getElementById('sched-new-day').value);
   const startMin=sgStrToMin(document.getElementById('sched-new-time').value);
-  const dur=parseInt(document.getElementById('sched-new-dur').value)||60;
+  const endVal=document.getElementById('sched-new-end')?.value;
+  let dur=60;
+  if(endVal){const[eh,em]=endVal.split(':').map(Number);const endMin=eh*60+em;dur=Math.max(15,endMin-startMin);}
+  const deadline=document.getElementById('sched-new-deadline')?.value||'';
   if(!label){sgShowInfo('Please enter a task name.');return;}
   if(!SG.editMode){toast('Unlock the schedule to add tasks.');return;}
   const id='sg'+Date.now();
@@ -1817,7 +1961,7 @@ function schedAddTask(){
   SG.rippleNotes=[];
   if(overlaps.length)SG.rippleNotes.push(`"${label}" overlaps ${overlaps.map(p=>p.name).join(' & ')} — auto-split around prayer.`);
   if(didRipple)SG.rippleNotes.push('Ripple: overlapping blocks nudged forward.');
-  sgShowRipple();renderSchedule();
+  sgShowRipple();renderSchedule();showBismillah();
   document.getElementById('sched-new-label').value='';
   toast('Block added — remember to Save Changes.');
 }
@@ -1929,7 +2073,7 @@ function schedSmartSuggest(){
       <div style="font-size:11px;color:var(--text-soft);margin-bottom:8px">
         Energy match: <strong>${c.winEnergy}</strong>${c.overlaps?' · ⚠ may overlap prayer (will auto-split)':''}
       </div>
-      <button class="fb primary" style="font-size:11px;padding:6px 12px" onclick="schedAcceptSuggestion(${c.day},${c.start},${c.dur},'${label.replace(/'/g,"\'")}','${course}')">
+      <button class="fb primary" style="font-size:11px;padding:6px 12px" data-d="${c.day}" data-s="${c.start}" data-u="${c.dur}" data-l="${label}" data-c="${course}" onclick="schedAcceptSuggestion(+this.dataset.d,+this.dataset.s,+this.dataset.u,this.dataset.l,this.dataset.c)">
         <i class="ti ti-check"></i> Use this slot
       </button>
     </div>`).join('');
@@ -1968,7 +2112,7 @@ function schedAddTest(){
   if(!label||!date){document.getElementById('test-add-result').innerHTML='<span style="color:var(--red3);font-size:11px">Please fill in name and date.</span>';return;}
   const testId='t'+Date.now();
   sgTests.push({id:testId,label,course,date,time,notes});
-  sgSaveTests();
+  sgSaveTests();showBismillah();
   // Generate front-loaded revision slots
   const revCount=schedGenerateRevisionSlots(course,label,date,testId);
   renderTestCountdown();
@@ -2158,7 +2302,6 @@ function sgToggleEdit(){
 }
 
 function sgSaveEdit(){
-  // Commit pending changes to live state
   sgFluid=SG.pendingFluid;
   sgCancelled=SG.pendingCancelled;
   sgSave();sgSaveCancelled();
@@ -2166,6 +2309,7 @@ function sgSaveEdit(){
   SG.editMode=false;
   sgApplyEditUI();
   renderSchedule();
+  showBismillah();
   toast('Schedule saved! 💾');
 }
 
@@ -2454,7 +2598,7 @@ function srShowRatingModal(course,label){
   if(!modal){modal=document.createElement('div');modal.id='sr-modal';document.body.appendChild(modal);}
   modal.style.cssText='position:fixed;inset:0;z-index:11000;display:flex;align-items:center;justify-content:center;background:rgba(10,58,74,0.65);backdrop-filter:blur(6px)';
 
-  modal.innerHTML=`<div style="background:linear-gradient(135deg,rgba(220,250,255,0.97),rgba(200,240,255,0.95));border:1.5px solid rgba(180,230,255,0.9);border-radius:20px;padding:1.75rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(8,128,168,0.3)">
+  modal.innerHTML=`<div data-sr-course="${course}" style="background:linear-gradient(135deg,rgba(220,250,255,0.97),rgba(200,240,255,0.95));border:1.5px solid rgba(180,230,255,0.9);border-radius:20px;padding:1.75rem;max-width:420px;width:90%;box-shadow:0 20px 60px rgba(8,128,168,0.3)">
     <div style="font-family:'Quicksand',sans-serif;font-size:18px;font-weight:700;color:var(--aqua5);margin-bottom:4px">🌊 Session complete!</div>
     <div style="font-size:12px;color:var(--text-soft);margin-bottom:1.25rem">${course} · ${label}</div>
 
@@ -2521,7 +2665,7 @@ function srSelectDiff(v,btn){
 function srSubmitRating(course){
   const topics=window._srSelectedTopics.length?window._srSelectedTopics:['General study'];
   topics.forEach(t=>srLogTopic(course,t,window._srConf||3,window._srDiff||3));
-  srSave();srCloseModal();
+  srSave();srCloseModal();showBismillah();
   const due=SR.topics.filter(t=>dTo(tod(),t.nextReview)<=0).length;
   toast('📚 Logged '+topics.length+' topic'+(topics.length>1?'s':'')+'. '+due+' review'+(due!==1?'s':'')+' due today.');
   renderReview();
@@ -2886,14 +3030,6 @@ if(!document.getElementById('dhikr-ring-style')){
 /* ════════════════════════════════════
    PRE-SESSION MODAL + IN-SESSION Q COUNTER
 ════════════════════════════════════ */
-let QC={attempted:0,correct:0,target:0,qtype:'practice'};
-let duaIndex=0;
-const DUAS=[
-  {arabic:'رَبِّ زِدۡنِي عِلۡمٗا',translit:"Rabbi zidni 'ilma",meaning:'My Lord, increase me in knowledge.',source:'Surah Ta-Ha 20:114'},
-  {arabic:'رَبِّ اشۡرَحۡ لِي صَدۡرِي وَيَسِّرۡ لِي أَمۡرِي وَاحۡلُلۡ عُقۡدَةٗ مِّن لِّسَانِي يَفۡقَهُواْ قَوۡلِي',translit:"Rabbish-rahli sadri, wa yassir li amri, wahlul 'uqdatan min lisani, yafqahu qawli",meaning:'My Lord, expand my breast, ease my task, and remove the knot from my tongue so they may understand my speech.',source:'Surah Ta-Ha 20:25–28'},
-  {arabic:'لَا إِلَٰهَ إِلَّا أَنتَ سُبۡحَٰنَكَ إِنِّي كُنتُ مِنَ ٱلظَّٰلِمِينَ',translit:"La ilaha illa anta, subhanaka, inni kuntu min adh-dhalimin",meaning:'There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.',source:"Dua of Yunus (as) — Surah Al-Anbiya 21:87"},
-  {arabic:'رَبَّنَآ ءَاتِنَا فِي ٱلدُّنۡيَا حَسَنَةٗ وَفِي ٱلۡأٓخِرَةِ حَسَنَةٗ وَقِنَا عَذَابَ ٱلنَّارِ',translit:"Rabbana atina fid-dunya hasanatan wa fil akhirati hasanatan wa qina adhaban-nar",meaning:'Our Lord, give us good in this world and good in the hereafter, and protect us from the punishment of the Fire.',source:'Surah Al-Baqarah 2:201'},
-];
 
 function pomoShowPresession(){
   // Show dua screen first, then pre-session modal on tap
@@ -2993,7 +3129,6 @@ function qcHide(){
 /* ════════════════════════════════════
    FOCUS MODE — moonlit ocean
 ════════════════════════════════════ */
-let FM={active:false,oceanRaf:null,oceanT:0};
 
 function focusModeEnter(){
   const ov=document.getElementById('focus-overlay');
@@ -3109,8 +3244,102 @@ function fmInitOcean(){
 }
 
 // Also exit focus mode when session finishes (before dhikr)
+
+/* ════════════════════════════════════
+   PLUNGE IN — morning tracker
+════════════════════════════════════ */
+const PLUNGE_RANKS=[
+  {min:0,  max:4,  emoji:'🏝️', title:'Coastal Drifter'},
+  {min:5,  max:11, emoji:'🐠', title:'Reef Navigator'},
+  {min:12, max:19, emoji:'🐋', title:'Open Ocean Voyager'},
+  {min:20, max:29, emoji:'🐙', title:'Midnight Zone Explorer'},
+  {min:30, max:Infinity, emoji:'👑', title:'Abyssal Sovereign'},
+];
+function plungeGetRank(streak){
+  return PLUNGE_RANKS.find(r=>streak>=r.min&&streak<=r.max)||PLUNGE_RANKS[0];
+}
+
+
+function plungeInit(){
+  const today=new Date().toISOString().slice(0,10);
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  // Reset streak if last plunge was before yesterday
+  if(plungeState.lastDate&&plungeState.lastDate<yesterday){
+    plungeState.streak=0;
+    localStorage.setItem('plunge_streak','0');
+  }
+  plungeState.doneToday=(plungeState.lastDate===today);
+  plungeRenderCard();
+}
+
+function plungeRenderCard(){
+  const rank=plungeGetRank(plungeState.streak);
+  const rt=document.getElementById('plunge-rank-title');
+  const rs=document.getElementById('plunge-streak-txt');
+  const btn=document.getElementById('plunge-btn');
+  const msg=document.getElementById('plunge-msg');
+  if(rt)rt.textContent=rank.emoji+' '+rank.title;
+  if(rs)rs.textContent=plungeState.streak+' day streak'+(plungeState.doneToday?' · Submerged today ✓':'');
+  if(btn){
+    btn.disabled=plungeState.doneToday;
+    btn.textContent=plungeState.doneToday?"🌊 Submerged":"🌊 Plunge In";
+  }
+  if(msg&&plungeState.doneToday){
+    msg.textContent="You're already submerged for today! Keep riding the wave.";
+  }
+}
+
+function plungeIn(){
+  const now=new Date();
+  const h=now.getHours(),m=now.getMinutes();
+  const totalMins=h*60+m;
+  const winStart=4*60+15; // 4:15 AM
+  const winEnd=4*60+45;   // 4:45 AM
+  const today=now.toISOString().slice(0,10);
+  const msgEl=document.getElementById('plunge-msg');
+
+  if(plungeState.doneToday){
+    if(msgEl)msgEl.textContent="You're already submerged for today! Keep riding the wave.";
+    return;
+  }
+  if(totalMins<winStart||totalMins>winEnd){
+    if(msgEl)msgEl.textContent='Missed the tide! The window opens at 4:15 AM and closes at 4:45 AM.';
+    msgEl.style.color='rgba(255,140,140,0.7)';
+    return;
+  }
+  // Success
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  if(plungeState.lastDate===yesterday)plungeState.streak++;
+  else plungeState.streak=1;
+  plungeState.lastDate=today;
+  plungeState.doneToday=true;
+  localStorage.setItem('plunge_streak',plungeState.streak);
+  localStorage.setItem('plunge_lastDate',today);
+  if(msgEl){
+    msgEl.style.color='rgba(140,220,255,0.65)';
+    msgEl.textContent="You've taken the plunge. The day is yours while the world is still asleep. Welcome to the flow.";
+  }
+  plungeRenderCard();
+  showBismillah();
+  const rank=plungeGetRank(plungeState.streak);
+  toast('🌊 Plunge taken! '+rank.emoji+' '+rank.title+' · '+plungeState.streak+' day streak');
+}
+
+/* ════════════════════════════════════
+   BISMILLAH — sacred save notification
+════════════════════════════════════ */
+let _bismillahT=null;
+function showBismillah(){
+  const ov=document.getElementById('bismillah-overlay');
+  if(!ov)return;
+  clearTimeout(_bismillahT);
+  ov.classList.add('show');
+  _bismillahT=setTimeout(()=>ov.classList.remove('show'),2400);
+}
+
 renderToday();
 renderTestCountdown();
+plungeInit();
 </script>
 
 <!-- DHIKR MODE OVERLAY -->
@@ -3321,6 +3550,15 @@ renderTestCountdown();
       <button onclick="focusModePause()" style="padding:9px 20px;font-size:12px;font-weight:700;border:1.5px solid rgba(180,220,255,0.25);border-radius:50px;background:rgba(255,255,255,0.06);color:rgba(180,220,255,0.8);cursor:pointer;font-family:'Nunito',sans-serif;backdrop-filter:blur(4px)"><i class="ti ti-player-pause"></i> Pause</button>
       <button onclick="focusModeExit(true)" style="padding:9px 20px;font-size:12px;font-weight:700;border:1.5px solid rgba(180,220,255,0.15);border-radius:50px;background:rgba(255,255,255,0.04);color:rgba(140,180,220,0.6);cursor:pointer;font-family:'Nunito',sans-serif">Surface</button>
     </div>
+  </div>
+</div>
+
+
+<!-- BISMILLAH OVERLAY -->
+<div class="bismillah-overlay" id="bismillah-overlay">
+  <div class="bismillah-inner">
+    <div class="bismillah-arabic">بِسْمِ ٱللَّٰهِ</div>
+    <div class="bismillah-translit">Bismillah</div>
   </div>
 </div>
 
